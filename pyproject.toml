@@ -1,0 +1,12 @@
+[project]
+name = "calibrate-debate"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.10.6",
+    "requests>=2.32.3",
+    "tenacity>=9.0.0",
+    "types-requests>=2.32.0.20241016",
+]
