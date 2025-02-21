@@ -5,7 +5,7 @@ import re
 import requests
 
 
-from models import (
+from core.models import (
     DebateTotal,
     DebatorOutputs,
     DebatePrompts,
@@ -15,7 +15,7 @@ from models import (
     Side,
     SpeechType,
 )
-from utils import make_rounds
+from utils.utils import make_rounds
 from typing import List, Dict
 from tenacity import retry, stop_after_attempt, wait_exponential
 
@@ -209,7 +209,7 @@ def run_debate(
     opposition_model: str,
     motion: DebateTopic,
     prompts: DebatePrompts,
-    path: Path,
+    path_to_store_debate: Path,
     judge_models: List[str]
 ) -> DebateTotal:
     state = DebateState()
@@ -219,7 +219,7 @@ def run_debate(
         proposition_model=proposition_model,
         opposition_model=opposition_model,
         prompts=prompts,
-        path_to_store=path,
+        path_to_store=path_to_store_debate,
     )
 
     @retry(

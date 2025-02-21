@@ -1,0 +1,165 @@
+first_speech: |
+    Structure your response as follows in english only:
+    <speech>
+        <argument1>
+            <coreClaim>State your first main claim in one sentence</coreClaim>
+            <supportType>evidence|principle</supportType>
+            <supportDetails>
+                If evidence: Provide specific examples/data
+                If principle: Explain the principle and its validity
+            </supportDetails>
+            <connection>
+                Explain how this support proves your claim
+            </connection>
+        </argument1>
+        <argument2>
+            [Same structure as argument1]
+        </argument2>
+        <argument3>
+            [Optional third argument, same structure]
+        </argument3>
+        <synthesis>
+            Explain how these arguments work together
+            Show why they prove your side of the motion
+            Present the overall case impact
+        </synthesis>
+    </speech>
+
+rebuttal_speech: |
+ Below is your opponent's first speech. Generate a rebuttal structured as follows in english only:
+ <rebuttal>
+     <clashPoint1>
+         <originalClaim>[Quote exact core claim you're responding to]</originalClaim>
+         <challengeType>evidence_critique|principle_critique|counter_evidence|counter_principle</challengeType>
+         <challenge>
+             If evidence_critique: Show why their evidence is flawed/insufficient
+             If principle_critique: Show why their principle is flawed/limited
+             If counter_evidence: Present stronger opposing evidence
+             If counter_principle: Present superior competing principle
+         </challenge>
+         <impact>Explain why winning this point matters for the debate</impact>
+     </clashPoint1>
+     <clashPoint2>
+         [Same structure as clashPoint1 for second argument]
+     </clashPoint2>
+     <clashPoint3>
+         [If needed for third argument]
+     </clashPoint3>
+     <preemptiveDefense>
+         - Identify potential vulnerabilities in your responses
+         - Provide additional support for key challenges
+         - Explain why your responses should prevail
+     </preemptiveDefense>
+     <weighing>
+         - Identify which clash points matter most
+         - Explain why your side wins the key points
+         - Show how this affects the overall debate
+     </weighing>
+ </rebuttal>
+
+ REQUIREMENTS:
+ - Directly engage with opponent's core claims
+ - Match evidence vs evidence, principle vs principle where possible
+ - Show clear comparative analysis
+ - Be specific about why your responses are stronger
+
+final_speech: |
+ I will provide your opponent's rebuttal analysis. Give a final speech that shows why you win this debate in english only.
+ <finalSpeech>
+     <framing>
+         What are the core questions this debate comes down to?
+     </framing>
+     <keyClashes>
+         For each major clash identified:
+         - Quote the exact disagreement
+         - Explain why your side wins this clash by showing:
+             * Why your evidence/principles are stronger
+             * Where their response falls short
+             * What makes this clash crucial
+     </keyClashes>
+     <voting>
+         Explain why you win the debate by showing:
+         - Which clashes matter most and why
+         - How winning these key points proves your case
+         - Why these issues outweigh any points you might have lost
+     </voting>
+ </finalSpeech>
+
+ REQUIREMENTS:
+ - Focus on the main clashes that emerged
+ - Make direct comparisons
+ - Show clear impact to winning the debate
+ - No new arguments
+
+judging_prompt: |
+    You are an expert debate judge. Your role is to analyze formal debates using the following strictly prioritized criteria:
+    I. Core Judging Principles (In order of importance):
+    Direct Clash Resolution:
+    Identify all major points of disagreement (clashes) between the teams.
+    For each clash:
+    Quote the exact statements representing each side's position.
+    Analyze the logical validity of each argument within the clash. Is the reasoning sound, or does it contain fallacies (e.g., hasty generalization, correlation/causation, straw man, etc.)? Identify any fallacies by name.
+    Analyze the quality of evidence presented within that specific clash. Define "quality" as:
+    Direct Relevance: How directly does the evidence support the claim being made? Does it establish a causal link, or merely a correlation?  Explain the difference if a causal link is claimed but not proven.
+    Specificity: Is the evidence specific and verifiable (e.g., statistics, named examples, expert testimony), or vague and general?  Prioritize specific evidence.
+    Source Credibility (If Applicable): If a source is cited, is it generally considered reliable and unbiased? If not, explain why this weakens the evidence.
+    Evaluate the effectiveness of each side's rebuttals within the clash. Define "effectiveness" as:
+    Direct Response: Does the rebuttal directly address the opponent's claim and evidence?  If not, explain how this weakens the rebuttal.
+    Undermining: Does the rebuttal successfully weaken the opponent's argument (e.g., by exposing flaws in logic, questioning evidence, presenting counter-evidence)?  Explain how the undermining occurs.
+    Explicitly state which side wins the clash and why, referencing your analysis of logic, evidence, and rebuttals. Provide at least two sentences of justification for each clash decision, explaining the relative strength of the arguments.
+    Track the evolution of arguments through the debate within each clash. How did the claims and responses change over time? Note any significant shifts or concessions.
+    Argument Hierarchy and Impact:
+    Identify the core arguments of each side (the foundational claims upon which their entire case rests).
+    Explain the logical links between each core argument and its supporting claims/evidence. Are the links clear, direct, and strong?  If not, explain why this weakens the argument.
+    Assess the stated or clearly implied impacts of each argument. What are the consequences if the argument is true? Be specific.
+    Determine the relative importance of each core argument to the overall debate. Which arguments are most central to resolving the motion? State this explicitly and justify your ranking.
+    Weighing Principled vs. Practical Arguments: When weighing principled arguments (based on abstract concepts like rights or justice) against practical arguments (based on real-world consequences), consider:
+    (a) the strength and universality of the underlying principle;
+    (b) the directness, strength, and specificity of the evidence supporting the practical claims; and
+    (c) the extent to which the practical arguments directly address, mitigate, or outweigh the concerns raised by the principled arguments.  Explain your reasoning.
+    Consistency and Contradictions:
+    Identify any internal contradictions within each team's case (arguments that contradict each other).
+    Identify any inconsistencies between a team's arguments and their rebuttals.
+    Note any dropped arguments (claims made but not responded to). For each dropped argument:
+    Assess its initial strength based on its logical validity and supporting evidence, as if it had not been dropped.
+    Then, consider the impact of it being unaddressed. Does the lack of response significantly weaken the overall case of the side that dropped it? Explain why or why not.
+    II. Evaluation Requirements:
+    Steelmanning: When analyzing arguments, present them in their strongest possible form, even if you disagree with them. Actively look for the most charitable interpretation.
+    Argument-Based Decision: Base your decision solely on the arguments made within the debate text provided. Do not introduce outside knowledge or opinions.  If an argument relies on an unstated assumption, analyze it only if that assumption is clearly and necessarily implied by the presented arguments.
+    Ignore Presentation: Disregard presentation style, speaking quality, rhetorical flourishes, etc. Focus exclusively on the substance of the arguments and their logical connections.
+    Framework Neutrality: If both sides present valid but competing frameworks for evaluating the debate, maintain neutrality between them. Judge the debate based on how well each side argues within their chosen framework, and according to the prioritized criteria in Section I.
+    III. Common Judging Errors to AVOID:
+    Intervention: Do not introduce your own arguments or evidence.
+    Shifting the Burden of Proof: Do not place a higher burden of proof on one side than the other. Both sides must prove their claims to the same standard.
+    Over-reliance on "Real-World" Arguments: Do not automatically favor arguments based on "real-world" examples over principled or theoretical arguments. Evaluate all arguments based on the criteria in Section I.
+    Ignoring Dropped Arguments: Address all dropped arguments as specified in I.3.
+    Double-Counting: Do not give credit for the same argument multiple times.
+    Assuming Causation from Correlation: Be highly skeptical of arguments that claim causation based solely on correlation. Demand clear evidence of a causal mechanism.
+    Not Justifying Clash Decisions: Provide explicit justification for every clash decision, as required in I.1.
+    IV. Decision Making:
+    Winner: The winner must be either "Proposition" or "Opposition" (no ties).
+    Confidence Level: Assign a confidence level (0-100) reflecting the margin of victory. A score near 50 indicates a very close debate.
+    90-100: Decisive Victory
+    70-89: Clear Victory
+    51-69: Narrow Victory.
+    Explain why you assigned the specific confidence level.
+    Key Factors: Identify the 2-3 most crucial factors that determined the outcome. These should be specific clashes or arguments that had the greatest impact on your decision. Explain why these factors were decisive.
+    Detailed Reasoning: Provide a clear, logical, and detailed explanation for your conclusion. Explain how the key factors interacted to produce the result. Reference specific arguments and analysis from sections I-III. Show your work, step-by-step. Do not simply state your conclusion; justify it with reference to the specific arguments made.
+    V. Line-by-Line Justification:
+    Create a section titled "V. Line-by-Line Justification."
+    In this section, provide at least one sentence referencing each and every section of the provided debate text (Prop 1, Opp 1, Prop Rebuttal 1, Opp Rebuttal 1, Prop Final, Opp Final). This ensures that no argument, however minor, goes unaddressed. You may group multiple minor arguments together in a single sentence if they are closely related. The purpose is to demonstrate that you have considered the entirety of the debate.
+    VI. Format for your response:
+    Organize your response in clearly marked sections exactly corresponding to the sections above (I.1, I.2, I.3, II, III, IV, V). This structured output is mandatory. Your response must follow this format to be accepted.
+
+
+
+    format:
+    write all your thoughts out
+    then put in XML tags
+    <winnerName>opposition|proposition</winnerName> \n        <confidence>0-100</confidence>\n
+
+    These existing is compulsory as the parser will fail otherwise
+
+
+
+
