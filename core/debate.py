@@ -108,7 +108,7 @@ def extract_debate_result(xml_string: str, model: str) -> JudgeResult:
                    continue
 
                confidence_int = int(confidence_str)
-               if not 0 <= confidence <= 100:
+               if not 0 <= confidence_int <= 100:
                    print("Confidence must be between 0 and 100")
                    continue
 
