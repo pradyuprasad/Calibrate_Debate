@@ -6,6 +6,8 @@ from prompts.load_prompts import get_debate_prompt
 from pathlib import Path
 from dotenv import load_dotenv
 import random
+import os
+import glob
 
 load_dotenv()
 
@@ -14,6 +16,11 @@ def run_sample_debates(num_samples=4):
     topics = load_topics(config)
     debate_models = load_debate_models(config)
     prompts = get_debate_prompt(config)
+
+
+
+    output_path_dir = Path("judge_variance_test")
+    output_path_dir.mkdir(exist_ok=True)
 
     # Randomly select topics and model pairs
     selected_topics = random.sample(topics, k=2)

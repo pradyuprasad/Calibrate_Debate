@@ -279,7 +279,7 @@ def run_debate(
 
             speech = response_json["choices"][0]["message"]["content"]
 
-            if not speech:
+            if not speech or len(speech) < 100:
                 error_msg = "API returned empty speech content"
                 logger.error(error_msg)
                 raise ValueError(error_msg)
