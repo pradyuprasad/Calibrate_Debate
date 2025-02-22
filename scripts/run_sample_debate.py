@@ -17,11 +17,6 @@ def run_sample_debates(num_samples=4):
     debate_models = load_debate_models(config)
     prompts = get_debate_prompt(config)
 
-
-
-    output_path_dir = Path("judge_variance_test")
-    output_path_dir.mkdir(exist_ok=True)
-
     # Randomly select topics and model pairs
     selected_topics = random.sample(topics, k=2)
     model_names = list(debate_models.keys())
@@ -36,16 +31,20 @@ def run_sample_debates(num_samples=4):
                 "topic": topic,
                 "prop": debaters[0],
                 "opp": debaters[1],
-                "output": Path(f"sample_debate_{i*2 + j + 1}.json")
+                "output": config.sample_debates_dir / f"sample_debate_{i*2 + j + 1}.json"
             })
 
     for debate in sample_debates:
+        debate_path = debate["output"]
+        # Create parent directories if they don't exist
+        debate_path.parent.mkdir(parents=True, exist_ok=True)
+
         run_debate(
             proposition_model=debate["prop"],
             opposition_model=debate["opp"],
             motion=debate["topic"],
             prompts=prompts,
-            path_to_store_debate=debate["output"],
+            path_to_store_debate=debate_path,
             judge_models=[]
         )
 

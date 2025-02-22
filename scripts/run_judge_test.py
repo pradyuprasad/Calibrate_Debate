@@ -3,50 +3,47 @@ import json
 import re
 from core.models import DebateTotal
 from typing import Dict, List
+from config import Config
 
 def parse_judgment_files():
     """
     Parse all judgment files and organize results by debate and judge model.
     """
-    # Get all relevant json files
-    all_files = Path('.').glob('sample_debate_*.json')
+    config = Config()
+
+    # Get all relevant json files from debates and judgments directories
+    debate_files = list(config.sample_debates_dir.glob('sample_debate_*.json'))
+    judgment_files = list(config.sample_judgments_dir.glob('sample_debate_*_judge_*.json'))
 
     debates = {}  # debate_id -> original debate content
     judgments = {}  # debate_id -> {judge_model -> [runs]}
 
-    for file in all_files:
-        filename = file.name
+    # Process original debate files
+    for file in debate_files:
+        debate_id = file.stem  # Gets filename without extension
+        debate = DebateTotal.load_from_json(file)
+        debates[debate_id] = debate
+        judgments[debate_id] = {}
 
-        # Get base debate ID (like 'sample_debate_1')
-        debate_id = 'sample_debate_' + filename.split('_')[2].split('.')[0]
-
-        # Initialize judgments dict for this debate if needed
-        if debate_id not in judgments:
-            judgments[debate_id] = {}
-
-        # Parse original debate files
-        if '_judge_' not in filename:
-            debate = DebateTotal.load_from_json(file)
-            debates[debate_id] = debate
-            continue
-
-        # Parse judgment files
-        parts = filename.replace('.json', '').split('_judge_')
+    # Process judgment files
+    for file in judgment_files:
+        filename = file.stem
+        parts = filename.split('_judge_')
         if len(parts) == 2:
-            # Extract run number from end
+            debate_id = parts[0]
             rest = parts[1].rsplit('_run_', 1)
             if len(rest) == 2:
                 judge_model, run_num = rest
 
-                # Load judgment file
-                debate = DebateTotal.load_from_json(file)
-
                 # Initialize dict for this judge if needed
+                if debate_id not in judgments:
+                    judgments[debate_id] = {}
                 if judge_model not in judgments[debate_id]:
                     judgments[debate_id][judge_model] = []
 
-                # Store judgment result
-                if debate.judge_results:  # Check if there are any results
+                # Load and store judgment result
+                debate = DebateTotal.load_from_json(file)
+                if debate.judge_results:
                     judgment = {
                         'run': int(run_num),
                         'winner': debate.judge_results[-1].winner,

@@ -40,7 +40,7 @@ def run_judge_reliability_test(debate_paths: list[Path]):
                     )
 
                     # Save after each judgment using sanitized model name
-                    save_path = debate_path.parent / f"{debate_path.stem}_judge_{safe_model_name}_run_{run+1}.json"
+                    save_path = config.sample_judgments_dir / f"{debate_path.stem}_judge_{safe_model_name}_run_{run+1}.json"
                     debate.path_to_store = save_path
                     debate.save_to_json()
 
@@ -54,11 +54,13 @@ if __name__ == "__main__":
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
+    config = Config()
+
     # Your 3 successful debates
     debate_paths = [
-        Path("sample_debate_1.json"),
-        Path("sample_debate_2.json"),
-        Path("sample_debate_3.json")
+        config.sample_debates_dir / "sample_debate_1.json",
+        config.sample_debates_dir / "sample_debate_2.json",
+        config.sample_debates_dir / "sample_debate_3.json"
     ]
 
     run_judge_reliability_test(debate_paths)
