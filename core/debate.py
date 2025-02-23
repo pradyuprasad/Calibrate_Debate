@@ -223,7 +223,7 @@ def run_debate(
     )
 
     @retry(
-        stop=stop_after_attempt(5),
+        stop=stop_after_attempt(2),
         wait=wait_exponential(multiplier=2, min=60, max=120),
         before_sleep=lambda retry_state: logger.warning(
             f"Attempt {retry_state.attempt_number} failed. Failed with error: {retry_state.outcome.exception()}. Retrying after backoff..."
@@ -279,7 +279,7 @@ def run_debate(
 
             speech = response_json["choices"][0]["message"]["content"]
 
-            if not speech or len(speech) < 100:
+            if not speech or len(speech) < 200:
                 error_msg = "API returned empty speech content"
                 logger.error(error_msg)
                 raise ValueError(error_msg)

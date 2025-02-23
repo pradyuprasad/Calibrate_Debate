@@ -1,11 +1,12 @@
 from pathlib import Path
 from core.models import DebateTotal, Side, SpeechType
 from core.debate import get_judgement
+from scripts.analyse_sample_debates import checkIfComplete
 import logging
 import requests
 import os
 from dotenv import load_dotenv
-
+from config import Config
 
 
 def get_valid_response(messages: list, model: str) -> tuple[str, dict]:
@@ -149,12 +150,17 @@ def continue_debate(debate_path: Path) -> None:
 
     logging.info("Debate continuation completed")
 
+if __name__ == "__main__":
 # Setup logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
-# Load environment variables (make sure OPENROUTER_API_KEY is set)
-load_dotenv()
+    # Load environment variables (make sure OPENROUTER_API_KEY is set)
+    load_dotenv()
+    config = Config()
+    paths = config.sample_debates_dir.glob("*.json")
+    for path in paths:
+        if not checkIfComplete(path):
+            print(f"{path} is not Complete")
 
-# Continue the debate
-debate_path = Path("sample_debate_4.json")
-continue_debate(debate_path)
+    for path in paths:
+        continue_debate(path)

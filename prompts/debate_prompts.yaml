@@ -1,95 +1,271 @@
 first_speech: |
-    Structure your response as follows in english only:
-    <speech>
-        <argument1>
-            <coreClaim>State your first main claim in one sentence</coreClaim>
-            <supportType>evidence|principle</supportType>
-            <supportDetails>
-                If evidence: Provide specific examples/data
-                If principle: Explain the principle and its validity
-            </supportDetails>
-            <connection>
-                Explain how this support proves your claim
-            </connection>
-        </argument1>
-        <argument2>
-            [Same structure as argument1]
-        </argument2>
-        <argument3>
-            [Optional third argument, same structure]
-        </argument3>
-        <synthesis>
-            Explain how these arguments work together
-            Show why they prove your side of the motion
-            Present the overall case impact
-        </synthesis>
-    </speech>
+   OPENING SPEECH STRUCTURE
+
+   ARGUMENT 1
+   Core Claim: (State your first main claim in one clear sentence)
+   Support Type: (Choose either EVIDENCE or PRINCIPLE)
+   Support Details:
+     For Evidence:
+     - Provide specific examples with dates/numbers
+     - Include real world cases and outcomes
+     - Show clear relevance to the topic
+     For Principle:
+     - Explain the key principle/framework
+     - Show why it is valid/important
+     - Demonstrate how it applies here
+   Connection: (Explicit explanation of how this evidence/principle proves your claim)
+
+   ARGUMENT 2
+   (Use exact same structure as Argument 1)
+
+   ARGUMENT 3 (Optional)
+   (Use exact same structure as Argument 1)
+
+   SYNTHESIS
+   - Explain how your arguments work together as a unified case
+   - Show why these arguments prove your side of the motion
+   - Present clear real-world impact and importance
+   - Link back to key themes/principles
+
+   - Follow structure exactly as shown
+   - Keep all section headers
+   - Fill in all components fully
+   - Be specific and detailed
+   - Use clear organization
+   - Label all sections
+   - No skipping components
+   JUDGING GUIDANCE
+
+    The judge will evaluate your speech using these strict criteria:
+
+    DIRECT CLASH ANALYSIS
+    - Every disagreement must be explicitly quoted and directly addressed
+    - Simply making new arguments without engaging opponents' points will be penalized
+    - Show exactly how your evidence/reasoning defeats theirs
+    - Track and reference how arguments evolve through the debate
+
+    EVIDENCE QUALITY HIERARCHY
+    1. Strongest: Specific statistics, named examples, verifiable cases with dates/numbers
+    2. Medium: Expert testimony with clear sourcing
+    3. Weak: General examples, unnamed cases, theoretical claims without support
+    - Correlation vs. causation will be scrutinized - prove causal links
+    - Evidence must directly support the specific claim being made
+
+    LOGICAL VALIDITY
+    - Each argument requires explicit warrants (reasons why it's true)
+    - All logical steps must be clearly shown, not assumed
+    - Internal contradictions severely damage your case
+    - Hidden assumptions will be questioned if not defended
+
+    RESPONSE OBLIGATIONS
+    - Every major opposing argument must be addressed
+    - Dropped arguments are considered conceded
+    - Late responses (in final speech) to early arguments are discounted
+    - Shifting or contradicting your own arguments damages credibility
+
+    IMPACT ANALYSIS & WEIGHING
+    - Explain why your arguments matter more than opponents'
+    - Compare competing impacts explicitly
+    - Show both philosophical principles and practical consequences
+    - Demonstrate how winning key points proves the overall motion
+
+    The judge will ignore speaking style, rhetoric, and presentation. Focus entirely on argument substance, evidence quality, and logical reasoning. Your case will be evaluated based on what you explicitly prove, not what you assume or imply.
+
+
+
+
 
 rebuttal_speech: |
- Below is your opponent's first speech. Generate a rebuttal structured as follows in english only:
- <rebuttal>
-     <clashPoint1>
-         <originalClaim>[Quote exact core claim you're responding to]</originalClaim>
-         <challengeType>evidence_critique|principle_critique|counter_evidence|counter_principle</challengeType>
-         <challenge>
-             If evidence_critique: Show why their evidence is flawed/insufficient
-             If principle_critique: Show why their principle is flawed/limited
-             If counter_evidence: Present stronger opposing evidence
-             If counter_principle: Present superior competing principle
-         </challenge>
-         <impact>Explain why winning this point matters for the debate</impact>
-     </clashPoint1>
-     <clashPoint2>
-         [Same structure as clashPoint1 for second argument]
-     </clashPoint2>
-     <clashPoint3>
-         [If needed for third argument]
-     </clashPoint3>
-     <preemptiveDefense>
-         - Identify potential vulnerabilities in your responses
-         - Provide additional support for key challenges
-         - Explain why your responses should prevail
-     </preemptiveDefense>
-     <weighing>
-         - Identify which clash points matter most
-         - Explain why your side wins the key points
-         - Show how this affects the overall debate
-     </weighing>
- </rebuttal>
+   REBUTTAL STRUCTURE
 
- REQUIREMENTS:
- - Directly engage with opponent's core claims
- - Match evidence vs evidence, principle vs principle where possible
- - Show clear comparative analysis
- - Be specific about why your responses are stronger
+   CLASH POINT 1
+   Original Claim: (Quote opponent's exact claim you're responding to)
+   Challenge Type: (Choose one)
+     - Evidence Critique (showing flaws in their evidence)
+     - Principle Critique (showing limits of their principle)
+     - Counter Evidence (presenting stronger opposing evidence)
+     - Counter Principle (presenting superior competing principle)
+   Challenge:
+     For Evidence Critique:
+     - Identify specific flaws/gaps in their evidence
+     - Show why the evidence doesn't prove their point
+     - Provide analysis of why it's insufficient
+     For Principle Critique:
+     - Show key limitations of their principle
+     - Demonstrate why it doesn't apply well here
+     - Explain fundamental flaws in their framework
+     For Counter Evidence:
+     - Present stronger evidence that opposes their claim
+     - Show why your evidence is more relevant/compelling
+     - Directly compare strength of competing evidence
+     For Counter Principle:
+     - Present your competing principle/framework
+     - Show why yours is superior for this debate
+     - Demonstrate better application to the topic
+   Impact: (Explain exactly why winning this point is crucial for the debate)
+
+   CLASH POINT 2
+   (Use exact same structure as Clash Point 1)
+
+   CLASH POINT 3
+   (Use exact same structure as Clash Point 1)
+
+   DEFENSIVE ANALYSIS
+   Vulnerabilities:
+   - List potential weak points in your responses
+   - Identify areas opponent may attack
+   - Show awareness of counter-arguments
+   Additional Support:
+   - Provide reinforcing evidence/principles
+   - Address likely opposition responses
+   - Strengthen key claims
+   Why We Prevail:
+   - Clear comparison of competing arguments
+   - Show why your responses are stronger
+   - Link to broader debate themes
+
+   WEIGHING
+   Key Clash Points:
+   - Identify most important disagreements
+   - Show which points matter most and why
+   Why We Win:
+   - Explain victory on key points
+   - Compare strength of competing claims
+   Overall Impact:
+   - Show how winning key points proves case
+   - Demonstrate importance for motion
+
+   - Follow structure exactly as shown
+   - Keep all section headers
+   - Fill in all components fully
+   - Be specific and detailed
+   - Use clear organization
+   - Label all sections
+   - No skipping components
+
+   JUDGING GUIDANCE
+
+    The judge will evaluate your speech using these strict criteria:
+
+    DIRECT CLASH ANALYSIS
+    - Every disagreement must be explicitly quoted and directly addressed
+    - Simply making new arguments without engaging opponents' points will be penalized
+    - Show exactly how your evidence/reasoning defeats theirs
+    - Track and reference how arguments evolve through the debate
+
+    EVIDENCE QUALITY HIERARCHY
+    1. Strongest: Specific statistics, named examples, verifiable cases with dates/numbers
+    2. Medium: Expert testimony with clear sourcing
+    3. Weak: General examples, unnamed cases, theoretical claims without support
+    - Correlation vs. causation will be scrutinized - prove causal links
+    - Evidence must directly support the specific claim being made
+
+    LOGICAL VALIDITY
+    - Each argument requires explicit warrants (reasons why it's true)
+    - All logical steps must be clearly shown, not assumed
+    - Internal contradictions severely damage your case
+    - Hidden assumptions will be questioned if not defended
+
+    RESPONSE OBLIGATIONS
+    - Every major opposing argument must be addressed
+    - Dropped arguments are considered conceded
+    - Late responses (in final speech) to early arguments are discounted
+    - Shifting or contradicting your own arguments damages credibility
+
+    IMPACT ANALYSIS & WEIGHING
+    - Explain why your arguments matter more than opponents'
+    - Compare competing impacts explicitly
+    - Show both philosophical principles and practical consequences
+    - Demonstrate how winning key points proves the overall motion
+
+    The judge will ignore speaking style, rhetoric, and presentation. Focus entirely on argument substance, evidence quality, and logical reasoning. Your case will be evaluated based on what you explicitly prove, not what you assume or imply.
+
+
 
 final_speech: |
- I will provide your opponent's rebuttal analysis. Give a final speech that shows why you win this debate in english only.
- <finalSpeech>
-     <framing>
-         What are the core questions this debate comes down to?
-     </framing>
-     <keyClashes>
-         For each major clash identified:
-         - Quote the exact disagreement
-         - Explain why your side wins this clash by showing:
-             * Why your evidence/principles are stronger
-             * Where their response falls short
-             * What makes this clash crucial
-     </keyClashes>
-     <voting>
-         Explain why you win the debate by showing:
-         - Which clashes matter most and why
-         - How winning these key points proves your case
-         - Why these issues outweigh any points you might have lost
-     </voting>
- </finalSpeech>
+   FINAL SPEECH STRUCTURE
 
- REQUIREMENTS:
- - Focus on the main clashes that emerged
- - Make direct comparisons
- - Show clear impact to winning the debate
- - No new arguments
+   FRAMING
+   Core Questions:
+   - Identify fundamental issues in debate
+   - Show what key decisions matter
+   - Frame how debate should be evaluated
+
+   KEY CLASHES
+   For each major clash:
+   Quote: (Exact disagreement between sides)
+   Our Case Strength:
+   - Show why our evidence/principles are stronger
+   - Provide direct comparison of competing claims
+   - Demonstrate superior reasoning/warrants
+   Their Response Gaps:
+   - Identify specific flaws in opponent response
+   - Show what they failed to address
+   - Expose key weaknesses
+   Crucial Impact:
+   - Explain why this clash matters
+   - Show importance for overall motion
+   - Link to core themes/principles
+
+   VOTING ISSUES
+   Priority Analysis:
+   - Identify which clashes matter most
+   - Show relative importance of points
+   - Clear weighing framework
+   Case Proof:
+   - How winning key points proves our case
+   - Link arguments to motion
+   - Show logical chain of reasoning
+   Final Weighing:
+   - Why any losses don't undermine case
+   - Overall importance of our wins
+   - Clear reason for voting our side
+
+   - Follow structure exactly as shown
+   - Keep all section headers
+   - Fill in all components fully
+   - Be specific and detailed
+   - Use clear organization
+   - Label all sections
+   - No skipping components
+
+   JUDGING GUIDANCE
+
+    The judge will evaluate your speech using these strict criteria:
+
+    DIRECT CLASH ANALYSIS
+    - Every disagreement must be explicitly quoted and directly addressed
+    - Simply making new arguments without engaging opponents' points will be penalized
+    - Show exactly how your evidence/reasoning defeats theirs
+    - Track and reference how arguments evolve through the debate
+
+    EVIDENCE QUALITY HIERARCHY
+    1. Strongest: Specific statistics, named examples, verifiable cases with dates/numbers
+    2. Medium: Expert testimony with clear sourcing
+    3. Weak: General examples, unnamed cases, theoretical claims without support
+    - Correlation vs. causation will be scrutinized - prove causal links
+    - Evidence must directly support the specific claim being made
+
+    LOGICAL VALIDITY
+    - Each argument requires explicit warrants (reasons why it's true)
+    - All logical steps must be clearly shown, not assumed
+    - Internal contradictions severely damage your case
+    - Hidden assumptions will be questioned if not defended
+
+    RESPONSE OBLIGATIONS
+    - Every major opposing argument must be addressed
+    - Dropped arguments are considered conceded
+    - Late responses (in final speech) to early arguments are discounted
+    - Shifting or contradicting your own arguments damages credibility
+
+    IMPACT ANALYSIS & WEIGHING
+    - Explain why your arguments matter more than opponents'
+    - Compare competing impacts explicitly
+    - Show both philosophical principles and practical consequences
+    - Demonstrate how winning key points proves the overall motion
+
+    The judge will ignore speaking style, rhetoric, and presentation. Focus entirely on argument substance, evidence quality, and logical reasoning. Your case will be evaluated based on what you explicitly prove, not what you assume or imply.
+
 
 judging_prompt: |
     You are an expert debate judge. Your role is to analyze formal debates using the following strictly prioritized criteria:
