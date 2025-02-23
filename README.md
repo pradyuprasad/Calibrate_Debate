@@ -42,17 +42,29 @@ Judge reliability is validated through:
 
 Final Ratings:
 deepseek/deepseek-r1: 1247
+
 google/gemini-2.0-flash-thinking-exp:free: 1239
+
 openai/chatgpt-4o-latest: 1234
+
 anthropic/claude-3.5-sonnet: 1231
+
 qwen/qwen-max: 1219
+
 deepseek/deepseek-chat: 1201
+
 openai/gpt-4o-mini: 1198
+
 openai/o1-mini: 1194
+
 google/gemini-2.0-flash-001: 1191
+
 meta-llama/llama-3.3-70b-instruct: 1175
+
 google/gemini-2.0-pro-exp-02-05:free: 1169
+
 anthropic/claude-3.5-haiku: 1168
+
 google/gemma-2-27b-it: 1135
 
 
