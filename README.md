@@ -88,7 +88,4 @@ google/gemma-2-27b-it: 1135
 - Python 3.10+
 - See pyproject.toml for dependencies
 
-Want me to adjust any section or add specific technical details?
-
-This system reveals how well models can actually reason and engage in meaningful dialogue - capabilities crucial for real-world applications but often obscured by traditional benchmarks.
 
