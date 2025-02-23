@@ -22,6 +22,13 @@ class Config:
     sample_debates_dir: Path = field(init=False)
     sample_judgments_dir: Path = field(init=False)
 
+    # Tournament paths
+    tournament_dir: Path = Path("tournament")
+    tournament_results_path: Path = field(init=False)
+    num_rounds: int = 3  # Number of Swiss rounds
+    k_factor: int = 64  # For elo calculations
+
+
     def __post_init__(self):
         # Existing directory creation
         self.ai_models_dir.mkdir(exist_ok=True)
@@ -41,6 +48,10 @@ class Config:
         self.sample_judgments_dir = self.samples_dir / "judgments"
         self.sample_debates_dir.mkdir(exist_ok=True)
         self.sample_judgments_dir.mkdir(exist_ok=True)
+
+        # Tournament directories
+        self.tournament_dir.mkdir(exist_ok=True)
+        self.tournament_results_path = self.tournament_dir / "tournament_results.json"
 
         # Existing path assignments
         self.debate_models_list_path = self.ai_models_dir / "debate_models.json"

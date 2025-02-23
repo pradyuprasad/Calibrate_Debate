@@ -176,7 +176,7 @@ def get_judgement_string(debate: DebateTotal, prompts: DebatePrompts, model: str
 
     return judgment, usage
 
-def get_judgement(debate: DebateTotal, prompts: DebatePrompts, judge_model: str) -> None:
+def get_judgement(debate: DebateTotal, prompts: DebatePrompts, judge_model: str) -> JudgeResult:
     try:
         judgment_string, usage = get_judgement_string(debate=debate, prompts=prompts, model=judge_model)
 
@@ -190,6 +190,8 @@ def get_judgement(debate: DebateTotal, prompts: DebatePrompts, judge_model: str)
 
         judge_result = extract_debate_result(xml_string=judgment_string, model=judge_model)
         debate.judge_results.append(judge_result)
+        debate.save_to_json()
+        return judge_result
 
     except Exception as e:
         # Track failed token usage if available in the error

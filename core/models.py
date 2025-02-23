@@ -216,3 +216,18 @@ class DebateTotal(BaseModel):
             raise ValueError(f"Debate is incomplete. Missing speeches: {', '.join(missing_speeches)}")
 
         return cast(Dict[str, str], transcript)
+
+
+class Match(BaseModel):
+    prop_model: str
+    opp_model: str
+
+    class Config:
+        frozen = True
+
+
+class ConfidenceAdjustedJudgement(BaseModel):
+   prop_model: str
+   opp_model: str
+   winner: Literal['opposition', 'proposition']
+   margin: float
