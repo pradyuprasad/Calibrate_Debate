@@ -1,181 +1,289 @@
-'''
-1. load models
-'''
-from ai_models.load_models import load_debate_models
-from typing import List, Set, Tuple, Literal
-from core.models import JudgeResult, Match, DebatePrompts, DebateTopic, DebateTotal, ConfidenceAdjustedJudgement
-from topics.load_topics import load_topics
-from config import Config
-from core.debate import run_debate, get_judgement
-import random
-from scripts.continue_debate import continue_debate
 from pathlib import Path
-from itertools import cycle, islice
+from typing import List, Set, Deque, Tuple, Literal
 from collections import deque
-from scripts.utils import checkIfComplete, sanitize_model_name
-from prompts.load_prompts import get_debate_prompt
-import json
 import logging
+import random
+import json
+from itertools import cycle, islice
+from dotenv import load_dotenv
+import os
 
+from core.models import (
+    Match,
+    DebatePrompts,
+    DebateTopic,
+    DebateTotal,
+    ConfidenceAdjustedJudgement,
+    JudgeResult
+)
+from core.api_client import OpenRouterClient
+from core.message_formatter import MessageFormatter
+from core.debate_service import DebateService
+from core.judgement_processor import JudgementProcessor
+from ai_models.load_models import load_debate_models
+from topics.load_topics import load_topics
+from prompts.load_prompts import get_debate_prompt
+from config import Config
+from scripts.utils import sanitize_model_name, checkIfComplete
 
-def create_new_matches(models_list: List[str], previous_matches:Set[Match]) -> List[Match]:
-    random.shuffle(models_list)
+logger = logging.getLogger(__name__)
+load_dotenv()
 
-    paired = set()
-    output = []
-    for i in range(len(models_list)):
-        if models_list[i] not in paired:
-            for j in range(len(models_list)):
-                if j == i:
-                    continue
-                possible_match = Match(prop_model=models_list[i], opp_model=models_list[j])
-                if models_list[j] not in paired and possible_match not in previous_matches:
-                    output.append(possible_match)
-                    paired.add(models_list[i])
-                    paired.add(models_list[j])
-                    previous_matches.add(possible_match)
+class JudgingService:
+    def __init__(
+        self,
+        judgement_processor: JudgementProcessor,
+        primary_judge_model: str = "deepseek/deepseek-chat",
+        secondary_judge_model: str = "openai/o1-mini",
+        judgements_per_model: int = 3
+    ):
+        self.judgement_processor = judgement_processor
+        self.primary_judge = primary_judge_model
+        self.secondary_judge = secondary_judge_model
+        self.judgements_per_model = judgements_per_model
+        self.logger = logging.getLogger(__name__)
 
-    return output
+    def get_repeated_judgements(
+        self,
+        debate: DebateTotal,
+        judge_model: str
+    ) -> List[JudgeResult]:
+        """Get multiple judgements from the same model"""
+        judgements = []
+        for _ in range(self.judgements_per_model):
+            try:
+                judgement = self.judgement_processor.process_judgment(
+                    debate=debate,
+                    model=judge_model
+                )
+                judgements.append(judgement)
+            except Exception as e:
+                self.logger.error(f"Failed to get judgement: {e}")
+                continue
+        return judgements
 
-def get_topics(config: Config, num_topics: int) -> List[DebateTopic]:
-    topics = load_topics(config=config)
-    random.shuffle(topics)
+    def calculate_winner_confidence(
+        self,
+        judgements: List[JudgeResult]
+    ) -> Tuple[Literal['opposition', 'proposition'], float]:
+        """Calculate winner and confidence from a list of judgements"""
+        if not judgements:
+            raise ValueError("No valid judgements to process")
 
-    return list(islice(cycle(topics), num_topics))
+        prop_wins = 0
+        total_confidence = 0
 
+        for judgement in judgements:
+            if judgement.winner == 'proposition':
+                prop_wins += 1
+                total_confidence += judgement.confidence
+            else:
+                total_confidence -= judgement.confidence
 
+        avg_confidence = abs(total_confidence) / len(judgements)
+        normalized_confidence = min(avg_confidence / 100, 1.0)
 
-def process_failed_debates(failed_debate_queue: deque[Path]) -> None:
-    if not failed_debate_queue:
-        logging.error("No failed debate queue")
-        return
+        if prop_wins > len(judgements) / 2:
+            return ('proposition', normalized_confidence)
+        else:
+            return ('opposition', normalized_confidence)
 
-    still_failed_queue : deque[Path] = deque()
+    def judge_debate(self, debate_path: Path) -> Tuple[Literal['opposition', 'proposition'], float]:
+        """Judge a single debate with multiple rounds if needed"""
+        if not checkIfComplete(debate_path):
+            raise ValueError(f"{debate_path} is not complete")
 
-    while failed_debate_queue:  # Process until the queue is empty
-        debate_path = failed_debate_queue.popleft()  # Get the first item in the queue
+        debate = DebateTotal.load_from_json(debate_path)
 
-        if not debate_path.exists():
-            logging.error(f"{debate_path} does not exist")
-            continue
-
-        try:
-            continue_debate(debate_path=debate_path)
-        except Exception as e:
-            print(f"Debate failed again with error: {str(e)}")
-            still_failed_queue.append(debate_path)  # Re-add to the end of the queue for retry
-
-    if still_failed_queue:
-        print(f"\n{len(still_failed_queue)} debates still failed after retry.")
-    else:
-        print("\nAll failed debates were successfully processed.")
-
-
-def count_prop_winners(judgements: List[JudgeResult]) -> int:
-    prop_winners = 0
-    for judgement in judgements:
-        if judgement.winner == 'proposition':
-            prop_winners += 1
-
-    return prop_winners
-
-def get_repeated_judgements(debate: DebateTotal, prompts: DebatePrompts, judge_model: str, num_judgements:int) -> List[JudgeResult]:
-    output = []
-    for _ in range(num_judgements):
-        output.append(get_judgement(debate, prompts, judge_model))
-
-    return output
-
-def judge_single_debate(debate_path: Path, prompts: DebatePrompts) -> Tuple[Literal['opposition', 'proposition'], float]:
-
-    if not checkIfComplete(debate_path):
-        raise Exception(f"{debate_path} is not complete")
-
-    debate = DebateTotal.load_from_json(debate_path)
-
-    judgements = get_repeated_judgements(debate, prompts, "deepseek/deepseek-chat", num_judgements=3)
-
-    prop_winners_first = count_prop_winners(judgements=judgements)
-    op_winners_first = len(judgements) - prop_winners_first
-    winner: Literal['opposition', 'proposition']
-    if prop_winners_first == len(judgements):
-        winner = 'proposition'
-        return (winner, 1.0)
-    elif prop_winners_first == 0:
-        winner = 'opposition'
-        return (winner, 1.0)
-    o1_judgements = get_repeated_judgements(
-        debate=debate,
-        prompts=prompts,
-        judge_model="openai/o1-mini",
-        num_judgements=3
-    )
-
-    prop_winners_second = count_prop_winners(o1_judgements)
-    op_winners_second= len(o1_judgements) - prop_winners_second
-    if prop_winners_second >= 2:
-        winner = 'proposition'
-        margin = (prop_winners_second + prop_winners_first) / (len(judgements) + len(o1_judgements))
-
-    else:
-        winner = 'opposition'
-        margin = (op_winners_first + op_winners_second) / (len(judgements) + len(o1_judgements))
-
-    return winner, margin
-
-
-
-def judge_single_round(round_dir: Path, judgements_stored_path: Path, prompts: DebatePrompts) -> None:
-    path_list = list(round_dir.glob("*.json"))
-    output_list = []
-    for path in path_list:
-        debate = DebateTotal.load_from_json(path)
-        winner, margin = judge_single_debate(path, prompts)
-        judgement_total = ConfidenceAdjustedJudgement(
-            prop_model=debate.proposition_model, opp_model=debate.opposition_model,
-            winner=winner,
-            margin=margin
+        # First round of judgements
+        primary_judgements = self.get_repeated_judgements(
+            debate=debate,
+            judge_model=self.primary_judge
         )
-        output_list.append(judgement_total)
 
-        with open(judgements_stored_path, 'w') as f:
-            json.dump(output_list, f)
+        if not primary_judgements:
+            raise ValueError("Failed to get any primary judgements")
 
-def run_single_round(config:Config, models_list: List[str], previous_matches:Set[Match], prompts: DebatePrompts, dir_to_store: Path) -> None:
-    failed_debate_queue: deque[Path] = deque()
-    new_matches = create_new_matches(models_list=models_list, previous_matches=previous_matches)
-    topic_list = get_topics(config=config, num_topics=len(new_matches))
-    assert len(new_matches) == len(topic_list), f"Expected same length for new_matches and topic_list, but got new_matches length as {len(new_matches)} and topic_list length as {len(topic_list)}"
-    for match, topic in zip(new_matches, topic_list):
-        prop_model_name_clean = sanitize_model_name(match.prop_model)
-        opp_model_name_clean = sanitize_model_name(match.opp_model)
-        path_to_store = dir_to_store / f"{prop_model_name_clean}_vs_{opp_model_name_clean}.json"
-        logging.info(f"Going to run {path_to_store}")
-        try:
-            run_debate(proposition_model=match.prop_model,
+        winner, confidence = self.calculate_winner_confidence(primary_judgements)
+
+        # If confidence is high, return result
+        if confidence > 0.8:
+            return winner, confidence
+
+        # Get secondary judgements for close calls
+        secondary_judgements = self.get_repeated_judgements(
+            debate=debate,
+            judge_model=self.secondary_judge
+        )
+
+        # Combine all judgements for final decision
+        all_judgements = primary_judgements + secondary_judgements
+        return self.calculate_winner_confidence(all_judgements)
+
+class TournamentService:
+    def __init__(
+        self,
+        debate_service: DebateService,
+        judging_service: JudgingService,
+        config: Config,
+        prompts: DebatePrompts
+    ):
+        self.debate_service = debate_service
+        self.judging_service = judging_service
+        self.config = config
+        self.prompts = prompts
+        self.failed_debates: Deque[Path] = deque()
+
+    def create_new_matches(
+        self,
+        models_list: List[str],
+        previous_matches: Set[Match]
+    ) -> List[Match]:
+        random.shuffle(models_list)
+        paired = set()
+        output = []
+
+        for i, model_i in enumerate(models_list):
+            if model_i not in paired:
+                for j, model_j in enumerate(models_list):
+                    if j == i:
+                        continue
+                    possible_match = Match(prop_model=model_i, opp_model=model_j)
+                    if (model_j not in paired and
+                        possible_match not in previous_matches and model_i not in paired):
+                        output.append(possible_match)
+                        paired.add(model_i)
+                        paired.add(model_j)
+                        previous_matches.add(possible_match)
+
+        return output
+
+    def get_topics(self, num_topics: int) -> List[DebateTopic]:
+        topics = load_topics(config=self.config)
+        random.shuffle(topics)
+        return list(islice(cycle(topics), num_topics))
+
+    def process_failed_debates(self) -> None:
+        still_failed: Deque[Path] = deque()
+
+        while self.failed_debates:
+            debate_path = self.failed_debates.popleft()
+
+            if not debate_path.exists():
+                logger.error(f"{debate_path} does not exist")
+                continue
+
+            try:
+                self.debate_service.continue_debate(debate_path)
+            except Exception as e:
+                logger.error(f"Debate failed again: {str(e)}")
+                still_failed.append(debate_path)
+
+        if still_failed:
+            logger.error(f"{len(still_failed)} debates still failed after retry")
+        else:
+            logger.info("All failed debates were successfully processed")
+
+    def save_round_results(
+        self,
+        round_num: int,
+        judgements: List[ConfidenceAdjustedJudgement]
+    ) -> None:
+        results_path = self.config.tournament_dir / f"round_{round_num}_results.json"
+        with open(results_path, 'w') as f:
+            json.dump([j.dict() for j in judgements], f, indent=2)
+
+    def run_single_round(
+        self,
+        round_num: int,
+        models_list: List[str],
+        previous_matches: Set[Match],
+        dir_to_store: Path
+    ) -> None:
+        logger.info(f"Starting round {round_num}")
+
+        # Run debates
+        new_matches = self.create_new_matches(models_list, previous_matches)
+        topic_list = self.get_topics(num_topics=len(new_matches))
+
+        assert len(new_matches) == len(topic_list), (
+            f"Mismatch in matches ({len(new_matches)}) and topics ({len(topic_list)})"
+        )
+
+        round_judgements = []
+        for match, topic in zip(new_matches, topic_list):
+            prop_name = sanitize_model_name(match.prop_model)
+            opp_name = sanitize_model_name(match.opp_model)
+            debate_path = dir_to_store / f"{prop_name}_vs_{opp_name}.json"
+
+            try:
+                # Run debate
+                logger.info(f"Running debate: {debate_path}")
+                self.debate_service.run_debate(
+                    proposition_model=match.prop_model,
                     opposition_model=match.opp_model,
                     motion=topic,
-                    prompts=prompts,
-                    path_to_store_debate=path_to_store,
-                    judge_models=[])
+                    path_to_store=debate_path
+                )
 
-        except Exception as e:
-            logging.error(f"Error {e}")
-            failed_debate_queue.append(path_to_store)
+                # Judge debate
+                logger.info(f"Judging debate: {debate_path}")
+                winner, margin = self.judging_service.judge_debate(debate_path)
 
-    process_failed_debates(failed_debate_queue=failed_debate_queue)
+                # Store result
+                judgement = ConfidenceAdjustedJudgement(
+                    prop_model=match.prop_model,
+                    opp_model=match.opp_model,
+                    winner=winner,
+                    margin=margin
+                )
+                round_judgements.append(judgement)
 
+            except Exception as e:
+                logger.error(f"Error in debate: {e}")
+                self.failed_debates.append(debate_path)
 
+        # Process any failed debates
+        self.process_failed_debates()
 
+        # Save round results
+        self.save_round_results(round_num, round_judgements)
+
+    def run_tournament(self, num_rounds: int = 3) -> None:
+        models_list = list(load_debate_models(self.config).keys())
+        previous_matches: Set[Match] = set()
+
+        for round_num in range(1, num_rounds + 1):
+            round_path = self.config.tournament_dir / f"round_{round_num}"
+            round_path.mkdir(exist_ok=True)
+
+            self.run_single_round(
+                round_num=round_num,
+                models_list=models_list,
+                previous_matches=previous_matches,
+                dir_to_store=round_path
+            )
 
 def main():
-    config = Config()
-    models_list = list(load_debate_models(config).keys())
-    prev_matches = set()
-    prompts = get_debate_prompt(config)
-    for i in range(1, 4):
-        round_path = Path(config.tournament_dir / f"round_{i}")
-        round_path.mkdir(exist_ok=True)
-        run_single_round(config=config, models_list=models_list, previous_matches=prev_matches, prompts=prompts, dir_to_store=round_path)
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
-main()
+    # Initialize dependencies
+    config = Config()
+    prompts = get_debate_prompt(config)
+    api_client = OpenRouterClient(os.environ.get('OPENROUTER_API_KEY'))
+    message_formatter = MessageFormatter(prompts)
+
+    # Create services
+    judgement_processor = JudgementProcessor(prompts, api_client)
+    judging_service = JudgingService(judgement_processor)
+    debate_service = DebateService(api_client, message_formatter)
+
+    # Create and run tournament
+    tournament = TournamentService(debate_service, judging_service, config, prompts)
+    tournament.run_tournament()
+
+if __name__ == "__main__":
+    main()

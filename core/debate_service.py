@@ -120,3 +120,41 @@ class DebateService:
             logger.error(f"Error in debate round: {str(e)}")
             raise
 
+    def continue_debate(self, debate_path: Path) -> DebateTotal:
+        """
+        Continues a partially completed debate by completing any missing speeches.
+
+        Args:
+            debate_path: Path to the JSON file containing the partial debate
+
+        Returns:
+            DebateTotal: The completed debate
+        """
+        logger.info(f"Continuing debate from {debate_path}")
+
+        # Load the existing debate
+        debate = DebateTotal.load_from_json(debate_path)
+
+        # Get all rounds that need to be completed
+        rounds = make_rounds()
+        incomplete_rounds = []
+
+        for round in rounds:
+            if round.side == Side.PROPOSITION:
+                speech = debate.proposition_output.speeches[round.speech_type]
+            else:
+                speech = debate.opposition_output.speeches[round.speech_type]
+
+            if speech == -1:  # Speech is missing
+                incomplete_rounds.append(round)
+
+        # Complete missing rounds
+        for round in incomplete_rounds:
+            logger.info(f"Completing missing {round.speech_type} for {round.side}")
+            self._execute_round(debate, round)
+            debate.save_to_json()
+
+        logger.info("Debate continuation completed")
+        return debate
+
+

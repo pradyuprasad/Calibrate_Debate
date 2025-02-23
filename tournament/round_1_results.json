@@ -1,0 +1,38 @@
+[
+  {
+    "prop_model": "openai/gpt-4o-mini",
+    "opp_model": "anthropic/claude-3.5-haiku",
+    "winner": "proposition",
+    "margin": 0.25
+  },
+  {
+    "prop_model": "google/gemini-2.0-flash-001",
+    "opp_model": "deepseek/deepseek-chat",
+    "winner": "opposition",
+    "margin": 0.2583333333333333
+  },
+  {
+    "prop_model": "openai/o1-mini",
+    "opp_model": "google/gemini-2.0-flash-thinking-exp:free",
+    "winner": "opposition",
+    "margin": 0.765
+  },
+  {
+    "prop_model": "openai/chatgpt-4o-latest",
+    "opp_model": "google/gemini-2.0-pro-exp-02-05:free",
+    "winner": "proposition",
+    "margin": 0.5166666666666666
+  },
+  {
+    "prop_model": "google/gemma-2-27b-it",
+    "opp_model": "deepseek/deepseek-r1",
+    "winner": "opposition",
+    "margin": 0.8
+  },
+  {
+    "prop_model": "meta-llama/llama-3.3-70b-instruct",
+    "opp_model": "qwen/qwen-max",
+    "winner": "opposition",
+    "margin": 0.525
+  }
+]

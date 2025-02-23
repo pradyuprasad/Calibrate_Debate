@@ -37,7 +37,7 @@ class MessageFormatter:
 
     def _get_debate_history(self, debate: DebateTotal, next_round: Round) -> str:
         """Format the relevant debate history for the next round."""
-        if next_round.speech_type == SpeechType.OPENING and next_round.side.value == "proposition":
+        if next_round.speech_type == SpeechType.OPENING:
             return "This is the opening speech of the debate."
 
         prop_speeches = debate.proposition_output.speeches
@@ -48,11 +48,6 @@ class MessageFormatter:
         for speech_type in SpeechType:
             # Stop if we've reached current speech type
             if speech_type == next_round.speech_type:
-                # For opposition's turn, include proposition's speech if available
-                if next_round.side.value == "opposition":
-                    prop_speech = prop_speeches[speech_type]
-                    if prop_speech != -1:
-                        transcript.append(f"PROPOSITION {speech_type.value.upper()}\n{prop_speech}")
                 break
 
             # Add both speeches from previous rounds

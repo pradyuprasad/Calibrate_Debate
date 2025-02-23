@@ -1,0 +1,38 @@
+[
+  {
+    "prop_model": "deepseek/deepseek-r1",
+    "opp_model": "anthropic/claude-3.5-haiku",
+    "winner": "proposition",
+    "margin": 0.7916666666666667
+  },
+  {
+    "prop_model": "openai/chatgpt-4o-latest",
+    "opp_model": "qwen/qwen-max",
+    "winner": "proposition",
+    "margin": 0.5
+  },
+  {
+    "prop_model": "google/gemini-2.0-flash-001",
+    "opp_model": "google/gemini-2.0-pro-exp-02-05:free",
+    "winner": "opposition",
+    "margin": 0.008333333333333333
+  },
+  {
+    "prop_model": "google/gemma-2-27b-it",
+    "opp_model": "openai/o1-mini",
+    "winner": "opposition",
+    "margin": 0.5416666666666666
+  },
+  {
+    "prop_model": "meta-llama/llama-3.3-70b-instruct",
+    "opp_model": "openai/gpt-4o-mini",
+    "winner": "opposition",
+    "margin": 0.2683333333333333
+  },
+  {
+    "prop_model": "deepseek/deepseek-chat",
+    "opp_model": "anthropic/claude-3.5-sonnet",
+    "winner": "opposition",
+    "margin": 0.2583333333333333
+  }
+]

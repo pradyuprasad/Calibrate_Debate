@@ -2,7 +2,6 @@ from typing import Dict, List
 
 import requests
 import logging
-import sys  # Import the sys module
 
 
 class OpenRouterClient:
@@ -14,13 +13,7 @@ class OpenRouterClient:
             "Content-Type": "application/json",
         }
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.logger.setLevel(logging.INFO)
 
-        if not self.logger.handlers:
-            handler = logging.StreamHandler(sys.stdout)  # Log to console (stdout)
-            formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
 
 
 
