@@ -6,14 +6,12 @@ from typing import Dict, Tuple
 def analyze_debate_token_counts(config: Config) -> Dict[str, Tuple[float, float]]:
     json_files = list(config.sample_debates_dir.glob('*.json'))
 
-    # Lists to store per-model-per-debate values
     model_prompt_tokens = []
     model_completion_tokens = []
 
     for debate_file in json_files:
         debate = DebateTotal.load_from_json(debate_file)
 
-        # Get values for each model in this debate
         for model, usage in debate.debator_token_counts.model_usages.items():
             prompt_tokens = usage.successful_prompt_tokens + usage.failed_prompt_tokens
             completion_tokens = usage.successful_completion_tokens + usage.failed_completion_tokens
@@ -21,11 +19,10 @@ def analyze_debate_token_counts(config: Config) -> Dict[str, Tuple[float, float]
             model_prompt_tokens.append(prompt_tokens)
             model_completion_tokens.append(completion_tokens)
 
-    # Calculate statistics
-    prompt_mean = np.mean(model_prompt_tokens)
-    prompt_var = np.var(model_prompt_tokens)
-    completion_mean = np.mean(model_completion_tokens)
-    completion_var = np.var(model_completion_tokens)
+    prompt_mean = float(np.mean(model_prompt_tokens))
+    prompt_var = float(np.var(model_prompt_tokens))
+    completion_mean = float(np.mean(model_completion_tokens))
+    completion_var = float(np.var(model_completion_tokens))
 
     stats = {
         "prompt_tokens": (prompt_mean, prompt_var),

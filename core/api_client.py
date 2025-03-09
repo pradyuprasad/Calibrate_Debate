@@ -33,7 +33,7 @@ class OpenRouterClient:
             json=payload
         )
 
-        try:  # Added a try-except block, to handle potential JSON decoding errors
+        try:
             output = response.json()
         except ValueError as e:
             self.logger.error(f"Error decoding JSON response: {e}")
