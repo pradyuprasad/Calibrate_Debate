@@ -29,7 +29,7 @@ class JudgementProcessor:
         stop=stop_after_attempt(10),
         wait=wait_exponential(multiplier=1, min=10, max=20),
         before_sleep=lambda retry_state: logging.getLogger().warning(
-        f"Attempt {retry_state.attempt_number} failed. Failed with error: {retry_state.outcome.exception()}. Retrying after backoff..."
+        f"Attempt {retry_state.attempt_number} failed. Failed with error: {retry_state.outcome.exception() if retry_state.outcome else 'Unknown error'}. Retrying after backoff..."
     )
     )
     def get_judgement_response(self, debate: DebateTotal, model: str) -> Tuple[str, Dict]:

@@ -1,6 +1,5 @@
 from pathlib import Path
 from core.models import DebateTotal, Side, SpeechType
-from core.debate import get_judgement
 from scripts.analyse_sample_debates import checkIfComplete
 import logging
 import requests
@@ -145,7 +144,7 @@ def continue_debate(debate_path: Path) -> None:
     # Run judge evaluations if needed
     if debate.judge_models and not debate.judge_results:
         for judge_model in debate.judge_models:
-            get_judgement(debate=debate, prompts=debate.prompts, judge_model=judge_model)
+            config.judgement_processor.get_judgement_response(debate=debate, model=judge_model)
             debate.save_to_json()
 
     logging.info("Debate continuation completed")

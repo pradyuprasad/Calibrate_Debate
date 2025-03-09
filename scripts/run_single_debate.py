@@ -1,8 +1,3 @@
-from core.debate_service import DebateService
-from core.api_client import OpenRouterClient
-from core.message_formatter import MessageFormatter
-from prompts.load_prompts import get_debate_prompt
-from core.judgement_processor import JudgementProcessor
 from config import Config
 from topics.load_topics import load_topics
 from core.models import DebateTotal
@@ -11,14 +6,14 @@ from dotenv import load_dotenv
 
 load_dotenv()
 config = Config()
-api_client = OpenRouterClient(api_key=config.api_key)
-prompt = get_debate_prompt(config=config)
-message_formatter = MessageFormatter(prompts=prompt)
+api_client = config.api_client
+prompt = config.prompts
+message_formatter = config.message_formatter
 motion = load_topics(config)[0]
 
-debate_service = DebateService(api_client=api_client, message_formatter=message_formatter)
+debate_service = config.debate_service
 
-judgement_processor = JudgementProcessor(prompts=prompt, client=api_client)
+judgement_processor = config.judgement_processor
 
 debate = DebateTotal.load_from_json('test_debate_new.json')
 

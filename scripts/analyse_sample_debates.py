@@ -1,4 +1,3 @@
-from core.debate import get_judgement
 from core.models import DebateTotal, SpeechType
 from config import Config
 from ai_models.load_models import load_judge_models
@@ -59,10 +58,9 @@ def run_judge_reliability_test(debate_paths: list[Path]):
 
                 try:
                     # Get judgment for this run
-                    get_judgement(
+                    config.judgement_processor.get_judgement_response(
                         debate=debate,
-                        prompts=debate.prompts,
-                        judge_model=judge_model
+                        model=judge_model
                     )
 
                     # Save after each judgment using sanitized model name

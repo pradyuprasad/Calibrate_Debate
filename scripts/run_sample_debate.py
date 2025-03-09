@@ -1,16 +1,16 @@
-from core.debate import run_debate
 from config import Config
 from topics.load_topics import load_topics
 from ai_models.load_models import load_debate_models
-from prompts.load_prompts import get_debate_prompt
+from pathlib import Path
 from scripts.count_debate_words import analyze_debate_token_counts
 from scripts.continue_debate import continue_debate
 from dotenv import load_dotenv
 import random
+from typing import List
 import time
 
 # Add a global failed debate queue
-failed_debate_queue = []
+failed_debate_queue: List[Path] = []
 
 def calculate_debate_costs(model_pair, token_stats, debate_models):
     prop_model, opp_model = model_pair
@@ -57,12 +57,11 @@ def process_failed_debates():
     else:
         print("\nAll failed debates were successfully processed.")
 
-def run_sample_debates():
+def run_sample_debates() -> None:
     global failed_debate_queue
     config = Config()
     topics = load_topics(config)
     debate_models = load_debate_models(config)
-    prompts = get_debate_prompt(config)
     # Get token statistics
     token_stats = analyze_debate_token_counts(config)
 
@@ -127,17 +126,15 @@ def run_sample_debates():
     for debate in debates:
         print(f"\nRunning debate on: {debate['topic']}")
         print(f"{debate['prop']} vs {debate['opp']}")
-        debate_path = debate["output"]
+        debate_path:Path = debate["output"]
         debate_path.parent.mkdir(parents=True, exist_ok=True)
 
         try:
-            run_debate(
+            config.debate_service.run_debate(
                 proposition_model=debate["prop"],
                 opposition_model=debate["opp"],
                 motion=debate["topic"],
-                prompts=prompts,
-                path_to_store_debate=debate_path,
-                judge_models=[]
+                path_to_store=debate_path,
             )
         except Exception as e:
             print(f"Debate failed with error: {str(e)}")

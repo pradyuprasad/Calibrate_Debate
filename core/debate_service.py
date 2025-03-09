@@ -110,7 +110,7 @@ class DebateService:
         except Exception as e:
             # Track failed token usage if available
             if isinstance(e, requests.exceptions.RequestException) and hasattr(e, 'response'):
-                usage = e.response.json().get('usage', {})
+                usage = e.response.json().get('usage', {}) if e.response else {}
                 debate.debator_token_counts.add_failed_call(
                     model=model,
                     completion_tokens=usage.get("completion_tokens", 0),
