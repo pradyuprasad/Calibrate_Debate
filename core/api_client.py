@@ -1,5 +1,5 @@
 from typing import Dict, List
-
+from core.models import APIResponse
 import requests
 import logging
 
@@ -17,7 +17,7 @@ class OpenRouterClient:
 
 
 
-    def send_request(self, model: str, messages: List[Dict]) -> Dict:
+    def send_request(self, model: str, messages: List[Dict]) -> APIResponse:
         """Raw API request - just sends and returns response"""
         payload = {
             "model": model,
@@ -38,10 +38,20 @@ class OpenRouterClient:
         except ValueError as e:
             self.logger.error(f"Error decoding JSON response: {e}")
             self.logger.error(f"Response content: {response.text}")
-            return {"error": "Failed to decode JSON response"}
             raise
+
+        if "error" in response:
+                raise ValueError(f"API error: {response['error']}")
+
+        content = response["choices"][0]["message"]["content"]
+        usage = response.get("usage", {})
+        if not content or len(content) < 200:
+                raise ValueError("Insufficient content length")
+        completion_tokens = usage.get("completion_tokens", 0)
+        prompt_tokens=usage.get("prompt_tokens", 0)
+
 
 
         self.logger.info(f"Output is {output}")
 
-        return output
+        return APIResponse(content=content, prompt_tokens=prompt_tokens, completion_tokens=completion_tokens)

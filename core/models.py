@@ -43,8 +43,10 @@ class DebatorOutputs(BaseModel):
         }
     )
 
-
-
+class APIResponse(BaseModel):
+    content: str
+    prompt_tokens: int
+    completion_tokens: int
 
 class ModelTokenUsage(BaseModel):
     successful_calls: int = 0

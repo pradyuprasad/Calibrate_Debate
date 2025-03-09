@@ -82,27 +82,22 @@ class DebateService:
             response = self.api_client.send_request(model, messages)
 
             # Error checking
-            if "error" in response:
-                raise ValueError(f"API error: {response['error']}")
 
-            content = response["choices"][0]["message"]["content"]
-            usage = response.get("usage", {})
 
-            if not content or len(content) < 200:
-                raise ValueError("Insufficient content length")
 
-            # Update debate state
+
+
             if round.side == Side.PROPOSITION:
-                debate.proposition_output.speeches[round.speech_type] = content
+                debate.proposition_output.speeches[round.speech_type] = response.content
             else:
-                debate.opposition_output.speeches[round.speech_type] = content
+                debate.opposition_output.speeches[round.speech_type] = response.content
 
             # Track successful token usage
             debate.debator_token_counts.add_successful_call(
                 model=model,
-                completion_tokens=usage.get("completion_tokens", 0),
-                prompt_tokens=usage.get("prompt_tokens", 0),
-                total_tokens=usage.get("total_tokens", 0)
+                completion_tokens=response.completion_tokens,
+                prompt_tokens=response.prompt_tokens,
+                total_tokens=response.completion_tokens + response.prompt_tokens
             )
 
             logger.info(f"Successfully completed {round.speech_type} for {round.side}")
