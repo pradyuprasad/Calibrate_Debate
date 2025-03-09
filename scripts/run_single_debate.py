@@ -8,12 +8,10 @@ from topics.load_topics import load_topics
 from core.models import DebateTotal
 
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 config = Config()
-api_key = os.environ['OPENROUTER_API_KEY']
-api_client = OpenRouterClient(api_key=api_key)
+api_client = OpenRouterClient(api_key=config.api_key)
 prompt = get_debate_prompt(config=config)
 message_formatter = MessageFormatter(prompts=prompt)
 motion = load_topics(config)[0]
