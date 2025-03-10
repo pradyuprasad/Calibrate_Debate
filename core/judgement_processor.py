@@ -49,13 +49,14 @@ class JudgementProcessor:
 
         response_data = self.client.send_request(model=model, messages=messages)
 
-        if "error" in response_data:
-            error_msg = f"Judge API error: {response_data.get('error')}"
-            self.logger.error(error_msg)
-            raise ValueError(error_msg)
 
-        judgment = response_data["choices"][0]["message"]["content"]
-        usage = response_data.get("usage", {})
+
+        judgment = response_data.content
+        usage = {
+        "completion_tokens": response_data.completion_tokens,
+        "prompt_tokens": response_data.prompt_tokens,
+        "total_tokens": response_data.completion_tokens + response_data.prompt_tokens
+    }
 
         return judgment, usage
 

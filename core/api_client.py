@@ -40,11 +40,11 @@ class OpenRouterClient:
             self.logger.error(f"Response content: {response.text}")
             raise
 
-        if "error" in response:
-                raise ValueError(f"API error: {response['error']}")
+        if "error" in output:
+                raise ValueError(f"API error: {output['error']}")
 
-        content = response["choices"][0]["message"]["content"]
-        usage = response.get("usage", {})
+        content = output["choices"][0]["message"]["content"]
+        usage = output.get("usage", {})
         if not content or len(content) < 200:
                 raise ValueError("Insufficient content length")
         completion_tokens = usage.get("completion_tokens", 0)
