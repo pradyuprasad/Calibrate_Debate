@@ -134,7 +134,7 @@ class DebateTotal(BaseModel):
             "path_to_store": str(self.path_to_store),
             "proposition_model": self.proposition_model,
             "opposition_model": self.opposition_model,
-            "prompts": self.prompts.dict(),
+            "prompts": self.prompts.model_dump(),
             "proposition_output": {
                 "side": self.proposition_output.side.value,
                 "speeches": {k.value: v for k, v in self.proposition_output.speeches.items()}
@@ -144,9 +144,9 @@ class DebateTotal(BaseModel):
                 "speeches": {k.value: v for k, v in self.opposition_output.speeches.items()}
             },
             "judge_models": self.judge_models,
-            "judge_results": [result.dict() for result in self.judge_results],
+            "judge_results": [result.model_dump() for result in self.judge_results],
             "debator_token_counts": {
-                model: usage.dict()
+                model: usage.model_dump()
                 for model, usage in self.debator_token_counts.model_usages.items()
             },
             "judge_token_counts" : {
@@ -224,8 +224,8 @@ class Match(BaseModel):
     prop_model: str
     opp_model: str
 
-    class Config:
-        frozen = True
+    model_config = {"frozen": True}
+
 
 
 class ConfidenceAdjustedJudgement(BaseModel):
