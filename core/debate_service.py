@@ -22,7 +22,6 @@ class DebateService:
         api_client: OpenRouterClient,
         message_formatter: MessageFormatter
     ):
-        print("initialised!")
         self.api_client = api_client
         self.message_formatter = message_formatter
 
@@ -36,7 +35,7 @@ class DebateService:
         """
         Run a complete debate including all speeches and judgments
         """
-        print("running debate!")
+        logger.debug("running debate!")
         logger.info(f"Starting debate on motion: {motion.topic_description}")
 
         # Initialize debate

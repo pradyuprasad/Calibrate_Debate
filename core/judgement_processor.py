@@ -92,17 +92,17 @@ class JudgementProcessor:
                 try:
                     winner = input("\nEnter winner (opposition/proposition): ").strip()
                     if winner not in ["opposition", "proposition"]:
-                        print("Invalid winner")
+                        logging.error("Invalid winner")
                         continue
 
                     confidence_str = input("Enter confidence (0-100): ").strip()
                     if not confidence_str.isdigit():
-                        print("Confidence must be a number")
+                        logging.error("Confidence must be a number")
                         continue
 
                     confidence_int = int(confidence_str)
                     if not 0 <= confidence_int <= 100:
-                        print("Confidence must be between 0 and 100")
+                        logging.error("Confidence must be between 0 and 100")
                         continue
 
                     return JudgeResult(
@@ -112,7 +112,7 @@ class JudgementProcessor:
                         logic=xml_string
                     )
                 except ValueError:
-                    print("Invalid input, please try again")
+                    logging.error("Invalid input, please try again")
 
     def process_judgment(self, debate: DebateTotal, model: str) -> JudgeResult:
         """Main method to process a judgment"""

@@ -159,7 +159,7 @@ if __name__ == "__main__":
     paths = config.sample_debates_dir.glob("*.json")
     for path in paths:
         if not checkIfComplete(path):
-            print(f"{path} is not Complete")
+            logging.error(f"{path} is not Complete")
 
     for path in paths:
         continue_debate(path)
