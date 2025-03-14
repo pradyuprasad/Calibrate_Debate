@@ -1,7 +1,7 @@
 from enum import Enum
 import json
 from pathlib import Path
-from typing import Dict, List, Union, Literal, cast
+from typing import Dict, List, Optional, Union, Literal, cast
 from pydantic import BaseModel, Field
 import logging
 
@@ -107,118 +107,131 @@ class JudgeResult(BaseModel):
     confidence: int = Field(ge=0, le=100)
     logic: str
 
+class DebatorBet(BaseModel):
+    side: Side
+    speech_type: SpeechType
+    amount: int = Field(ge=0, le=100)  # Constrain to 0-100 range
+
 
 
 class DebateTotal(BaseModel):
-    motion: DebateTopic
-    path_to_store: Path
-    proposition_model: str
-    opposition_model: str
-    prompts: DebatePrompts
-    proposition_output: DebatorOutputs = Field(
-        default_factory=lambda: DebatorOutputs(side=Side.PROPOSITION)
-    )
-    opposition_output: DebatorOutputs = Field(
-        default_factory=lambda: DebatorOutputs(side=Side.OPPOSITION)
-    )
-    judge_models: List[str] = Field(default_factory=list)
-    judge_results: List[JudgeResult] = Field(default_factory=list)
-    debator_token_counts: TokenCount = Field(default_factory=TokenCount)
-    judge_token_counts: TokenCount = Field(default_factory=TokenCount)
+   motion: DebateTopic
+   path_to_store: Path
+   proposition_model: str
+   opposition_model: str
+   prompts: DebatePrompts
+   proposition_output: DebatorOutputs = Field(
+       default_factory=lambda: DebatorOutputs(side=Side.PROPOSITION)
+   )
+   opposition_output: DebatorOutputs = Field(
+       default_factory=lambda: DebatorOutputs(side=Side.OPPOSITION)
+   )
+   judge_models: List[str] = Field(default_factory=list)
+   judge_results: List[JudgeResult] = Field(default_factory=list)
+   debator_token_counts: TokenCount = Field(default_factory=TokenCount)
+   judge_token_counts: TokenCount = Field(default_factory=TokenCount)
 
-    def to_dict(self) -> dict:
-        return {
-            "motion": {
-                "topic_description": self.motion.topic_description,
-            },
-            "path_to_store": str(self.path_to_store),
-            "proposition_model": self.proposition_model,
-            "opposition_model": self.opposition_model,
-            "prompts": self.prompts.model_dump(),
-            "proposition_output": {
-                "side": self.proposition_output.side.value,
-                "speeches": {k.value: v for k, v in self.proposition_output.speeches.items()}
-            },
-            "opposition_output": {
-                "side": self.opposition_output.side.value,
-                "speeches": {k.value: v for k, v in self.opposition_output.speeches.items()}
-            },
-            "judge_models": self.judge_models,
-            "judge_results": [result.model_dump() for result in self.judge_results],
-            "debator_token_counts": {
-                model: usage.model_dump()
-                for model, usage in self.debator_token_counts.model_usages.items()
-            },
-            "judge_token_counts" : {
-                model: usage.model_dump()
-                for model, usage in self.judge_token_counts.model_usages.items()
-            }
+   debator_bets: Optional[List[DebatorBet]] = None
 
-        }
+   def to_dict(self) -> dict:
+       result = {
+           "motion": {
+               "topic_description": self.motion.topic_description,
+           },
+           "path_to_store": str(self.path_to_store),
+           "proposition_model": self.proposition_model,
+           "opposition_model": self.opposition_model,
+           "prompts": self.prompts.model_dump(),
+           "proposition_output": {
+               "side": self.proposition_output.side.value,
+               "speeches": {k.value: v for k, v in self.proposition_output.speeches.items()}
+           },
+           "opposition_output": {
+               "side": self.opposition_output.side.value,
+               "speeches": {k.value: v for k, v in self.opposition_output.speeches.items()}
+           },
+           "judge_models": self.judge_models,
+           "judge_results": [result.model_dump() for result in self.judge_results],
+           "debator_token_counts": {
+               model: usage.model_dump()
+               for model, usage in self.debator_token_counts.model_usages.items()
+           },
+           "judge_token_counts" : {
+               model: usage.model_dump()
+               for model, usage in self.judge_token_counts.model_usages.items()
+           }
+       }
 
-    def save_to_json(self) -> None:
-        data = self.to_dict()
-        with open(self.path_to_store, 'w') as f:
-            json.dump(data, f, indent=2)
-        logging.info(f"Saved to {self.path_to_store}")
+       # Add debator_bets if they exist
+       if self.debator_bets:
+           result["debator_bets"] = [bet.model_dump() for bet in self.debator_bets]
 
-    @classmethod
-    def load_from_json(cls, path: Union[str, Path]) -> 'DebateTotal':
-        path = Path(path)
-        with open(path, 'r') as f:
-            data = json.load(f)
+       return result
 
-        data['motion'] = DebateTopic(
-            topic_description=data['motion']['topic_description']
-        )
+   def save_to_json(self) -> None:
+       data = self.to_dict()
+       with open(self.path_to_store, 'w') as f:
+           json.dump(data, f, indent=2)
+       logging.info(f"Saved to {self.path_to_store}")
 
-        data['prompts'] = DebatePrompts(**data['prompts'])
+   @classmethod
+   def load_from_json(cls, path: Union[str, Path]) -> 'DebateTotal':
+       path = Path(path)
+       with open(path, 'r') as f:
+           data = json.load(f)
 
-        data['proposition_output'] = DebatorOutputs(
-            side=Side(data['proposition_output']['side']),
-            speeches={SpeechType(k): v for k, v in data['proposition_output']['speeches'].items()}
-        )
+       data['motion'] = DebateTopic(
+           topic_description=data['motion']['topic_description']
+       )
 
-        data['opposition_output'] = DebatorOutputs(
-            side=Side(data['opposition_output']['side']),
-            speeches={SpeechType(k): v for k, v in data['opposition_output']['speeches'].items()}
-        )
+       data['prompts'] = DebatePrompts(**data['prompts'])
 
-        data['judge_results'] = [JudgeResult(**result) for result in data['judge_results']]
+       data['proposition_output'] = DebatorOutputs(
+           side=Side(data['proposition_output']['side']),
+           speeches={SpeechType(k): v for k, v in data['proposition_output']['speeches'].items()}
+       )
 
-        debator_token_counts = TokenCount()
-        for model, usage_data in data.get('debator_token_counts', {}).items():
-            model_usage = ModelTokenUsage(**usage_data)
-            debator_token_counts.model_usages[model] = model_usage
+       data['opposition_output'] = DebatorOutputs(
+           side=Side(data['opposition_output']['side']),
+           speeches={SpeechType(k): v for k, v in data['opposition_output']['speeches'].items()}
+       )
 
+       data['judge_results'] = [JudgeResult(**result) for result in data['judge_results']]
 
-        judge_token_counts = TokenCount()
-        for model, usage_data in data.get('judge_token_counts', {}).items():
-            model_usage = ModelTokenUsage(**usage_data)
-            judge_token_counts.model_usages[model] = model_usage
+       debator_token_counts = TokenCount()
+       for model, usage_data in data.get('debator_token_counts', {}).items():
+           model_usage = ModelTokenUsage(**usage_data)
+           debator_token_counts.model_usages[model] = model_usage
 
-        data['debator_token_counts'] = debator_token_counts
-        data['judge_token_counts'] = judge_token_counts
+       judge_token_counts = TokenCount()
+       for model, usage_data in data.get('judge_token_counts', {}).items():
+           model_usage = ModelTokenUsage(**usage_data)
+           judge_token_counts.model_usages[model] = model_usage
 
-        data['path_to_store'] = Path(data['path_to_store'])
+       data['debator_token_counts'] = debator_token_counts
+       data['judge_token_counts'] = judge_token_counts
 
-        return cls(**data)
+       if 'debator_bets' in data:
+           data['debator_bets'] = [DebatorBet(**bet) for bet in data['debator_bets']]
 
-    def get_transcript(self) -> Dict[str, str]:
-        transcript = {}
-        transcript["Proposition Opening Speech"] = self.proposition_output.speeches[SpeechType.OPENING]
-        transcript["Opposition Opening Speech"] = self.opposition_output.speeches[SpeechType.OPENING]
-        transcript["Proposition Rebuttal"] = self.proposition_output.speeches[SpeechType.REBUTTAL]
-        transcript["Opposition Rebuttal"] = self.opposition_output.speeches[SpeechType.REBUTTAL]
-        transcript["Proposition Closing Speech"] = self.proposition_output.speeches[SpeechType.CLOSING]
-        transcript["Opposition Closing Speech"] = self.opposition_output.speeches[SpeechType.CLOSING]
+       data['path_to_store'] = Path(data['path_to_store'])
 
-        missing_speeches = [speech for speech, content in transcript.items() if content == -1]
-        if missing_speeches:
-            raise ValueError(f"Debate is incomplete. Missing speeches: {', '.join(missing_speeches)}")
+       return cls(**data)
 
-        return cast(Dict[str, str], transcript)
+   def get_transcript(self) -> Dict[str, str]:
+       transcript = {}
+       transcript["Proposition Opening Speech"] = self.proposition_output.speeches[SpeechType.OPENING]
+       transcript["Opposition Opening Speech"] = self.opposition_output.speeches[SpeechType.OPENING]
+       transcript["Proposition Rebuttal"] = self.proposition_output.speeches[SpeechType.REBUTTAL]
+       transcript["Opposition Rebuttal"] = self.opposition_output.speeches[SpeechType.REBUTTAL]
+       transcript["Proposition Closing Speech"] = self.proposition_output.speeches[SpeechType.CLOSING]
+       transcript["Opposition Closing Speech"] = self.opposition_output.speeches[SpeechType.CLOSING]
 
+       missing_speeches = [speech for speech, content in transcript.items() if content == -1]
+       if missing_speeches:
+           raise ValueError(f"Debate is incomplete. Missing speeches: {', '.join(missing_speeches)}")
+
+       return cast(Dict[str, str], transcript)
 
 class Match(BaseModel):
     prop_model: str
