@@ -10,6 +10,10 @@ import logging
 class DebateTopic(BaseModel):
     topic_description: str
 
+class DebateType(Enum):
+    BASELINE = "baseline"
+    PRIVATE_BET = "private_bet"
+    PUBLIC_BET = "public_bet"
 
 class Side(Enum):
     PROPOSITION = "proposition"
@@ -116,6 +120,7 @@ class DebatorBet(BaseModel):
 
 class DebateTotal(BaseModel):
    motion: DebateTopic
+   debate_type: DebateType = DebateType.BASELINE
    path_to_store: Path
    proposition_model: str
    opposition_model: str
@@ -138,6 +143,7 @@ class DebateTotal(BaseModel):
            "motion": {
                "topic_description": self.motion.topic_description,
            },
+           "debate_type": self.debate_type.value,
            "path_to_store": str(self.path_to_store),
            "proposition_model": self.proposition_model,
            "opposition_model": self.opposition_model,
@@ -215,6 +221,11 @@ class DebateTotal(BaseModel):
            data['debator_bets'] = [DebatorBet(**bet) for bet in data['debator_bets']]
 
        data['path_to_store'] = Path(data['path_to_store'])
+
+       if 'debate_type' in data:
+        data['debate_type'] = DebateType(data['debate_type'])
+       else:
+           data['debate_type'] = DebateType.BASELINE
 
        return cls(**data)
 
