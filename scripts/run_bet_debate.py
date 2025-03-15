@@ -2,6 +2,7 @@
 """
 Simple script to run a sample debate with confidence betting.
 """
+
 import logging
 from pathlib import Path
 from dotenv import load_dotenv
@@ -10,8 +11,9 @@ from topics.load_topics import load_topics
 from core.models import DebateType
 
 # Set up logging
-logging.basicConfig(level=logging.DEBUG,
-                   format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
 # Load environment
@@ -35,7 +37,7 @@ debate = config.debate_service.run_debate(
     opposition_model="deepseek/deepseek-chat",
     motion=topic,
     path_to_store=output_path,
-    debate_type=debate_type
+    debate_type=debate_type,
 )
 
 print(f"Debate completed and saved to {output_path}")

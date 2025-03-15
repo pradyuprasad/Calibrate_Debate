@@ -6,7 +6,8 @@ from core.models import DebateTotal, SpeechType
 
 def sanitize_model_name(model_name: str) -> str:
     """Convert model name to a valid filename by replacing / with _"""
-    return model_name.replace('/', '_')
+    return model_name.replace("/", "_")
+
 
 def checkIfComplete(path: Path) -> bool:
     try:

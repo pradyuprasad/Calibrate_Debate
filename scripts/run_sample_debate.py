@@ -12,6 +12,7 @@ import time
 # Add a global failed debate queue
 failed_debate_queue: List[Path] = []
 
+
 def calculate_debate_costs(model_pair, token_stats, debate_models):
     prop_model, opp_model = model_pair
 
@@ -24,12 +25,15 @@ def calculate_debate_costs(model_pair, token_stats, debate_models):
     completion_tokens_mean, _ = token_stats["completion_tokens"]
 
     # Calculate costs for each model
-    prop_cost = (prompt_tokens_mean * prop_rates[0] +
-                 completion_tokens_mean * prop_rates[1]) / 10**6 # Convert to dollars
-    opp_cost = (prompt_tokens_mean * opp_rates[0] +
-                completion_tokens_mean * opp_rates[1]) / 10**6 # Convert to dollars
+    prop_cost = (
+        prompt_tokens_mean * prop_rates[0] + completion_tokens_mean * prop_rates[1]
+    ) / 10**6  # Convert to dollars
+    opp_cost = (
+        prompt_tokens_mean * opp_rates[0] + completion_tokens_mean * opp_rates[1]
+    ) / 10**6  # Convert to dollars
 
     return prop_cost, opp_cost
+
 
 def process_failed_debates():
     global failed_debate_queue
@@ -57,6 +61,7 @@ def process_failed_debates():
     else:
         print("\nAll failed debates were successfully processed.")
 
+
 def run_sample_debates() -> None:
     global failed_debate_queue
     config = Config()
@@ -75,7 +80,9 @@ def run_sample_debates() -> None:
     num_pairs = max(1, round(len(model_pairs) * 0.025))
 
     print(f"Total possible pairs: {len(model_pairs)}")
-    print(f"Number of pairs to run: {num_pairs} (will result in {num_pairs * 2} debates)")
+    print(
+        f"Number of pairs to run: {num_pairs} (will result in {num_pairs * 2} debates)"
+    )
 
     selected_pairs = random.sample(model_pairs, k=num_pairs)
 
@@ -87,32 +94,42 @@ def run_sample_debates() -> None:
         topic2 = random.choice(topics)
 
         # First direction: A prop, B opp
-        prop_cost1, opp_cost1 = calculate_debate_costs((model_a, model_b), token_stats, debate_models)
-        debates.append({
-            "topic": topic1,
-            "prop": model_a,
-            "opp": model_b,
-            "output": config.sample_debates_dir / f"sample_debate_{debate_counter}.json",
-            "prop_cost": prop_cost1,
-            "opp_cost": opp_cost1
-        })
+        prop_cost1, opp_cost1 = calculate_debate_costs(
+            (model_a, model_b), token_stats, debate_models
+        )
+        debates.append(
+            {
+                "topic": topic1,
+                "prop": model_a,
+                "opp": model_b,
+                "output": config.sample_debates_dir
+                / f"sample_debate_{debate_counter}.json",
+                "prop_cost": prop_cost1,
+                "opp_cost": opp_cost1,
+            }
+        )
         debate_counter += 1
 
         # Second direction: B prop, A opp
-        prop_cost2, opp_cost2 = calculate_debate_costs((model_b, model_a), token_stats, debate_models)
-        debates.append({
-            "topic": topic2,
-            "prop": model_b,
-            "opp": model_a,
-            "output": config.sample_debates_dir / f"sample_debate_{debate_counter}.json",
-            "prop_cost": prop_cost2,
-            "opp_cost": opp_cost2
-        })
+        prop_cost2, opp_cost2 = calculate_debate_costs(
+            (model_b, model_a), token_stats, debate_models
+        )
+        debates.append(
+            {
+                "topic": topic2,
+                "prop": model_b,
+                "opp": model_a,
+                "output": config.sample_debates_dir
+                / f"sample_debate_{debate_counter}.json",
+                "prop_cost": prop_cost2,
+                "opp_cost": opp_cost2,
+            }
+        )
         debate_counter += 1
 
     # Print debate details
     for i, debate in enumerate(debates):
-        print(f"\nDebate {i+1}:")
+        print(f"\nDebate {i + 1}:")
         print(f"Proposition: {debate['prop']}")
         print(f"Opposition: {debate['opp']}")
         print(f"Topic: {debate['topic']}")
@@ -126,7 +143,7 @@ def run_sample_debates() -> None:
     for debate in debates:
         print(f"\nRunning debate on: {debate['topic']}")
         print(f"{debate['prop']} vs {debate['opp']}")
-        debate_path:Path = debate["output"]
+        debate_path: Path = debate["output"]
         debate_path.parent.mkdir(parents=True, exist_ok=True)
 
         try:
@@ -142,9 +159,12 @@ def run_sample_debates() -> None:
             continue
 
     # After all debates are done, process the failed ones
-    print("\nInitial debates completed. Waiting 60 seconds before processing failed debates...")
+    print(
+        "\nInitial debates completed. Waiting 60 seconds before processing failed debates..."
+    )
     time.sleep(60)  # Wait a minute before processing failed debates
     process_failed_debates()
+
 
 if __name__ == "__main__":
     load_dotenv()

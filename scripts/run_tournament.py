@@ -14,7 +14,7 @@ from core.models import (
     DebateTopic,
     DebateTotal,
     ConfidenceAdjustedJudgement,
-    JudgeResult
+    JudgeResult,
 )
 from core.api_client import OpenRouterClient
 from core.message_formatter import MessageFormatter
@@ -29,13 +29,14 @@ from scripts.utils import sanitize_model_name, checkIfComplete
 logger = logging.getLogger(__name__)
 load_dotenv()
 
+
 class JudgingService:
     def __init__(
         self,
         judgement_processor: JudgementProcessor,
         primary_judge_model: str = "deepseek/deepseek-chat",
         secondary_judge_model: str = "openai/o1-mini",
-        judgements_per_model: int = 3
+        judgements_per_model: int = 3,
     ):
         self.judgement_processor = judgement_processor
         self.primary_judge = primary_judge_model
@@ -44,17 +45,14 @@ class JudgingService:
         self.logger = logging.getLogger(__name__)
 
     def get_repeated_judgements(
-        self,
-        debate: DebateTotal,
-        judge_model: str
+        self, debate: DebateTotal, judge_model: str
     ) -> List[JudgeResult]:
         """Get multiple judgements from the same model"""
         judgements = []
         for _ in range(self.judgements_per_model):
             try:
                 judgement = self.judgement_processor.process_judgment(
-                    debate=debate,
-                    model=judge_model
+                    debate=debate, model=judge_model
                 )
                 judgements.append(judgement)
             except Exception as e:
@@ -63,9 +61,8 @@ class JudgingService:
         return judgements
 
     def calculate_winner_confidence(
-        self,
-        judgements: List[JudgeResult]
-    ) -> Tuple[Literal['opposition', 'proposition'], float]:
+        self, judgements: List[JudgeResult]
+    ) -> Tuple[Literal["opposition", "proposition"], float]:
         """Calculate winner and confidence from a list of judgements"""
         if not judgements:
             raise ValueError("No valid judgements to process")
@@ -74,7 +71,7 @@ class JudgingService:
         total_confidence = 0
 
         for judgement in judgements:
-            if judgement.winner == 'proposition':
+            if judgement.winner == "proposition":
                 prop_wins += 1
                 total_confidence += judgement.confidence
             else:
@@ -84,11 +81,13 @@ class JudgingService:
         normalized_confidence = min(avg_confidence / 100, 1.0)
 
         if prop_wins > len(judgements) / 2:
-            return ('proposition', normalized_confidence)
+            return ("proposition", normalized_confidence)
         else:
-            return ('opposition', normalized_confidence)
+            return ("opposition", normalized_confidence)
 
-    def judge_debate(self, debate_path: Path) -> Tuple[Literal['opposition', 'proposition'], float]:
+    def judge_debate(
+        self, debate_path: Path
+    ) -> Tuple[Literal["opposition", "proposition"], float]:
         """Judge a single debate with multiple rounds if needed"""
         if not checkIfComplete(debate_path):
             raise ValueError(f"{debate_path} is not complete")
@@ -97,8 +96,7 @@ class JudgingService:
 
         # First round of judgements
         primary_judgements = self.get_repeated_judgements(
-            debate=debate,
-            judge_model=self.primary_judge
+            debate=debate, judge_model=self.primary_judge
         )
 
         if not primary_judgements:
@@ -112,13 +110,13 @@ class JudgingService:
 
         # Get secondary judgements for close calls
         secondary_judgements = self.get_repeated_judgements(
-            debate=debate,
-            judge_model=self.secondary_judge
+            debate=debate, judge_model=self.secondary_judge
         )
 
         # Combine all judgements for final decision
         all_judgements = primary_judgements + secondary_judgements
         return self.calculate_winner_confidence(all_judgements)
+
 
 class TournamentService:
     def __init__(
@@ -126,7 +124,7 @@ class TournamentService:
         debate_service: DebateService,
         judging_service: JudgingService,
         config: Config,
-        prompts: DebatePrompts
+        prompts: DebatePrompts,
     ):
         self.debate_service = debate_service
         self.judging_service = judging_service
@@ -135,9 +133,7 @@ class TournamentService:
         self.failed_debates: Deque[Path] = deque()
 
     def create_new_matches(
-        self,
-        models_list: List[str],
-        previous_matches: Set[Match]
+        self, models_list: List[str], previous_matches: Set[Match]
     ) -> List[Match]:
         random.shuffle(models_list)
         paired = set()
@@ -149,8 +145,11 @@ class TournamentService:
                     if j == i:
                         continue
                     possible_match = Match(prop_model=model_i, opp_model=model_j)
-                    if (model_j not in paired and
-                        possible_match not in previous_matches and model_i not in paired):
+                    if (
+                        model_j not in paired
+                        and possible_match not in previous_matches
+                        and model_i not in paired
+                    ):
                         output.append(possible_match)
                         paired.add(model_i)
                         paired.add(model_j)
@@ -185,12 +184,10 @@ class TournamentService:
             logger.info("All failed debates were successfully processed")
 
     def save_round_results(
-        self,
-        round_num: int,
-        judgements: List[ConfidenceAdjustedJudgement]
+        self, round_num: int, judgements: List[ConfidenceAdjustedJudgement]
     ) -> None:
         results_path = self.config.tournament_dir / f"round_{round_num}_results.json"
-        with open(results_path, 'w') as f:
+        with open(results_path, "w") as f:
             json.dump([j.dict() for j in judgements], f, indent=2)
 
     def run_single_round(
@@ -198,7 +195,7 @@ class TournamentService:
         round_num: int,
         models_list: List[str],
         previous_matches: Set[Match],
-        dir_to_store: Path
+        dir_to_store: Path,
     ) -> None:
         logger.info(f"Starting round {round_num}")
 
@@ -223,7 +220,7 @@ class TournamentService:
                     proposition_model=match.prop_model,
                     opposition_model=match.opp_model,
                     motion=topic,
-                    path_to_store=debate_path
+                    path_to_store=debate_path,
                 )
 
                 # Judge debate
@@ -235,7 +232,7 @@ class TournamentService:
                     prop_model=match.prop_model,
                     opp_model=match.opp_model,
                     winner=winner,
-                    margin=margin
+                    margin=margin,
                 )
                 round_judgements.append(judgement)
 
@@ -261,19 +258,19 @@ class TournamentService:
                 round_num=round_num,
                 models_list=models_list,
                 previous_matches=previous_matches,
-                dir_to_store=round_path
+                dir_to_store=round_path,
             )
+
 
 def main():
     logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s"
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
     # Initialize dependencies
     config = Config()
     prompts = get_debate_prompt(config)
-    api_client = OpenRouterClient(os.environ.get('OPENROUTER_API_KEY'))
+    api_client = OpenRouterClient(os.environ.get("OPENROUTER_API_KEY"))
     message_formatter = MessageFormatter(prompts)
 
     # Create services
@@ -284,6 +281,7 @@ def main():
     # Create and run tournament
     tournament = TournamentService(debate_service, judging_service, config, prompts)
     tournament.run_tournament()
+
 
 if __name__ == "__main__":
     main()

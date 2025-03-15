@@ -9,6 +9,7 @@ from core.api_client import OpenRouterClient
 from core.debate_service import DebateService
 from core.judgement_processor import JudgementProcessor
 
+
 @dataclass
 class Config:
     ai_models_dir: Path = Path("ai_models")
@@ -48,7 +49,7 @@ class Config:
             first_speech_prompt=prompts["first_speech"],
             rebuttal_speech_prompt=prompts["rebuttal_speech"],
             final_speech_prompt=prompts["final_speech"],
-            judge_prompt=prompts["judging_prompt"]
+            judge_prompt=prompts["judging_prompt"],
         )
 
         return debator_prompts
@@ -80,19 +81,23 @@ class Config:
         self.prompts_path_yaml = self.prompts_dir / "debate_prompts.yaml"
 
         self.bet_pattern_config = BetPatternConfig(
-            bet_amount_xml_tag='bet_amount',
-            bet_logic_private_xml_tag='bet_logic_private'
+            bet_amount_xml_tag="bet_amount",
+            bet_logic_private_xml_tag="bet_logic_private",
         )
 
-        self.api_key = os.environ['OPENROUTER_API_KEY']
+        self.api_key = os.environ["OPENROUTER_API_KEY"]
         if not self.api_key:
             raise RuntimeError("No OPENROUTER_API_KEY found")
         self.prompts = self.load_debate_prompts()
-        self.message_formatter = MessageFormatter(prompts=self.prompts, bet_pattern_config=self.bet_pattern_config)
+        self.message_formatter = MessageFormatter(
+            prompts=self.prompts, bet_pattern_config=self.bet_pattern_config
+        )
         self.api_client = OpenRouterClient(api_key=self.api_key)
         self.debate_service = DebateService(
             api_client=self.api_client,
             message_formatter=self.message_formatter,
-            bet_pattern_config=self.bet_pattern_config
+            bet_pattern_config=self.bet_pattern_config,
         )
-        self.judgement_processor = JudgementProcessor(prompts=self.prompts, client=self.api_client)
+        self.judgement_processor = JudgementProcessor(
+            prompts=self.prompts, client=self.api_client
+        )

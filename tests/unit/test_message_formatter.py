@@ -2,18 +2,21 @@ import pytest
 from core.message_formatter import MessageFormatter
 from core.models import DebatePrompts, DebateTotal, Round, Side, SpeechType, DebateTopic
 
+
 @pytest.fixture
 def sample_prompts():
     return DebatePrompts(
         first_speech_prompt="This is a first speech prompt.",
         rebuttal_speech_prompt="This is a rebuttal prompt.",
         final_speech_prompt="This is a final speech prompt.",
-        judge_prompt="This is a judge prompt."
+        judge_prompt="This is a judge prompt.",
     )
+
 
 @pytest.fixture
 def message_formatter(sample_prompts):
     return MessageFormatter(prompts=sample_prompts)
+
 
 @pytest.fixture
 def sample_debate():
@@ -26,9 +29,10 @@ def sample_debate():
             first_speech_prompt="First speech",
             rebuttal_speech_prompt="Rebuttal speech",
             final_speech_prompt="Final speech",
-            judge_prompt="Judge prompt"
-        )
+            judge_prompt="Judge prompt",
+        ),
     )
+
 
 def test_get_system_message(message_formatter):
     opening_round = Round(side=Side.PROPOSITION, speech_type=SpeechType.OPENING)
@@ -40,6 +44,7 @@ def test_get_system_message(message_formatter):
     system_msg = message_formatter._get_system_message(rebuttal_round)
     assert "opposition" in system_msg
     assert "This is a rebuttal prompt." in system_msg
+
 
 def test_get_chat_messages(message_formatter, sample_debate):
     test_round = Round(side=Side.PROPOSITION, speech_type=SpeechType.OPENING)

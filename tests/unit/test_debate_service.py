@@ -5,15 +5,15 @@ from core.api_client import OpenRouterClient
 from core.message_formatter import MessageFormatter
 from core.models import DebateTopic, DebatePrompts, APIResponse, DebateTotal
 
+
 @pytest.fixture
 def mock_api_client():
     client = MagicMock(spec=OpenRouterClient)
     client.send_request.return_value = APIResponse(
-        content="This is a test debate speech.",
-        prompt_tokens=10,
-        completion_tokens=20
+        content="This is a test debate speech.", prompt_tokens=10, completion_tokens=20
     )
     return client
+
 
 @pytest.fixture
 def mock_formatter():
@@ -22,17 +22,19 @@ def mock_formatter():
         first_speech_prompt="First prompt",
         rebuttal_speech_prompt="Rebuttal prompt",
         final_speech_prompt="Final prompt",
-        judge_prompt="Judge prompt"
+        judge_prompt="Judge prompt",
     )
     formatter.get_chat_messages.return_value = [
         {"role": "system", "content": "System message"},
-        {"role": "user", "content": "User message"}
+        {"role": "user", "content": "User message"},
     ]
     return formatter
+
 
 @pytest.fixture
 def debate_service(mock_api_client, mock_formatter):
     return DebateService(api_client=mock_api_client, message_formatter=mock_formatter)
+
 
 def test_run_debate(debate_service, tmp_path):
     topic = DebateTopic(topic_description="Test topic")
@@ -43,7 +45,7 @@ def test_run_debate(debate_service, tmp_path):
         proposition_model="model1",
         opposition_model="model2",
         motion=topic,
-        path_to_store=output_path
+        path_to_store=output_path,
     )
 
     assert isinstance(result, DebateTotal)

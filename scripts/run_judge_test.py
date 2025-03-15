@@ -1,9 +1,7 @@
-from pathlib import Path
-import json
-import re
 from core.models import DebateTotal
-from typing import Dict, List
+from typing import Dict
 from config import Config
+
 
 def parse_judgment_files():
     """
@@ -12,8 +10,10 @@ def parse_judgment_files():
     config = Config()
 
     # Get all relevant json files from debates and judgments directories
-    debate_files = list(config.sample_debates_dir.glob('sample_debate_*.json'))
-    judgment_files = list(config.sample_judgments_dir.glob('sample_debate_*_judge_*.json'))
+    debate_files = list(config.sample_debates_dir.glob("sample_debate_*.json"))
+    judgment_files = list(
+        config.sample_judgments_dir.glob("sample_debate_*_judge_*.json")
+    )
 
     debates = {}  # debate_id -> original debate content
     judgments = {}  # debate_id -> {judge_model -> [runs]}
@@ -28,10 +28,10 @@ def parse_judgment_files():
     # Process judgment files
     for file in judgment_files:
         filename = file.stem
-        parts = filename.split('_judge_')
+        parts = filename.split("_judge_")
         if len(parts) == 2:
             debate_id = parts[0]
-            rest = parts[1].rsplit('_run_', 1)
+            rest = parts[1].rsplit("_run_", 1)
             if len(rest) == 2:
                 judge_model, run_num = rest
 
@@ -45,13 +45,14 @@ def parse_judgment_files():
                 debate = DebateTotal.load_from_json(file)
                 if debate.judge_results:
                     judgment = {
-                        'run': int(run_num),
-                        'winner': debate.judge_results[-1].winner,
-                        'confidence': debate.judge_results[-1].confidence
+                        "run": int(run_num),
+                        "winner": debate.judge_results[-1].winner,
+                        "confidence": debate.judge_results[-1].confidence,
                     }
                     judgments[debate_id][judge_model].append(judgment)
 
     return debates, judgments
+
 
 def print_judgment_summary(judgments: Dict):
     """Print summary of collected judgments"""
@@ -60,8 +61,11 @@ def print_judgment_summary(judgments: Dict):
         for judge, runs in judgments[debate_id].items():
             if runs:  # Only print if there are actual judgments
                 print(f"\nJudge: {judge}")
-                for run in sorted(runs, key=lambda x: x['run']):
-                    print(f"Run {run['run']}: Winner={run['winner']}, Confidence={run['confidence']}")
+                for run in sorted(runs, key=lambda x: x["run"]):
+                    print(
+                        f"Run {run['run']}: Winner={run['winner']}, Confidence={run['confidence']}"
+                    )
+
 
 if __name__ == "__main__":
     debates, judgments = parse_judgment_files()

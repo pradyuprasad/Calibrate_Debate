@@ -11,7 +11,7 @@ from core.models import (
     Side,
     DebateType,
     DebatorBet,
-    BetPatternConfig
+    BetPatternConfig,
 )
 from utils.utils import make_rounds
 from core.api_client import OpenRouterClient
@@ -20,12 +20,13 @@ from core.message_formatter import MessageFormatter
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 class DebateService:
     def __init__(
         self,
         api_client: OpenRouterClient,
         message_formatter: MessageFormatter,
-        bet_pattern_config: BetPatternConfig
+        bet_pattern_config: BetPatternConfig,
     ):
         self.api_client = api_client
         self.message_formatter = message_formatter
@@ -44,7 +45,7 @@ class DebateService:
         Returns:
             int: The extracted bet amount (0-100)
         """
-        bet_pattern = rf'<{self.bet_pattern_config.bet_amount_xml_tag}>(\d+)</{self.bet_pattern_config.bet_amount_xml_tag}>'
+        bet_pattern = rf"<{self.bet_pattern_config.bet_amount_xml_tag}>(\d+)</{self.bet_pattern_config.bet_amount_xml_tag}>"
         match = re.search(bet_pattern, speech_text)
 
         if match:
@@ -53,12 +54,16 @@ class DebateService:
             return max(0, min(bet_amount, 100))
 
         # If no valid bet found, ask for manual input
-        logger.warning(f"Could not extract bet from {model} for {round.side.value} {round.speech_type.value}")
+        logger.warning(
+            f"Could not extract bet from {model} for {round.side.value} {round.speech_type.value}"
+        )
         logger.info(f"Speech content: {speech_text}... (truncated)")
 
         while True:
             try:
-                user_input = input(f"\nEnter bet amount (0-100) for {model} {round.side.value} {round.speech_type.value}: ")
+                user_input = input(
+                    f"\nEnter bet amount (0-100) for {model} {round.side.value} {round.speech_type.value}: "
+                )
                 bet_amount = int(user_input.strip())
                 if 0 <= bet_amount <= 100:
                     return bet_amount
@@ -77,17 +82,19 @@ class DebateService:
         Returns:
             str: The extracted bet logic reasoning
         """
-        bet_logic_pattern = f'<{self.bet_pattern_config.bet_logic_private_xml_tag}>(.*?)</{self.bet_pattern_config.bet_logic_private_xml_tag}>'
+        bet_logic_pattern = f"<{self.bet_pattern_config.bet_logic_private_xml_tag}>(.*?)</{self.bet_pattern_config.bet_logic_private_xml_tag}>"
         match = re.search(bet_logic_pattern, speech_text, re.DOTALL)
         if match:
             bet_logic_private = match.group(1).strip()
             return bet_logic_private
-        logger.warning(f"Could not extract bet logic from {model} for {round.side.value} {round.speech_type.value}")
+        logger.warning(
+            f"Could not extract bet logic from {model} for {round.side.value} {round.speech_type.value}"
+        )
         logger.info(f"Speech content: {speech_text}")
-        user_input = input(f"\nEnter bet logic for {model} {round.side.value} {round.speech_type.value}: ")
+        user_input = input(
+            f"\nEnter bet logic for {model} {round.side.value} {round.speech_type.value}: "
+        )
         return user_input.strip()
-
-
 
     def run_debate(
         self,
@@ -122,7 +129,7 @@ class DebateService:
             opposition_model=opposition_model,
             prompts=self.message_formatter.prompts,
             path_to_store=path_to_store,
-            debator_bets=[] if debate_type != DebateType.BASELINE else None
+            debator_bets=[] if debate_type != DebateType.BASELINE else None,
         )
 
         # Run debate rounds
@@ -162,22 +169,37 @@ class DebateService:
             # Extract and store bet if not a baseline debate
             if debate.debate_type != DebateType.BASELINE:
                 bet_amount = self.extract_bet_amount(response.content, model, round)
-                bet_logic_private = self.extract_bet_logic(response.content, model, round)
-                logger.info(f"Extracted bet amount {bet_amount} with logic {bet_logic_private}")
+                bet_logic_private = self.extract_bet_logic(
+                    response.content, model, round
+                )
+                logger.info(
+                    f"Extracted bet amount {bet_amount} with logic {bet_logic_private}"
+                )
                 new_bet = DebatorBet(
                     side=round.side,
                     speech_type=round.speech_type,
                     amount=bet_amount,
-                    thoughts= bet_logic_private
+                    thoughts=bet_logic_private,
                 )
 
                 if debate.debator_bets is None:
                     debate.debator_bets = []
 
                 debate.debator_bets.append(new_bet)
-                logger.info(f"Recorded bet: {bet_amount} for {round.side.value} {round.speech_type.value}")
-                cleaned_speech = re.sub(rf'<{self.bet_pattern_config.bet_amount_xml_tag}>\d+</{self.bet_pattern_config.bet_amount_xml_tag}>', '', response.content).strip()
-                cleaned_speech = re.sub(f'<{self.bet_pattern_config.bet_logic_private_xml_tag}>.*?</{self.bet_pattern_config.bet_logic_private_xml_tag}>', '', cleaned_speech, flags=re.DOTALL)
+                logger.info(
+                    f"Recorded bet: {bet_amount} for {round.side.value} {round.speech_type.value}"
+                )
+                cleaned_speech = re.sub(
+                    rf"<{self.bet_pattern_config.bet_amount_xml_tag}>\d+</{self.bet_pattern_config.bet_amount_xml_tag}>",
+                    "",
+                    response.content,
+                ).strip()
+                cleaned_speech = re.sub(
+                    f"<{self.bet_pattern_config.bet_logic_private_xml_tag}>.*?</{self.bet_pattern_config.bet_logic_private_xml_tag}>",
+                    "",
+                    cleaned_speech,
+                    flags=re.DOTALL,
+                )
 
             else:
                 cleaned_speech = response.content
@@ -187,26 +209,27 @@ class DebateService:
             else:
                 debate.opposition_output.speeches[round.speech_type] = cleaned_speech
 
-
             # Track successful token usage
             debate.debator_token_counts.add_successful_call(
                 model=model,
                 completion_tokens=response.completion_tokens,
                 prompt_tokens=response.prompt_tokens,
-                total_tokens=response.completion_tokens + response.prompt_tokens
+                total_tokens=response.completion_tokens + response.prompt_tokens,
             )
 
             logger.info(f"Successfully completed {round.speech_type} for {round.side}")
 
         except Exception as e:
             # Track failed token usage if available
-            if isinstance(e, requests.exceptions.RequestException) and hasattr(e, 'response'):
-                usage = e.response.json().get('usage', {}) if e.response else {}
+            if isinstance(e, requests.exceptions.RequestException) and hasattr(
+                e, "response"
+            ):
+                usage = e.response.json().get("usage", {}) if e.response else {}
                 debate.debator_token_counts.add_failed_call(
                     model=model,
                     completion_tokens=usage.get("completion_tokens", 0),
                     prompt_tokens=usage.get("prompt_tokens", 0),
-                    total_tokens=usage.get("total_tokens", 0)
+                    total_tokens=usage.get("total_tokens", 0),
                 )
             logger.error(f"Error in debate round: {str(e)}")
             raise

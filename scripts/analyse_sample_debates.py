@@ -7,6 +7,7 @@ import logging
 
 load_dotenv()
 
+
 def checkIfComplete(path: Path) -> bool:
     try:
         # Load the debate from the json file
@@ -29,9 +30,11 @@ def checkIfComplete(path: Path) -> bool:
         logging.error(f"Error checking debate completion status: {str(e)}")
         return False
 
+
 def sanitize_model_name(model_name: str) -> str:
     """Convert model name to a valid filename by replacing / with _"""
-    return model_name.replace('/', '_')
+    return model_name.replace("/", "_")
+
 
 def run_judge_reliability_test(debate_paths: list[Path]):
     """
@@ -49,33 +52,36 @@ def run_judge_reliability_test(debate_paths: list[Path]):
         # Load the debate
         debate = DebateTotal.load_from_json(debate_path)
 
-
         # For each judge model, run 3 times
         for judge_model in judge_models:
             safe_model_name = sanitize_model_name(judge_model)
             for run in range(3):
-                logging.info(f"Running {judge_model} - attempt {run+1}")
+                logging.info(f"Running {judge_model} - attempt {run + 1}")
 
                 try:
                     # Get judgment for this run
                     config.judgement_processor.get_judgement_response(
-                        debate=debate,
-                        model=judge_model
+                        debate=debate, model=judge_model
                     )
 
                     # Save after each judgment using sanitized model name
-                    save_path = config.sample_judgments_dir / f"{debate_path.stem}_judge_{safe_model_name}_run_{run+1}.json"
+                    save_path = (
+                        config.sample_judgments_dir
+                        / f"{debate_path.stem}_judge_{safe_model_name}_run_{run + 1}.json"
+                    )
                     debate.path_to_store = save_path
                     debate.save_to_json()
 
                 except Exception as e:
-                    logging.error(f"Error getting judgment from {judge_model} (run {run+1}): {e}")
+                    logging.error(
+                        f"Error getting judgment from {judge_model} (run {run + 1}): {e}"
+                    )
+
 
 if __name__ == "__main__":
     # Set up logging
     logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s - %(levelname)s - %(message)s"
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
     )
 
     config = Config()

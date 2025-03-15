@@ -15,6 +15,6 @@ debate_service = config.debate_service
 
 judgement_processor = config.judgement_processor
 
-debate = DebateTotal.load_from_json('test_debate_new.json')
+debate = DebateTotal.load_from_json("test_debate_new.json")
 
 judgement_processor.process_judgment(debate=debate, model="openai/o1-mini")

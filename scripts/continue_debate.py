@@ -21,25 +21,19 @@ def get_valid_response(messages: list, model: str) -> tuple[str, dict]:
         "Content-Type": "application/json",
     }
 
-    payload = {
-        "model": model,
-        "messages": messages,
-        "provider": {
-            "ignore": []
-        }
-    }
+    payload = {"model": model, "messages": messages, "provider": {"ignore": []}}
 
     response = requests.post(
-        "https://openrouter.ai/api/v1/chat/completions",
-        headers=headers,
-        json=payload
+        "https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload
     )
 
     response_json = response.json()
     logging.info(f"Raw API response: {response_json}")
 
     if response.status_code != 200:
-        error_msg = f"API returned error: {response_json.get('error', {}).get('message')}"
+        error_msg = (
+            f"API returned error: {response_json.get('error', {}).get('message')}"
+        )
         logging.error(error_msg)
         raise ValueError(error_msg)
 
@@ -51,6 +45,7 @@ def get_valid_response(messages: list, model: str) -> tuple[str, dict]:
         raise ValueError(error_msg)
 
     return speech, response_json
+
 
 def continue_debate(debate_path: Path) -> None:
     """
@@ -64,14 +59,21 @@ def continue_debate(debate_path: Path) -> None:
     debate = DebateTotal.load_from_json(debate_path)
 
     # Check each side's speeches
-    for side, output in [(Side.PROPOSITION, debate.proposition_output),
-                        (Side.OPPOSITION, debate.opposition_output)]:
-
-        model = debate.proposition_model if side == Side.PROPOSITION else debate.opposition_model
+    for side, output in [
+        (Side.PROPOSITION, debate.proposition_output),
+        (Side.OPPOSITION, debate.opposition_output),
+    ]:
+        model = (
+            debate.proposition_model
+            if side == Side.PROPOSITION
+            else debate.opposition_model
+        )
 
         for speech_type in SpeechType:
             if output.speeches[speech_type] == -1:
-                logging.info(f"Generating missing {side.value} {speech_type.value} speech")
+                logging.info(
+                    f"Generating missing {side.value} {speech_type.value} speech"
+                )
 
                 # Get context of previous speeches for prompting
                 context = []
@@ -81,34 +83,42 @@ def continue_debate(debate_path: Path) -> None:
                     prop_speech = debate.proposition_output.speeches[prev_type]
                     opp_speech = debate.opposition_output.speeches[prev_type]
                     if prop_speech != -1:
-                        context.append({
-                            "role": "assistant" if side == Side.OPPOSITION else "user",
-                            "content": f"Proposition speech: {prop_speech}"
-                        })
+                        context.append(
+                            {
+                                "role": "assistant"
+                                if side == Side.OPPOSITION
+                                else "user",
+                                "content": f"Proposition speech: {prop_speech}",
+                            }
+                        )
                     if opp_speech != -1:
-                        context.append({
-                            "role": "assistant" if side == Side.PROPOSITION else "user",
-                            "content": f"Opposition speech: {opp_speech}"
-                        })
+                        context.append(
+                            {
+                                "role": "assistant"
+                                if side == Side.PROPOSITION
+                                else "user",
+                                "content": f"Opposition speech: {opp_speech}",
+                            }
+                        )
 
                 # Get appropriate prompt template
                 prompt = {
                     SpeechType.OPENING: debate.prompts.first_speech_prompt,
                     SpeechType.REBUTTAL: debate.prompts.rebuttal_speech_prompt,
-                    SpeechType.CLOSING: debate.prompts.final_speech_prompt
+                    SpeechType.CLOSING: debate.prompts.final_speech_prompt,
                 }[speech_type]
 
                 # Generate the speech
                 messages = [
                     {
                         "role": "system",
-                        "content": f"You are on the {side.value} side. {prompt}"
+                        "content": f"You are on the {side.value} side. {prompt}",
                     },
                     {
                         "role": "user",
-                        "content": f"You are debating {debate.motion.topic_description}"
+                        "content": f"You are debating {debate.motion.topic_description}",
                     },
-                    *context
+                    *context,
                 ]
 
                 try:
@@ -123,7 +133,7 @@ def continue_debate(debate_path: Path) -> None:
                         model=model,
                         completion_tokens=usage.get("completion_tokens", 0),
                         prompt_tokens=usage.get("prompt_tokens", 0),
-                        total_tokens=usage.get("total_tokens", 0)
+                        total_tokens=usage.get("total_tokens", 0),
                     )
 
                     # Save after each speech
@@ -131,27 +141,32 @@ def continue_debate(debate_path: Path) -> None:
 
                 except Exception as e:
                     logging.error(f"Error generating speech: {e}")
-                    if hasattr(e, 'response') and hasattr(e.response, 'json'):
-                        usage = e.response.json().get('usage', {})
+                    if hasattr(e, "response") and hasattr(e.response, "json"):
+                        usage = e.response.json().get("usage", {})
                         debate.debator_token_counts.add_failed_call(
                             model=model,
                             completion_tokens=usage.get("completion_tokens", 0),
                             prompt_tokens=usage.get("prompt_tokens", 0),
-                            total_tokens=usage.get("total_tokens", 0)
+                            total_tokens=usage.get("total_tokens", 0),
                         )
                     raise
 
     # Run judge evaluations if needed
     if debate.judge_models and not debate.judge_results:
         for judge_model in debate.judge_models:
-            config.judgement_processor.get_judgement_response(debate=debate, model=judge_model)
+            config.judgement_processor.get_judgement_response(
+                debate=debate, model=judge_model
+            )
             debate.save_to_json()
 
     logging.info("Debate continuation completed")
 
+
 if __name__ == "__main__":
-# Setup logging
-    logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+    # Setup logging
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    )
 
     # Load environment variables (make sure OPENROUTER_API_KEY is set)
     load_dotenv()

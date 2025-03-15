@@ -14,24 +14,13 @@ class OpenRouterClient:
         }
         self.logger = logging.getLogger(self.__class__.__name__)
 
-
-
-
     def send_request(self, model: str, messages: List[Dict]) -> APIResponse:
         """Raw API request - just sends and returns response"""
-        payload = {
-            "model": model,
-            "messages": messages
-        }
+        payload = {"model": model, "messages": messages}
 
         self.logger.info(f"Payload is {payload}")
 
-
-        response = requests.post(
-            self.base_url,
-            headers=self.headers,
-            json=payload
-        )
+        response = requests.post(self.base_url, headers=self.headers, json=payload)
 
         try:
             output = response.json()
@@ -41,17 +30,19 @@ class OpenRouterClient:
             raise
 
         if "error" in output:
-                raise ValueError(f"API error: {output['error']}")
+            raise ValueError(f"API error: {output['error']}")
 
         content = output["choices"][0]["message"]["content"]
         usage = output.get("usage", {})
         if not content or len(content) < 200:
-                raise ValueError("Insufficient content length")
+            raise ValueError("Insufficient content length")
         completion_tokens = usage.get("completion_tokens", 0)
-        prompt_tokens=usage.get("prompt_tokens", 0)
-
-
+        prompt_tokens = usage.get("prompt_tokens", 0)
 
         self.logger.info(f"Output is {output}")
 
-        return APIResponse(content=content, prompt_tokens=prompt_tokens, completion_tokens=completion_tokens)
+        return APIResponse(
+            content=content,
+            prompt_tokens=prompt_tokens,
+            completion_tokens=completion_tokens,
+        )

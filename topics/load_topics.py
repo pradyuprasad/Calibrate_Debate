@@ -3,6 +3,7 @@ from core.models import DebateTopic
 from typing import List
 import json
 
+
 def load_topics(config: Config) -> List[DebateTopic]:
     with open(config.topic_list_path) as f:
         data = json.load(f)
