@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from enum import Enum
 import json
 from pathlib import Path
@@ -130,6 +131,12 @@ class DebatorBet(BaseModel):
             "amount": self.amount,
             "thoughts": self.thoughts
         }
+
+@dataclass
+class BetPatternConfig:
+    bet_amount_xml_tag: str
+    bet_logic_private_xml_tag: str
+
 
 
 

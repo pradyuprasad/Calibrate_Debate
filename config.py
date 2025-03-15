@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import os
 from dotenv import load_dotenv
-from core.models import DebatePrompts
+from core.models import DebatePrompts, BetPatternConfig
 import yaml
 from core.message_formatter import MessageFormatter
 from core.api_client import OpenRouterClient
@@ -38,6 +38,7 @@ class Config:
     api_client: OpenRouterClient = field(init=False)
     debate_service: DebateService = field(init=False)
     judgement_processor: JudgementProcessor = field(init=False)
+    bet_pattern_config: BetPatternConfig = field(init=False)
 
     def load_debate_prompts(self) -> DebatePrompts:
         with open(self.prompts_path_yaml, "r") as file:
@@ -51,7 +52,6 @@ class Config:
         )
 
         return debator_prompts
-
 
     def __post_init__(self):
         load_dotenv()
@@ -79,12 +79,20 @@ class Config:
         self.topic_list_path = self.topic_dir / "topics_list.json"
         self.prompts_path_yaml = self.prompts_dir / "debate_prompts.yaml"
 
+        self.bet_pattern_config = BetPatternConfig(
+            bet_amount_xml_tag='bet_amount',
+            bet_logic_private_xml_tag='bet_logic_private'
+        )
+
         self.api_key = os.environ['OPENROUTER_API_KEY']
         if not self.api_key:
             raise RuntimeError("No OPENROUTER_API_KEY found")
         self.prompts = self.load_debate_prompts()
-        self.message_formatter = MessageFormatter(prompts=self.prompts)
+        self.message_formatter = MessageFormatter(prompts=self.prompts, bet_pattern_config=self.bet_pattern_config)
         self.api_client = OpenRouterClient(api_key=self.api_key)
-        self.debate_service = DebateService(api_client=self.api_client, message_formatter=self.message_formatter)
+        self.debate_service = DebateService(
+            api_client=self.api_client,
+            message_formatter=self.message_formatter,
+            bet_pattern_config=self.bet_pattern_config
+        )
         self.judgement_processor = JudgementProcessor(prompts=self.prompts, client=self.api_client)
-

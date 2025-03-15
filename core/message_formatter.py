@@ -1,12 +1,13 @@
 from typing import List, Dict, Optional
-from core.models import SpeechType, Round, DebatePrompts, DebateTotal, Side, DebateType, DebatorBet
+from core.models import SpeechType, Round, DebatePrompts, DebateTotal, Side, DebateType, DebatorBet, BetPatternConfig
 
 
 class MessageFormatter:
    """Formats debate state into messages for model consumption."""
 
-   def __init__(self, prompts: DebatePrompts):
+   def __init__(self, prompts: DebatePrompts, bet_pattern_config: BetPatternConfig):
        self.prompts = prompts
+       self.bet_pattern_config = bet_pattern_config
 
    def get_chat_messages(self, debate: DebateTotal, next_round: Round) -> List[Dict]:
        """Generate chat messages for the next debate round."""
@@ -76,9 +77,10 @@ class MessageFormatter:
        if debate.debate_type != DebateType.BASELINE:
            bet_visibility = "public (visible to your opponent)" if debate.debate_type == DebateType.PUBLIC_BET else "private (not visible to your opponent)"
 
-           task += f"\nAfter your speech, you must include a {bet_visibility} confidence bet (0-100) indicating how likely you think you are to win this debate.\n. You will get the amount that you, and your opponent will bet if you win. If you lose, you'll lose this amount and it will go to your opponent."
-           task += "\n In xml tags <bet_logic></bet_logic>"
-           task += "Use the format <bet_amount>NUMBER</bet_amount> at the end of your speech.\n"
+           task += f"\nAfter your speech, you must include a {bet_visibility} confidence bet (0-100) indicating how likely you think you are to win this debate.\n. You will get the amount that you, and your opponent will bet if you win. If you lose, you'll lose this amount and it will go to your opponent. You start off with a 100 tokens in this debate"
+           task += f"\n In xml tags <{self.bet_pattern_config.bet_logic_private_xml_tag}></{self.bet_pattern_config.bet_logic_private_xml_tag}> explain whether and to what extent you think you are going to win this debate compared to the other side based on the juding criterion. Be reflective and after that give me a bet amount. Your thoughts are private and won't be read by the other side"
+
+           task +=f"Use the format <{self.bet_pattern_config.bet_amount_xml_tag}>NUMBER</{self.bet_pattern_config.bet_amount_xml_tag}> at the end of your speech.\n"
 
        print(f"The bet visibility is: {bet_visibility if debate.debate_type != DebateType.BASELINE else 'none - baseline debate'}")
        if next_round.speech_type == SpeechType.OPENING:

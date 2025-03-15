@@ -11,6 +11,7 @@ from core.models import (
     Side,
     DebateType,
     DebatorBet,
+    BetPatternConfig
 )
 from utils.utils import make_rounds
 from core.api_client import OpenRouterClient
@@ -23,10 +24,12 @@ class DebateService:
     def __init__(
         self,
         api_client: OpenRouterClient,
-        message_formatter: MessageFormatter
+        message_formatter: MessageFormatter,
+        bet_pattern_config: BetPatternConfig
     ):
         self.api_client = api_client
         self.message_formatter = message_formatter
+        self.bet_pattern_config = bet_pattern_config
 
     def extract_bet_amount(self, speech_text: str, model: str, round: Round) -> int:
         """
@@ -41,7 +44,7 @@ class DebateService:
         Returns:
             int: The extracted bet amount (0-100)
         """
-        bet_pattern = r'<bet_amount>(\d+)</bet_amount>'
+        bet_pattern = rf'<{self.bet_pattern_config.bet_amount_xml_tag}>(\d+)</{self.bet_pattern_config.bet_amount_xml_tag}>'
         match = re.search(bet_pattern, speech_text)
 
         if match:
@@ -51,7 +54,7 @@ class DebateService:
 
         # If no valid bet found, ask for manual input
         logger.warning(f"Could not extract bet from {model} for {round.side.value} {round.speech_type.value}")
-        logger.info(f"Speech content: {speech_text[:300]}... (truncated)")
+        logger.info(f"Speech content: {speech_text}... (truncated)")
 
         while True:
             try:
@@ -62,6 +65,29 @@ class DebateService:
                 logger.error("Bet must be between 0 and 100")
             except ValueError:
                 logger.error("Please enter a valid number")
+
+    def extract_bet_logic(self, speech_text: str, model: str, round: Round) -> str:
+        """
+        Extract bet logic from speech text using regex.
+        If no valid bet logic is found, prompts the user for manual input.
+        Args:
+            speech_text: The model's response text
+            model: The model name (for reporting)
+            round: The current debate round
+        Returns:
+            str: The extracted bet logic reasoning
+        """
+        bet_logic_pattern = f'<{self.bet_pattern_config.bet_logic_private_xml_tag}>(.*?)</{self.bet_pattern_config.bet_logic_private_xml_tag}>'
+        match = re.search(bet_logic_pattern, speech_text, re.DOTALL)
+        if match:
+            bet_logic_private = match.group(1).strip()
+            return bet_logic_private
+        logger.warning(f"Could not extract bet logic from {model} for {round.side.value} {round.speech_type.value}")
+        logger.info(f"Speech content: {speech_text}")
+        user_input = input(f"\nEnter bet logic for {model} {round.side.value} {round.speech_type.value}: ")
+        return user_input.strip()
+
+
 
     def run_debate(
         self,
@@ -136,12 +162,13 @@ class DebateService:
             # Extract and store bet if not a baseline debate
             if debate.debate_type != DebateType.BASELINE:
                 bet_amount = self.extract_bet_amount(response.content, model, round)
-
-                # Create and add the bet
+                bet_logic_private = self.extract_bet_logic(response.content, model, round)
+                logger.info(f"Extracted bet amount {bet_amount} with logic {bet_logic_private}")
                 new_bet = DebatorBet(
                     side=round.side,
                     speech_type=round.speech_type,
-                    amount=bet_amount
+                    amount=bet_amount,
+                    thoughts= bet_logic_private
                 )
 
                 if debate.debator_bets is None:
@@ -149,7 +176,9 @@ class DebateService:
 
                 debate.debator_bets.append(new_bet)
                 logger.info(f"Recorded bet: {bet_amount} for {round.side.value} {round.speech_type.value}")
-                cleaned_speech = re.sub(r'<bet_amount>\d+</bet_amount>', '', response.content).strip()
+                cleaned_speech = re.sub(rf'<{self.bet_pattern_config.bet_amount_xml_tag}>\d+</{self.bet_pattern_config.bet_amount_xml_tag}>', '', response.content).strip()
+                cleaned_speech = re.sub(f'<{self.bet_pattern_config.bet_logic_private_xml_tag}>.*?</{self.bet_pattern_config.bet_logic_private_xml_tag}>', '', cleaned_speech, flags=re.DOTALL)
+
             else:
                 cleaned_speech = response.content
 
