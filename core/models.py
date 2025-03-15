@@ -115,6 +115,23 @@ class DebatorBet(BaseModel):
     side: Side
     speech_type: SpeechType
     amount: int = Field(ge=0, le=100)  # Constrain to 0-100 range
+    thoughts: str
+
+    def to_dict(self) -> Dict[str, Union[str, int]]:
+        """
+        Convert the DebatorBet instance to a dictionary representation.
+
+        Returns:
+            Dict[str, Union[str, int]]: Dictionary containing the bet details
+        """
+        return {
+            "side": self.side.value,
+            "speech_type": self.speech_type.value,
+            "amount": self.amount,
+            "thoughts": self.thoughts
+        }
+
+
 
 
 
@@ -170,7 +187,7 @@ class DebateTotal(BaseModel):
 
        # Add debator_bets if they exist
        if self.debator_bets:
-           result["debator_bets"] = [bet.model_dump() for bet in self.debator_bets]
+           result["debator_bets"] = [bet.to_dict() for bet in self.debator_bets]
 
        return result
 

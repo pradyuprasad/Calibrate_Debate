@@ -72,8 +72,17 @@ class MessageFormatter:
 
    def _get_debate_history(self, debate: DebateTotal, next_round: Round) -> str:
        """Format the relevant debate history for the next round."""
+       task = ""
+       if debate.debate_type != DebateType.BASELINE:
+           bet_visibility = "public (visible to your opponent)" if debate.debate_type == DebateType.PUBLIC_BET else "private (not visible to your opponent)"
+
+           task += f"\nAfter your speech, you must include a {bet_visibility} confidence bet (0-100) indicating how likely you think you are to win this debate.\n. You will get the amount that you, and your opponent will bet if you win. If you lose, you'll lose this amount and it will go to your opponent."
+           task += "\n In xml tags <bet_logic></bet_logic>"
+           task += "Use the format <bet_amount>NUMBER</bet_amount> at the end of your speech.\n"
+
+       print(f"The bet visibility is: {bet_visibility if debate.debate_type != DebateType.BASELINE else 'none - baseline debate'}")
        if next_round.speech_type == SpeechType.OPENING:
-           return "This is the opening speech of the debate."
+           return "This is the opening speech of the debate." + task
 
        current_side = next_round.side
        prop_speeches = debate.proposition_output.speeches
@@ -113,13 +122,11 @@ class MessageFormatter:
                transcript.append(speech_text)
 
        history = "=== DEBATE HISTORY ===\n\n" + "\n\n".join(transcript) + "\n\n"
-       task = f"=== YOUR TASK ===\nYou are on the {next_round.side.value} side.\n"
+       task += f"=== YOUR TASK ===\nYou are on the {next_round.side.value} side.\n"
        task += f"You must now give your {next_round.speech_type.value} speech.\n"
 
-       # Add information about confidence bet requirements based on debate type
-       if debate.debate_type != DebateType.BASELINE:
-           bet_visibility = "public (visible to your opponent)" if debate.debate_type == DebateType.PUBLIC_BET else "private (not visible to your opponent)"
-           task += f"\nAfter your speech, you must include a {bet_visibility} confidence bet (0-100) indicating how likely you think you are to win this debate.\n"
-           task += "Use the format <bet_amount>NUMBER</bet_amount> at the end of your speech.\n"
+       bet_visibility = ""
 
-       return history + task
+       # Add information about confidence bet requirements based on debate type
+
+       return history + task + bet_visibility

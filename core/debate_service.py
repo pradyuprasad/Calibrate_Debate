@@ -1,4 +1,5 @@
 import logging
+import re
 from pathlib import Path
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -8,6 +9,8 @@ from core.models import (
     DebateTopic,
     Round,
     Side,
+    DebateType,
+    DebatorBet,
 )
 from utils.utils import make_rounds
 from core.api_client import OpenRouterClient
@@ -25,26 +28,75 @@ class DebateService:
         self.api_client = api_client
         self.message_formatter = message_formatter
 
+    def extract_bet_amount(self, speech_text: str, model: str, round: Round) -> int:
+        """
+        Extract bet amount from speech text using regex.
+        If no valid bet is found, prompts the user for manual input.
+
+        Args:
+            speech_text: The model's response text
+            model: The model name (for reporting)
+            round: The current debate round
+
+        Returns:
+            int: The extracted bet amount (0-100)
+        """
+        bet_pattern = r'<bet_amount>(\d+)</bet_amount>'
+        match = re.search(bet_pattern, speech_text)
+
+        if match:
+            bet_amount = int(match.group(1))
+            # Ensure bet is within valid range
+            return max(0, min(bet_amount, 100))
+
+        # If no valid bet found, ask for manual input
+        logger.warning(f"Could not extract bet from {model} for {round.side.value} {round.speech_type.value}")
+        logger.info(f"Speech content: {speech_text[:300]}... (truncated)")
+
+        while True:
+            try:
+                user_input = input(f"\nEnter bet amount (0-100) for {model} {round.side.value} {round.speech_type.value}: ")
+                bet_amount = int(user_input.strip())
+                if 0 <= bet_amount <= 100:
+                    return bet_amount
+                logger.error("Bet must be between 0 and 100")
+            except ValueError:
+                logger.error("Please enter a valid number")
+
     def run_debate(
         self,
         proposition_model: str,
         opposition_model: str,
         motion: DebateTopic,
         path_to_store: Path,
+        debate_type: DebateType = DebateType.BASELINE,
     ) -> DebateTotal:
         """
         Run a complete debate including all speeches and judgments
+
+        Args:
+            proposition_model: Model for proposition side
+            opposition_model: Model for opposition side
+            motion: The debate topic
+            path_to_store: Path to save debate JSON
+            debate_type: Type of debate (BASELINE, PRIVATE_BET, PUBLIC_BET)
+
+        Returns:
+            DebateTotal: The completed debate
         """
         logger.debug("running debate!")
         logger.info(f"Starting debate on motion: {motion.topic_description}")
+        logger.info(f"Debate type: {debate_type.value}")
 
         # Initialize debate
         debate = DebateTotal(
             motion=motion,
+            debate_type=debate_type,
             proposition_model=proposition_model,
             opposition_model=opposition_model,
             prompts=self.message_formatter.prompts,
             path_to_store=path_to_store,
+            debator_bets=[] if debate_type != DebateType.BASELINE else None
         )
 
         # Run debate rounds
@@ -53,7 +105,6 @@ class DebateService:
             logger.info(f"Executing round: {round.speech_type} for {round.side}")
             self._execute_round(debate, round)
             debate.save_to_json()
-
 
         logger.info("Debate completed successfully")
         return debate
@@ -80,16 +131,33 @@ class DebateService:
         try:
             response = self.api_client.send_request(model, messages)
 
-            # Error checking
+            # Store the speech
 
+            # Extract and store bet if not a baseline debate
+            if debate.debate_type != DebateType.BASELINE:
+                bet_amount = self.extract_bet_amount(response.content, model, round)
 
+                # Create and add the bet
+                new_bet = DebatorBet(
+                    side=round.side,
+                    speech_type=round.speech_type,
+                    amount=bet_amount
+                )
 
+                if debate.debator_bets is None:
+                    debate.debator_bets = []
 
+                debate.debator_bets.append(new_bet)
+                logger.info(f"Recorded bet: {bet_amount} for {round.side.value} {round.speech_type.value}")
+                cleaned_speech = re.sub(r'<bet_amount>\d+</bet_amount>', '', response.content).strip()
+            else:
+                cleaned_speech = response.content
 
             if round.side == Side.PROPOSITION:
-                debate.proposition_output.speeches[round.speech_type] = response.content
+                debate.proposition_output.speeches[round.speech_type] = cleaned_speech
             else:
-                debate.opposition_output.speeches[round.speech_type] = response.content
+                debate.opposition_output.speeches[round.speech_type] = cleaned_speech
+
 
             # Track successful token usage
             debate.debator_token_counts.add_successful_call(
@@ -150,5 +218,3 @@ class DebateService:
 
         logger.info("Debate continuation completed")
         return debate
-
-
