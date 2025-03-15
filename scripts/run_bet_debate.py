@@ -26,15 +26,15 @@ topic = topics[0]
 logger.info(f"Using topic: {topic.topic_description}")
 
 # Set up a debate with private betting
-output_path = Path("sample_bet_debate.json")
-debate_type = DebateType.PRIVATE_BET
+output_path = Path("sample_bet_debate2.json")
+debate_type = DebateType.PUBLIC_BET
 logger.info(f"Starting debate with type: {debate_type.value}")
-logger.info("Proposition: google/gemini-2.0-flash-001")
-logger.info("Opposition: deepseek/deepseek-chat")
+logger.info("Proposition: anthropic/claude-3.5-sonnet")
+logger.info("Opposition: google/gemma-3-27b-it:free")
 
 debate = config.debate_service.run_debate(
-    proposition_model="google/gemini-2.0-flash-001",
-    opposition_model="deepseek/deepseek-chat",
+    proposition_model="anthropic/claude-3.5-sonnet",
+    opposition_model="google/gemma-3-27b-it:free",
     motion=topic,
     path_to_store=output_path,
     debate_type=debate_type,

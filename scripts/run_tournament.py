@@ -6,7 +6,6 @@ import random
 import json
 from itertools import cycle, islice
 from dotenv import load_dotenv
-import os
 
 from core.models import (
     Match,
@@ -16,8 +15,6 @@ from core.models import (
     ConfidenceAdjustedJudgement,
     JudgeResult,
 )
-from core.api_client import OpenRouterClient
-from core.message_formatter import MessageFormatter
 from core.debate_service import DebateService
 from core.judgement_processor import JudgementProcessor
 from ai_models.load_models import load_debate_models
@@ -270,13 +267,10 @@ def main():
     # Initialize dependencies
     config = Config()
     prompts = get_debate_prompt(config)
-    api_client = OpenRouterClient(os.environ.get("OPENROUTER_API_KEY"))
-    message_formatter = MessageFormatter(prompts)
 
-    # Create services
-    judgement_processor = JudgementProcessor(prompts, api_client)
+    judgement_processor = config.judgement_processor
     judging_service = JudgingService(judgement_processor)
-    debate_service = DebateService(api_client, message_formatter)
+    debate_service = config.debate_service
 
     # Create and run tournament
     tournament = TournamentService(debate_service, judging_service, config, prompts)

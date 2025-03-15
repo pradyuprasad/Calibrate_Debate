@@ -173,7 +173,7 @@ class DebateService:
                     response.content, model, round
                 )
                 logger.info(
-                    f"Extracted bet amount {bet_amount} with logic {bet_logic_private}"
+                    f"Extracted bet amount {bet_amount} \n with logic {bet_logic_private}"
                 )
                 new_bet = DebatorBet(
                     side=round.side,

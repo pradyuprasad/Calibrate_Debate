@@ -41,15 +41,18 @@ class MessageFormatter:
        {self._get_debate_history(debate, next_round)}"""
 
     def _find_bet(
-        self, bets: List[DebatorBet], side: Side, speech_type: SpeechType
-    ) -> Optional[int]:
+        self, bets: List[DebatorBet], side: Side, speech_type: SpeechType, current_side:Side
+    ) -> Optional[str]:
         """Find a bet for a specific side and speech type."""
         if not bets:
             return None
 
         for bet in bets:
             if bet.side == side and bet.speech_type == speech_type:
-                return bet.amount
+                if bet.side == current_side:
+                    return f"Bet amount: {bet.amount}, logic was {bet.thoughts}"
+                else:
+                    return f"Bet amount: {bet.amount}"
 
         return None
 
@@ -58,7 +61,7 @@ class MessageFormatter:
         current_side: Side,
         bet_side: Side,
         speech_type: SpeechType,
-        bet_amount: int,
+        bet_amount: str,
     ) -> str:
         """Format bet information with appropriate annotation."""
         side_label = bet_side.value.upper()
@@ -120,12 +123,11 @@ class MessageFormatter:
             if prop_speeches[speech_type] != -1:
                 speech_text = f"PROPOSITION {speech_type.value.upper()}\n{prop_speeches[speech_type]}"
 
-                # Add bet information if applicable
                 if debate.debator_bets and self._should_show_bet(
                     debate, Side.PROPOSITION, current_side
                 ):
                     prop_bet = self._find_bet(
-                        debate.debator_bets, Side.PROPOSITION, speech_type
+                        debate.debator_bets, Side.PROPOSITION, speech_type, current_side
                     )
                     if prop_bet is not None:
                         bet_info = self._format_bet_info(
@@ -144,12 +146,11 @@ class MessageFormatter:
                     debate, Side.OPPOSITION, current_side
                 ):
                     opp_bet = self._find_bet(
-                        debate.debator_bets, Side.OPPOSITION, speech_type
+                        debate.debator_bets, Side.OPPOSITION, speech_type, current_side
                     )
                     if opp_bet is not None:
                         bet_info = self._format_bet_info(
-                            current_side, Side.OPPOSITION, speech_type, opp_bet
-                        )
+                            current_side, Side.OPPOSITION, speech_type, opp_bet)
                         speech_text += f"\n{bet_info}"
 
                 transcript.append(speech_text)

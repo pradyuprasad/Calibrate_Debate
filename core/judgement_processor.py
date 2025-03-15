@@ -61,9 +61,9 @@ class JudgementProcessor:
         """Extracts structured judgment result from XML response"""
         try:
             winner_matches = re.findall(r"<winnerName>(\w+)</winnerName>", xml_string)
-            if not winner_matches or len(winner_matches) != 1:
+            if not winner_matches or len(winner_matches) == 0:
                 raise ValueError("Must have exactly one winner")
-            winner = winner_matches[0].lower()
+            winner = winner_matches[-1].lower()
             if winner not in ["opposition", "proposition"]:
                 raise ValueError("Winner must be opposition or proposition")
 

@@ -1,12 +1,13 @@
 {
+    "openai/o3-mini": [1.1, 4.4],
     "google/gemini-2.0-flash-001": [0.1, 0.4],
-    "deepseek/deepseek-chat": [0.9, 0.9],
-    "google/gemini-2.0-flash-thinking-exp:free": [0, 0],
-    "openai/o1-mini":  [1.1, 8.8],
-    "qwen/qwen-max": [1.6, 6.4],
-    "deepseek/deepseek-r1": [0.8, 4.8],
-    "anthropic/claude-3.5-sonnet": [3, 15],
-    "openai/chatgpt-4o-latest": [5, 15],
-    "google/gemini-2.0-flash-lite-001": [0.075, 0.3],
-    "google/gemma-3-27b-it:free": [0, 0]
+    "anthropic/claude-3.7-sonnet": [3, 15],
+    "deepseek/deepseek-chat": [0.7, 2.5],
+    "qwen/qwq-32b:free": [0, 0],
+    "openai/gpt-4o-mini": [0.15, 0.6],
+    "google/gemma-3-27b-it": [0.1, 0.2],
+    "anthropic/claude-3.5-haiku": [0.8, 4],
+    "meta-llama/llama-3.1-8b-instruct": [0.02, 0.05],
+    "deepseek/deepseek-r1-distill-qwen-14b:free": [0, 0],
+    "qwen/qwen-max": [1.6, 6.4]
 }
