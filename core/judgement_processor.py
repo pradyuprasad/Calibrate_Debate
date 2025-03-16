@@ -70,9 +70,9 @@ class JudgementProcessor:
             confidence_matches = re.findall(
                 r"<confidence>(\d+)</confidence>", xml_string
             )
-            if not confidence_matches or len(confidence_matches) != 1:
+            if not confidence_matches or len(confidence_matches) == 0:
                 raise ValueError("Must have exactly one confidence value")
-            confidence = int(confidence_matches[0])
+            confidence = int(confidence_matches[-1])
             if not 0 <= confidence <= 100:
                 raise ValueError("Confidence must be between 0 and 100")
 
