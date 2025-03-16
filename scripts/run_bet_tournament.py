@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 import random
 from datetime import datetime
-from typing import List, Dict, Literal, Optional, Tuple
+from typing import List, Dict, Literal, Optional, Tuple, TypedDict
 
 from dotenv import load_dotenv
 from core.models import DebateTopic, DebateType, JudgeResult
@@ -17,6 +17,18 @@ from config import Config
 from topics.load_topics import load_topics
 from scripts.utils import sanitize_model_name, checkIfComplete
 from ai_models.load_models import load_debate_models
+
+
+class ModelStats(TypedDict):
+    wins: int
+    losses: int
+    bet_history: List[List[int]]
+    total_margin: float
+    win_margin: float
+    rounds_played: int
+    opponents: List[str]
+
+
 
 def setup_logging():
    """Configure logging for the tournament."""
@@ -57,17 +69,18 @@ class BetTournament:
 
        self.voting_rounds = 2
 
-       self.model_stats = {
-           model: {
-               "wins": 0,
-               "losses": 0,
-               "bet_history": [],
-               "total_margin": 0.0,  # Track margin of wins/losses
-               "win_margin": 0.0,    # Track margin of wins
-               "rounds_played": 0,
-               "opponents": []       # Track who each model has faced
-           } for model in self.models
-       }
+       self.model_stats : Dict[str, ModelStats] = {
+            model: {
+                "wins": 0,
+                "losses": 0,
+                "bet_history": [],
+                "total_margin": 0.0,
+                "win_margin": 0.0,
+                "rounds_played": 0,
+                "opponents": []
+            } for model in self.models
+        }
+
 
    def load_predefined_round1_matches(self) -> List[Dict]:
        """Load only the predefined matches for round 1 from a configuration file."""
@@ -223,6 +236,8 @@ class BetTournament:
                        debate=debate, model=judge_model
                    )
                    all_judgements.append(judgment)
+
+           return all_judgements
 
 
        except Exception as e:
