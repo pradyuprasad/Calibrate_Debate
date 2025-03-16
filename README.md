@@ -3,7 +3,7 @@
 ## Summary
 In a series of 19 structured debates between 10 state-of-the-art language models, we discovered a concerning pattern: language models became more confident precisely when expert judges disagreed most about who won. Not only that, but higher confidence actually predicted worse performance - models with moderate confidence (51-75%) won 53.6% of their debates, while highly confident models (76-100%) won only 40%.
 
-The most striking finding was a positive correlation (r=0.43) between topic contentiousness (measured by judge disagreement) and model confidence. In other words, the more the judges disagreed about who won a debate, the more confident the debating models became. This suggests a fundamental flaw in how these models assess their own reasoning capabilities.
+There was a positive correlation (r=0.43) between topic contentiousness (measured by judge disagreement) and model confidence. In other words, the more the judges disagreed about who won a debate, the more confident the debating models became. This suggests a fundamental flaw in how these models assess their own reasoning capabilities.
 
 We also found that in every single debate (100%), both opposing models maintained confidence levels above 50% - a logical impossibility since they can't both be more likely than not to win. In 10.5% of debates, this mutual overconfidence was even more extreme, with both sides expressing confidence levels above 75%.
 
@@ -13,6 +13,8 @@ Each debate followed a structured format with three rounds (opening, rebuttal, c
 Debates covered complex policy topics including G20 carbon trading, space regulation, social media platform governance, and media coverage requirements. Each debate was evaluated by three LLM judges (Qwen-qwq-32b, Gemini-pro-1.5, and DeepSeek-chat), who provided independent winner determinations.
 
 The models tested included Google's Gemini-2.0 and Gemma-3-27b-it, Anthropic's Claude-3.7-sonnet and Claude-3.5-haiku, OpenAI's O3-mini and GPT-4o-mini, Qwen's Qwen-max and Qwen-qwq-32b, and DeepSeek's v3 and r1-distill (on qwen 14b) models. All models used the same structured templates for arguments and confidence assessments.
+
+The prompts for each are given [here](https://github.com/pradyuprasad/Calibrate_Debate/blob/main/prompts/debate_prompts.yaml): https://github.com/pradyuprasad/Calibrate_Debate/blob/main/prompts/debate_prompts.yaml
 
 
 ## Key Statistics
