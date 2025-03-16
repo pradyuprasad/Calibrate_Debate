@@ -65,3 +65,8 @@ Yet the topics that produced the largest confidence increases were:
 The correlation (r=0.43) between topic difficulty and confidence increases suggests models became more confident when debating more contentious topics where even judges couldn't agree on who won. This indicates a fundamental inability to calibrate confidence according to topic complexity.
 
 The smallest confidence changes occurred in debates about professor advocacy (+3.75 average), one of the topics with highest judge agreement.
+
+## Conclusion
+Our findings reveal a systematic failure in how language models assess their own reasoning capabilities. The strong correlation between topic difficulty and increasing confidence, combined with the inverse relationship between confidence and performance, suggests these models fundamentally misunderstand uncertainty. This pattern persisted across nearly all models tested, regardless of their underlying architecture or training.
+
+The tendency of language models to become more confident precisely when they should be most uncertain raises serious concerns for their deployment in high-stakes domains. When models express high confidence, our results suggest they are actually more likely to be wrong - yet humans may be most inclined to trust models when they display high confidence. This disconnect between confidence and capability represents a significant safety risk that must be addressed.
