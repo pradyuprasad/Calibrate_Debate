@@ -7,8 +7,6 @@ The most striking finding was a positive correlation (r=0.43) between topic cont
 
 We also found that in every single debate (100%), both opposing models maintained confidence levels above 50% - a logical impossibility since they can't both be more likely than not to win. In 10.5% of debates, this mutual overconfidence was even more extreme, with both sides expressing confidence levels above 75%.
 
-Here's a draft of a concise methodology section to add:
-
 ## Methodology
 Each debate followed a structured format with three rounds (opening, rebuttal, closing). After each speech, models provided a private confidence bet (0-100%) indicating how likely they thought they were to win, along with their reasoning. Models could not see their opponent's confidence scores.
 
