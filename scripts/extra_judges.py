@@ -10,6 +10,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 config = Config()
 
+
 def main():
     sample_debate_list = list(config.sample_debates_dir.glob("*.json"))
 
@@ -25,6 +26,7 @@ def main():
             logger.info(f"Completed all iterations for model {model}")
 
         logger.info(f"Completed processing debate: {debate_path}")
+
 
 if __name__ == "__main__":
     main()

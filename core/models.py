@@ -118,9 +118,8 @@ class JudgeResult(BaseModel):
             "model": self.model,
             "winner": self.winner,
             "confidence": self.confidence,
-            "logic": self.logic
-    }
-
+            "logic": self.logic,
+        }
 
 
 class DebatorBet(BaseModel):

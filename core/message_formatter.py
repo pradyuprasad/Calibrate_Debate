@@ -41,7 +41,11 @@ class MessageFormatter:
        {self._get_debate_history(debate, next_round)}"""
 
     def _find_bet(
-        self, bets: List[DebatorBet], side: Side, speech_type: SpeechType, current_side:Side
+        self,
+        bets: List[DebatorBet],
+        side: Side,
+        speech_type: SpeechType,
+        current_side: Side,
     ) -> Optional[str]:
         """Find a bet for a specific side and speech type."""
         if not bets:
@@ -150,7 +154,8 @@ class MessageFormatter:
                     )
                     if opp_bet is not None:
                         bet_info = self._format_bet_info(
-                            current_side, Side.OPPOSITION, speech_type, opp_bet)
+                            current_side, Side.OPPOSITION, speech_type, opp_bet
+                        )
                         speech_text += f"\n{bet_info}"
 
                 transcript.append(speech_text)
