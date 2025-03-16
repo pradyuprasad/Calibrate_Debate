@@ -1,4 +1,3 @@
-You're right - let me revise the Results section without referring to non-existent figures:
 
 # Results
 
