@@ -9,6 +9,7 @@ import json
 from pathlib import Path
 import random
 from datetime import datetime
+import sys
 from typing import List, Dict, Literal, Optional, Tuple, TypedDict
 
 from dotenv import load_dotenv
@@ -30,11 +31,29 @@ class ModelStats(TypedDict):
 
 
 def setup_logging():
-    """Configure logging for the tournament."""
-    logging.basicConfig(
-        level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
-    )
-    return logging.getLogger("tournament")
+   """Configure logging for the tournament to output to both a file and stdout."""
+   # Create a logger
+   logger = logging.getLogger("tournament")
+   logger.setLevel(logging.INFO)
+
+   # Create a formatter
+   formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+
+   # Create a file handler
+   file_handler = logging.FileHandler("tournament.log")
+   file_handler.setLevel(logging.INFO)
+   file_handler.setFormatter(formatter)
+
+   # Create a console handler (for stdout)
+   console_handler = logging.StreamHandler(sys.stdout)
+   console_handler.setLevel(logging.INFO)
+   console_handler.setFormatter(formatter)
+
+   # Add both handlers to the logger
+   logger.addHandler(file_handler)
+   logger.addHandler(console_handler)
+
+   return logger
 
 
 class BetTournament:

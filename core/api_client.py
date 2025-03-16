@@ -14,13 +14,13 @@ class OpenRouterClient:
         }
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def send_request(self, model: str, messages: List[Dict]) -> APIResponse:
+    def send_request(self, model: str, messages: List[Dict], timeout:int=300) -> APIResponse:
         """Raw API request - just sends and returns response"""
         payload = {"model": model, "messages": messages}
 
         self.logger.info(f"Payload is {payload}")
 
-        response = requests.post(self.base_url, headers=self.headers, json=payload)
+        response = requests.post(self.base_url, headers=self.headers, json=payload, timeout=timeout)
 
         try:
             output = response.json()
