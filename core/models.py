@@ -113,6 +113,15 @@ class JudgeResult(BaseModel):
     confidence: int = Field(ge=0, le=100)
     logic: str
 
+    def to_dict(self) -> dict:
+        return {
+            "model": self.model,
+            "winner": self.winner,
+            "confidence": self.confidence,
+            "logic": self.logic
+    }
+
+
 
 class DebatorBet(BaseModel):
     side: Side
