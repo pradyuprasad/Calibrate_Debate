@@ -1,72 +1,126 @@
-# When Language Models Get More Confident As Experts Disagree: Results from AI Debate Tournaments
+# "They Both Can't Be Right": Systematic Overconfidence in Language Models - Project Summary
 
-## Summary
-In a series of 19 structured debates between 10 state-of-the-art language models, we discovered a concerning pattern: language models became more confident precisely when expert judges disagreed most about who won. Not only that, but higher confidence actually predicted worse performance - models with moderate confidence (51-75%) won 53.6% of their debates, while highly confident models (76-100%) won only 40%.
+## Overview
 
-There was a positive correlation (r=0.43) between topic contentiousness (measured by judge disagreement) and model confidence. In other words, the more the judges disagreed about who won a debate, the more confident the debating models became. This suggests a fundamental flaw in how these models assess their own reasoning capabilities.
-
-We also found that in every single debate (100%), both opposing models maintained confidence levels above 50% - a logical impossibility since they can't both be more likely than not to win. In 10.5% of debates, this mutual overconfidence was even more extreme, with both sides expressing confidence levels above 75%.
+This project investigates the metacognitive abilities of large language models (LLMs) – specifically, their understanding of their own argumentative strengths and weaknesses – within the context of competitive policy debate. We developed a novel debate framework, a betting-based confidence elicitation method, and a robust AI jury system to demonstrate that state-of-the-art LLMs exhibit systematic and often logically impossible overconfidence.
 
 ## Methodology
-Each debate followed a structured format with three rounds (opening, rebuttal, closing). After each speech, models provided a private confidence bet (0-100%) indicating how likely they thought they were to win, along with their reasoning. Models could not see their opponent's confidence scores.
 
-Debates covered complex policy topics including G20 carbon trading, space regulation, social media platform governance, and media coverage requirements. Each debate was evaluated by three LLM judges (Qwen-qwq-32b, Gemini-pro-1.5, and DeepSeek-chat), who provided independent winner determinations.
+We conducted 42 simulated policy debates across six diverse topics from the World Schools Debating Championships, modified to include explicit burdens of proof. Each debate:
 
-The models tested included Google's Gemini-2.0 and Gemma-3-27b-it, Anthropic's Claude-3.7-sonnet and Claude-3.5-haiku, OpenAI's O3-mini and GPT-4o-mini, Qwen's Qwen-max and Qwen-qwq-32b, and DeepSeek's v3 and r1-distill (on qwen 14b) models. All models used the same structured templates for arguments and confidence assessments.
+*   Involved two randomly assigned LLMs from a pool of ten state-of-the-art models.
+*   Followed a three-round format: opening speeches, rebuttals, and final speeches.
+*   Required models to place "confidence bets" (0-100) after each speech, indicating their perceived likelihood of winning.
+*   Was judged by a panel of three LLM judges, selected based on rigorous criteria (detailed below).
 
-The prompts for each are given [here](https://github.com/pradyuprasad/Calibrate_Debate/blob/main/prompts/debate_prompts.yaml): https://github.com/pradyuprasad/Calibrate_Debate/blob/main/prompts/debate_prompts.yaml
+**Debate Structure and Prompts:**
 
+The debates utilized structured prompts for the debating LLMs to ensure consistency and facilitate rigorous evaluation. These prompts enforced a focus on logical argumentation, evidence quality, and direct clash:
 
-## Key Statistics
-- 19 structured debates
-- 10 state-of-the-art language models
-- 36.8% unanimous judge decisions
-- 63.2% split judge decisions
-- Average confidence increased by 13.91% from opening to closing speeches
-- Only one model (Gemini-2.0) ever decreased confidence
+*   **Opening Speech:** Required models to present 2-3 arguments, each with a core claim, supporting evidence or principle, and a clear explanation of how the support proves the claim. A synthesis section connected the arguments and linked them to the debate motion.
+*   **Rebuttal Speech:** Focused on direct clash. Models were required to quote specific claims from the opponent, choose a challenge type (evidence critique, principle critique, counter-evidence, or counter-principle), provide detailed challenges, and explain the impact of winning each clash point. Defensive analysis and weighing sections were also included.
+*   **Final Speech:** Required models to identify core questions, analyze key clashes (quoting disagreements, comparing case strengths, identifying response gaps, and explaining impacts), and present voting issues with priority analysis and final weighing.
 
+All speeches were accompanied by strict judging guidance provided to the debating LLMs emphasizing direct clash, evidence quality hierarchy, logical validity, response obligations, and impact analysis. Rhetoric and presentation style were explicitly ignored.
 
-In our study of AI debates, we found a striking and concerning pattern: language models became more confident precisely when expert judges disagreed most about who won. This wasn't a small effect - models' confidence levels showed a clear positive correlation (0.43) with topic difficulty and judge disagreement.
-Even more troubling, higher confidence actually predicted worse performance. Models expressing moderate confidence (51-75%) won 53.6% of their debates, while those expressing high confidence (76-100%) won only 40%. The models were most confident when they were most likely to be wrong.
-This pattern appeared consistently across almost all models tested. In every single debate, both opposing models maintained confidence levels above 50% - a logical impossibility since they can't both be more likely than not to win. In some cases, this mutual overconfidence was extreme, with both sides expressing confidence above 75%.
-Only one model, Gemini-2.0, ever showed decreasing confidence, averaging a -3.75 point change across its debates. Every other model showed steady increases in confidence regardless of the strength of opposing arguments or judge uncertainty.
-The highest performing models (Qwen-qwq-32b, Claude-3.7-sonnet, Qwen-max, and Gemini-2.0) all achieved 75% or higher win rates. However, even these top performers showed the same pattern of increasing confidence on more difficult topics.
+## AI Judge Selection Rationale
 
+To ensure reliable and unbiased evaluation, we implemented an AI jury system rather than relying on single AI judges. Our selection process prioritized:
 
-## Results
+1.  **Performance Reliability:** Agreement with consensus, confidence calibration, and consistency across debates.
+2.  **Analytical Quality:** Ability to identify clash points, evaluate evidence, and recognize fallacies.
+3.  **Diversity of Perspectives:** Representation from different model architectures and analytical styles.
+4.  **Cost Efficiency:** Optimization of performance-to-price ratio.
 
-### Model Performance and Confidence Behavior
-Performance varied significantly across models, but showed a striking disconnect from confidence patterns. The top performer, Qwen-qwq-32b (4W-1L, 80% win rate), consistently increased its confidence across all debates (+10-15 points per debate). Three models tied for second place with 75% win rates: Claude-3.7-sonnet, Qwen-max, and Gemini-2.0-flash-001.
+Our final jury comprised:
 
-Gemini-2.0 stood out as the only model showing decreasing confidence, dropping an average of 3.75 points across its debates. Despite this apparent "uncertainty," it maintained a strong 75% win rate. This contrasts sharply with models like Gemma-3-27b-it, which showed the largest confidence increases (+23.00 on average) but won only 40% of its debates.
+*   **qwen/qwq-32b** (2 instances): High reliability, excellent calibration, and cost-effectiveness.
+*   **google/gemini-pro-1.5** (2 instances): High reliability, excellent calibration, premium pricing justified by quality.
+*   **deepseek/deepseek-chat** (2 instances): Good reliability, consistent calibration, and moderate pricing.
 
-The confidence progression patterns were remarkably consistent:
-- Most models started in the 65-75% range
-- Increased 5-15 points in middle rounds
-- Showed largest jumps in final rounds
-- Only Gemini-2.0 and DeepSeek-chat ever decreased confidence
+This configuration provides architectural diversity, strong overall reliability (calculated probability of correct majority verdict: ~99.7%), and a favorable cost structure.
 
-The clearest example of confidence failing to predict performance came from O3-mini, which increased its confidence in all five debates (+5 to +15 points each time) but finished with a losing record (2W-3L).
+**Judging Prompt and Criteria:**
 
-### Topic Difficulty and Confidence Changes
-The relationship between topic difficulty and model confidence revealed a concerning pattern. The topics that generated the most judge disagreement also prompted the largest increases in model confidence.
+The AI judges were provided with a highly detailed prompt prioritizing the following:
 
-Two topics showed 100% judge disagreement, indicating maximum difficulty:
-1. Social media shareholding (Difficulty index: 113.33)
-2. Space regulation (Difficulty index: 110.00)
+*   **Direct Clash Resolution:** Identifying and analyzing all major points of disagreement, evaluating logic, evidence, and rebuttals within each clash, and explicitly stating the winner of each clash with justification.
+*   **Argument Hierarchy and Impact:** Identifying core arguments, explaining logical links, assessing impacts, and determining the relative importance of arguments.
+*   **Consistency and Contradictions:** Identifying internal contradictions, inconsistencies, and dropped arguments.
+*   **Steel Manning:** Presenting arguments in their strongest form.
+*   **Argument-Based Decision:** Basing decisions solely on arguments within the provided text.
+*   **Ignoring Presentation:** Disregarding style and focusing on substance.
+*   **Framework Neutrality:** Maintaining neutrality between competing valid frameworks.
 
-Yet the topics that produced the largest confidence increases were:
-1. G20 carbon trading (Average increase: +18.33)
-2. Governor recall elections (Average increase: +14.62)
-3. Space regulation (Average increase: +9.67)
-4. TV news coverage rules (Average increase: +9.17)
-5. Social media shareholding (Average increase: +8.75)
+The prompt also explicitly listed common judging errors to avoid (intervention, shifting the burden of proof, etc.) and provided a structured output format for the decision, including a winner, confidence level, key factors, detailed reasoning, and line-by-line justification.
 
-The correlation (r=0.43) between topic difficulty and confidence increases suggests models became more confident when debating more contentious topics where even judges couldn't agree on who won. This indicates a fundamental inability to calibrate confidence according to topic complexity.
+## Key Findings
 
-The smallest confidence changes occurred in debates about professor advocacy (+3.75 average), one of the topics with highest judge agreement.
+*   **Pervasive Overconfidence:** Models averaged 73% confidence despite the mathematical reality of a 50% overall win rate (One-sample t-test: p < 0.0001; Wilcoxon signed-rank test: p < 0.0001).
+*   **Position Asymmetry:** Opposition models won 78.6% of debates, while proposition models won only 21.4% (Chi-square test: p < 0.0001; Fisher's exact test: p < 0.0001).
+*   **Failure to Recognize Disadvantage:** Despite vastly different win rates, proposition (73.9%) and opposition (71.19%) models maintained statistically indistinguishable confidence levels (Independent t-test: p = 0.0658; Mann-Whitney U test: p = 0.1914).
+*   **Logically Impossible Confidence:** In 71.4% of debates, both models expressed confidence exceeding 75%.
+*   **Poor Calibration and High-Confidence Failures:** The weighted average calibration error across all models was 31.39%. Models expressing high confidence (76-100%) won only 42.1% of their debates, while those with confidence between 51-75% won 51.6% of the time. There was only 1 instance in range 26-50 and 0 in range 0-25.
+*   **Statistical Confirmation:** Regression analysis showed debate side (p < 0.0001) was a significant predictor of winning, while confidence (p = 0.1096) was not.
+*   **Confidence Escalation:** Nearly all models increased their confidence throughout debates, regardless of actual performance. The average confidence change across models ranged from -0.56 to +20.00, with absolute average changes ranging from 5.44 to 20.00.
 
-## Conclusion
-Our findings reveal a systematic failure in how language models assess their own reasoning capabilities. The strong correlation between topic difficulty and increasing confidence, combined with the inverse relationship between confidence and performance, suggests these models fundamentally misunderstand uncertainty. This pattern persisted across nearly all models tested, regardless of their underlying architecture or training.
+## Model Betting Behavior Summary
 
-The tendency of language models to become more confident precisely when they should be most uncertain raises serious concerns for their deployment in high-stakes domains. When models express high confidence, our results suggest they are actually more likely to be wrong - yet humans may be most inclined to trust models when they display high confidence. This disconnect between confidence and capability represents a significant safety risk that must be addressed.
+| Model                                   | Opening | Rebuttal | Closing | Change |
+|-----------------------------------------|---------|----------|---------|--------|
+| anthropic/claude-3.5-haiku              | 71.25   | 75.00    | 85.62   | +14.37 |
+| anthropic/claude-3.7-sonnet             | 66.43   | 73.57    | 84.29   | +17.86 |
+| deepseek/deepseek-chat                  | 74.29   | 74.29    | 77.14   | +2.85  |
+| deepseek/deepseek-r1-distill-qwen-14b   | 77.22   | 80.00    | 85.00   | +7.78  |
+| google/gemini-2.0-flash-001             | 63.89   | 64.44    | 63.33   | -0.56  |
+| google/gemma-3-27b-it                   | 68.50   | 79.50    | 88.50   | +20.00 |
+| openai/gpt-4o-mini                      | 73.89   | 77.78    | 82.78   | +8.89  |
+| openai/o3-mini                          | 78.89   | 82.22    | 84.33   | +5.44  |
+| qwen/qwen-max                           | 73.33   | 81.44    | 88.33   | +15.00 |
+| qwen/qwq-32b:free                       | 78.57   | 88.14    | 92.29   | +13.72 |
+
+## Model-Specific Performance and Calibration Analysis
+
+*   **Calibration Variation:** Calibration scores ranged widely, from excellent (Qwen/qwen-max: 0.1011) to poor (Deepseek/deepseek-r1-distill-qwen-14b: 0.4842).
+*   **Well-Calibrated Models:** Qwen family, Gemini, and Claude-3.7-Sonnet showed reasonable calibration.
+*   **Significantly Overconfident:** Several models, including Claude-3.5-Haiku, GPT-4o-mini, and Deepseek models, exhibited statistically significant overconfidence (confirmed via t-tests and Wilcoxon signed-rank tests).
+
+**Calibration Analysis Methodology:**
+
+To assess model calibration, we calculated several key metrics:
+
+1.  **Calibration Score:**  This is the mean squared error between the model's confidence (expressed as a probability) and the actual outcome (win = 1, loss = 0).  A lower score indicates better calibration.  The formula is:  `sum([(confidence[i]/100 - win[i])**2 for i in range(n)]) / n`, where `n` is the number of data points.
+2.  **Average Confidence:** The mean of the model's confidence bets across all rounds.
+3.  **Win Rate:** The percentage of debates won by the model.
+4.  **Overconfidence:** The difference between average confidence and win rate.  Positive values indicate overconfidence.
+5. **Tier Accuracy:** We divided confidence values into four tiers: 0-25, 26-50, 51-75, and 76-100. We then analyzed the models' win rates for each tier separately.
+
+These metrics were calculated for each model based on its confidence bets and win/loss outcomes across all debates.
+
+## Judge Agreement
+
+Judges showed strong consensus: 38.1% unanimous decisions and 61.9% split decisions. The distribution of dissenting judges was: 0 (38.1%), 1 (19.0%), 2 (26.2%), and 3 (16.7%). This indicates strong inter-rater reliability.
+
+## Topic Difficulty
+
+Topics varied in difficulty, with social media shareholding being the most challenging (88.44 difficulty index) and media coverage requirements the least (50.50 difficulty index).
+
+## Statistical Testing Summary
+
+We employed a range of statistical tests to validate our findings:
+
+*   **General Overconfidence:** One-sample t-test, paired t-test, and Wilcoxon signed-rank test.
+*   **Proposition Disadvantage:** Chi-square test, Fisher's exact test, independent t-test, Mann-Whitney U test, and regression analysis (ANCOVA-like).
+*   **Model-Specific Overconfidence:** Individual t-tests and Wilcoxon signed-rank tests comparing each model's confidence to its win rate.
+
+## Implications
+
+These findings reveal significant metacognitive deficits in current LLMs. Despite strong linguistic capabilities, these models demonstrate limited capacity for accurate self-assessment and strategic adaptation in adversarial argumentation. The systematic overconfidence highlights fundamental limitations in their ability to reason about their own argumentative strengths and weaknesses, with important implications for the safe and reliable deployment of LLMs.
+
+## Repository Contents
+
+This repository contains:
+
+*   Debate transcripts and confidence data.
+*   Statistical analysis code and results.
+*   Detailed judge selection data and analysis.

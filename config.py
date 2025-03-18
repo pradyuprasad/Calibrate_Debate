@@ -8,6 +8,7 @@ from core.message_formatter import MessageFormatter
 from core.api_client import OpenRouterClient
 from core.debate_service import DebateService
 from core.judgement_processor import JudgementProcessor
+from core.logger import LoggerFactory
 
 
 @dataclass
@@ -40,6 +41,9 @@ class Config:
     debate_service: DebateService = field(init=False)
     judgement_processor: JudgementProcessor = field(init=False)
     bet_pattern_config: BetPatternConfig = field(init=False)
+
+
+    logger = LoggerFactory()
 
     def load_debate_prompts(self) -> DebatePrompts:
         with open(self.prompts_path_yaml, "r") as file:
@@ -92,12 +96,14 @@ class Config:
         self.message_formatter = MessageFormatter(
             prompts=self.prompts, bet_pattern_config=self.bet_pattern_config
         )
-        self.api_client = OpenRouterClient(api_key=self.api_key)
+        self.api_client = OpenRouterClient(api_key=self.api_key, logger=self.logger.get_logger())
         self.debate_service = DebateService(
             api_client=self.api_client,
             message_formatter=self.message_formatter,
             bet_pattern_config=self.bet_pattern_config,
+            logger=self.logger.get_logger()
         )
         self.judgement_processor = JudgementProcessor(
-            prompts=self.prompts, client=self.api_client
+            prompts=self.prompts, client=self.api_client,
+            logger=self.logger.get_logger()
         )

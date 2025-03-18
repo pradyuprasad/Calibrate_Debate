@@ -1,5 +1,4 @@
 import logging
-import sys
 import re
 from typing import Dict, Tuple
 from tenacity import retry, stop_after_attempt, wait_exponential
@@ -11,23 +10,16 @@ from core.api_client import OpenRouterClient
 class JudgementProcessor:
     """Handles processing of debate judgements"""
 
-    def __init__(self, prompts: DebatePrompts, client: OpenRouterClient):
+    def __init__(self, prompts: DebatePrompts, client: OpenRouterClient, logger: logging.Logger):
         self.prompts = prompts
         self.client = client
-        self.logger = logging.getLogger(__name__)
+        self.logger = logger
 
-        if not self.logger.handlers:
-            handler = logging.StreamHandler(sys.stdout)
-            formatter = logging.Formatter(
-                "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-            )
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
 
     @retry(
         stop=stop_after_attempt(10),
         wait=wait_exponential(multiplier=1, min=10, max=20),
-        before_sleep=lambda retry_state: logging.getLogger().warning(
+        before_sleep=lambda retry_state: print(
             f"Attempt {retry_state.attempt_number} failed. Failed with error: {retry_state.outcome.exception() if retry_state.outcome else 'Unknown error'}. Retrying after backoff..."
         ),
     )

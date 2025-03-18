@@ -1,0 +1,401 @@
+{
+  "model_stats": {
+    "openai/o3-mini": {
+      "wins": 2,
+      "losses": 3,
+      "bet_history": [
+        [
+          85,
+          85,
+          85
+        ],
+        [
+          80,
+          85,
+          87
+        ],
+        [
+          70,
+          75,
+          80
+        ],
+        [
+          85,
+          85,
+          85
+        ],
+        [
+          75,
+          80,
+          80
+        ]
+      ],
+      "total_margin": -0.27697981366459623,
+      "win_margin": 1.6739130434782608,
+      "rounds_played": 5,
+      "opponents": [
+        "google/gemma-3-27b-it",
+        "qwen/qwen-max",
+        "deepseek/deepseek-r1-distill-qwen-14b:free",
+        "anthropic/claude-3.5-haiku",
+        "openai/gpt-4o-mini"
+      ]
+    },
+    "google/gemini-2.0-flash-001": {
+      "wins": 3,
+      "losses": 2,
+      "bet_history": [
+        [
+          65,
+          60,
+          65
+        ],
+        [
+          65,
+          70,
+          55
+        ],
+        [
+          55,
+          65,
+          75
+        ],
+        [
+          75,
+          70,
+          60
+        ],
+        [
+          45,
+          55,
+          60
+        ]
+      ],
+      "total_margin": 0.6703296703296703,
+      "win_margin": 2.0794205794205793,
+      "rounds_played": 5,
+      "opponents": [
+        "deepseek/deepseek-chat",
+        "deepseek/deepseek-chat",
+        "openai/gpt-4o-mini",
+        "google/gemma-3-27b-it",
+        "deepseek/deepseek-r1-distill-qwen-14b:free"
+      ]
+    },
+    "anthropic/claude-3.7-sonnet": {
+      "wins": 3,
+      "losses": 0,
+      "bet_history": [
+        [
+          70,
+          80,
+          90
+        ],
+        [
+          70,
+          80,
+          90
+        ],
+        [
+          60,
+          70,
+          80
+        ]
+      ],
+      "total_margin": 2.022222222222222,
+      "win_margin": 2.022222222222222,
+      "rounds_played": 3,
+      "opponents": [
+        "qwen/qwen-max",
+        "anthropic/claude-3.5-haiku",
+        "qwen/qwq-32b:free",
+        "qwen/qwq-32b:free",
+        "google/gemma-3-27b-it"
+      ]
+    },
+    "deepseek/deepseek-chat": {
+      "wins": 2,
+      "losses": 3,
+      "bet_history": [
+        [
+          75,
+          65,
+          70
+        ],
+        [
+          80,
+          90,
+          90
+        ],
+        [
+          75,
+          85,
+          80
+        ],
+        [
+          60,
+          60,
+          70
+        ],
+        [
+          85,
+          75,
+          85
+        ]
+      ],
+      "total_margin": 0.0115765675626196,
+      "win_margin": 2.0,
+      "rounds_played": 5,
+      "opponents": [
+        "google/gemini-2.0-flash-001",
+        "google/gemini-2.0-flash-001",
+        "qwen/qwen-max",
+        "openai/gpt-4o-mini",
+        "anthropic/claude-3.5-haiku"
+      ]
+    },
+    "qwen/qwq-32b:free": {
+      "wins": 3,
+      "losses": 0,
+      "bet_history": [
+        [
+          80,
+          95,
+          98
+        ],
+        [
+          70,
+          80,
+          85
+        ],
+        [
+          75,
+          85,
+          90
+        ]
+      ],
+      "total_margin": 1.4649460708782742,
+      "win_margin": 1.4649460708782742,
+      "rounds_played": 3,
+      "opponents": [
+        "openai/gpt-4o-mini",
+        "google/gemma-3-27b-it",
+        "anthropic/claude-3.7-sonnet",
+        "anthropic/claude-3.7-sonnet",
+        "qwen/qwen-max"
+      ]
+    },
+    "openai/gpt-4o-mini": {
+      "wins": 1,
+      "losses": 4,
+      "bet_history": [
+        [
+          75,
+          80,
+          85
+        ],
+        [
+          75,
+          80,
+          85
+        ],
+        [
+          70,
+          80,
+          85
+        ],
+        [
+          75,
+          70,
+          75
+        ],
+        [
+          70,
+          75,
+          80
+        ]
+      ],
+      "total_margin": -2.760204855503707,
+      "win_margin": 0.3227990970654628,
+      "rounds_played": 5,
+      "opponents": [
+        "qwen/qwq-32b:free",
+        "deepseek/deepseek-r1-distill-qwen-14b:free",
+        "google/gemini-2.0-flash-001",
+        "deepseek/deepseek-chat",
+        "openai/o3-mini"
+      ]
+    },
+    "google/gemma-3-27b-it": {
+      "wins": 3,
+      "losses": 2,
+      "bet_history": [
+        [
+          75,
+          85,
+          85
+        ],
+        [
+          70,
+          80,
+          85
+        ],
+        [
+          60,
+          70,
+          85
+        ],
+        [
+          60,
+          75,
+          85
+        ],
+        [
+          70,
+          75,
+          80
+        ]
+      ],
+      "total_margin": 0.6547779550957518,
+      "win_margin": 2.0742694805194803,
+      "rounds_played": 5,
+      "opponents": [
+        "openai/o3-mini",
+        "qwen/qwq-32b:free",
+        "anthropic/claude-3.5-haiku",
+        "google/gemini-2.0-flash-001",
+        "anthropic/claude-3.7-sonnet"
+      ]
+    },
+    "anthropic/claude-3.5-haiku": {
+      "wins": 3,
+      "losses": 2,
+      "bet_history": [
+        [
+          75,
+          85,
+          90
+        ],
+        [
+          65,
+          55,
+          85
+        ],
+        [
+          75,
+          85,
+          90
+        ],
+        [
+          75,
+          85,
+          85
+        ],
+        [
+          70,
+          65,
+          85
+        ]
+      ],
+      "total_margin": -0.9958221612521048,
+      "win_margin": 1.0041778387478955,
+      "rounds_played": 5,
+      "opponents": [
+        "deepseek/deepseek-r1-distill-qwen-14b:free",
+        "anthropic/claude-3.7-sonnet",
+        "google/gemma-3-27b-it",
+        "openai/o3-mini",
+        "deepseek/deepseek-chat"
+      ]
+    },
+    "deepseek/deepseek-r1-distill-qwen-14b:free": {
+      "wins": 0,
+      "losses": 5,
+      "bet_history": [
+        [
+          70,
+          70,
+          85
+        ],
+        [
+          70,
+          60,
+          60
+        ],
+        [
+          85,
+          75,
+          85
+        ],
+        [
+          75,
+          85,
+          90
+        ],
+        [
+          70,
+          85,
+          80
+        ]
+      ],
+      "total_margin": -3.073590236305969,
+      "win_margin": 0.0,
+      "rounds_played": 5,
+      "opponents": [
+        "anthropic/claude-3.5-haiku",
+        "openai/gpt-4o-mini",
+        "openai/o3-mini",
+        "qwen/qwen-max",
+        "google/gemini-2.0-flash-001"
+      ]
+    },
+    "qwen/qwen-max": {
+      "wins": 3,
+      "losses": 2,
+      "bet_history": [
+        [
+          70,
+          80,
+          90
+        ],
+        [
+          85,
+          90,
+          95
+        ],
+        [
+          70,
+          65,
+          60
+        ],
+        [
+          80,
+          90,
+          95
+        ],
+        [
+          60,
+          75,
+          90
+        ]
+      ],
+      "total_margin": 2.282744580637839,
+      "win_margin": 2.350421348314607,
+      "rounds_played": 5,
+      "opponents": [
+        "anthropic/claude-3.7-sonnet",
+        "openai/o3-mini",
+        "deepseek/deepseek-chat",
+        "deepseek/deepseek-r1-distill-qwen-14b:free",
+        "qwen/qwq-32b:free"
+      ]
+    }
+  },
+  "judge_models": [
+    "qwen/qwq-32b",
+    "google/gemini-pro-1.5",
+    "deepseek/deepseek-chat"
+  ],
+  "voting_rounds": 2,
+  "timestamp": "2025-03-17T15:07:36.243492"
+}

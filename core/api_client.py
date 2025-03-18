@@ -5,14 +5,14 @@ import logging
 
 
 class OpenRouterClient:
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, logger: logging.Logger):
         self.api_key = api_key
         self.base_url = "https://openrouter.ai/api/v1/chat/completions"
         self.headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
-        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger = logger
 
     def send_request(self, model: str, messages: List[Dict], timeout:int=300) -> APIResponse:
         """Raw API request - just sends and returns response"""
@@ -20,10 +20,14 @@ class OpenRouterClient:
 
         self.logger.info(f"Payload is {payload}")
 
-        response = requests.post(self.base_url, headers=self.headers, json=payload, timeout=timeout)
+
+
 
         try:
+            response = requests.post(self.base_url, headers=self.headers, json=payload, timeout=(30, timeout))
             output = response.json()
+        except requests.exceptions.Timeout as e:
+            self.logger.error(f"REQUEST TIMED OUT: {str(e)}", exc_info=True)
         except ValueError as e:
             self.logger.error(f"Error decoding JSON response: {e}")
             self.logger.error(f"Response content: {response.text}")

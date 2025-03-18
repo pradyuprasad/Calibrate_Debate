@@ -10,6 +10,11 @@ from collections import defaultdict
 
 from core.models import DebateTotal, Side, SpeechType
 from scripts.utils import sanitize_model_name
+import numpy as np
+from scipy import stats
+import statsmodels.api as sm
+from scipy.stats import ttest_1samp, ttest_ind, ttest_rel, chi2_contingency, fisher_exact, wilcoxon, mannwhitneyu
+
 
 # Set up logging
 logging.basicConfig(
@@ -18,18 +23,32 @@ logging.basicConfig(
 )
 logger = logging.getLogger("quantitative_analysis")
 
-# Set the tournament directory
-tournament_dir = Path("tournament/bet_tournament_20250316_1548")
+# Set the tournament directories
+tournament_dirs = [
+    Path("tournament/bet_tournament_20250316_1548"),
+    Path("tournament/bet_tournament_20250317_1059")
+]
 
-# Load tournament results
-tournament_results_path = tournament_dir / "tournament_results.json"
-with open(tournament_results_path, "r") as f:
-    tournament_results = json.load(f)
-    model_stats = tournament_results.get("model_stats", {})
+# Initialize combined model stats
+combined_model_stats = {}
+
+# Load tournament results from all directories
+for tournament_dir in tournament_dirs:
+    tournament_results_path = tournament_dir / "tournament_results.json"
+    try:
+        with open(tournament_results_path, "r") as f:
+            tournament_results = json.load(f)
+            # Merge model stats
+            combined_model_stats.update(tournament_results.get("model_stats", {}))
+            logger.info(f"Loaded tournament results from: {tournament_dir}")
+    except FileNotFoundError:
+        logger.warning(f"Tournament results file not found: {tournament_results_path}")
+    except json.JSONDecodeError:
+        logger.error(f"Error parsing JSON from: {tournament_results_path}")
 
 # Print all available models with indices
 print("\n=== AVAILABLE MODELS ===")
-all_models = list(model_stats.keys())
+all_models = list(combined_model_stats.keys())
 for i, model in enumerate(all_models):
     print(f"[{i}] {model}")
 
@@ -52,44 +71,47 @@ if exclude_option == 'y':
         print("Warning: Invalid input format. No models will be excluded.")
 
 # Remove excluded models from stats
-original_model_count = len(model_stats)
+original_model_count = len(combined_model_stats)
 for excluded_model in EXCLUDED_MODELS:
-    if excluded_model in model_stats:
+    if excluded_model in combined_model_stats:
         logger.info(f"Excluding model from stats: {excluded_model}")
-        del model_stats[excluded_model]
+        del(combined_model_stats[excluded_model])
 
 if EXCLUDED_MODELS:
-    logger.info(f"Excluded {original_model_count - len(model_stats)} models from analysis")
+    logger.info(f"Excluded {original_model_count - len(combined_model_stats)} models from analysis")
 
-# Find all debate files
-debates = []
-round_dirs = [d for d in tournament_dir.glob("round_*") if d.is_dir()]
+# Find all debate files from all tournament directories
+all_debates = []
 
-for round_dir in round_dirs:
-    round_num = int(round_dir.name.split("_")[1])
-    for debate_path in round_dir.glob("*.json"):
-        try:
-            debate = DebateTotal.load_from_json(debate_path)
+for tournament_dir in tournament_dirs:
+    round_dirs = [d for d in tournament_dir.glob("round_*") if d.is_dir()]
 
-            # Skip debates involving any excluded model
-            if any(excluded_model in [debate.proposition_model, debate.opposition_model]
-                   for excluded_model in EXCLUDED_MODELS):
-                logger.info(f"Skipping debate with excluded model: {debate_path.name}")
-                continue
+    for round_dir in round_dirs:
+        round_num = int(round_dir.name.split("_")[1])
+        for debate_path in round_dir.glob("*.json"):
+            try:
+                debate = DebateTotal.load_from_json(debate_path)
 
-            debates.append({
-                "round": round_num,
-                "path": debate_path,
-                "debate": debate,
-                "prop_model": debate.proposition_model,
-                "opp_model": debate.opposition_model,
-                "topic": debate.motion.topic_description
-            })
-            logger.info(f"Loaded debate: {debate_path.name}")
-        except Exception as e:
-            logger.error(f"Failed to load debate {debate_path}: {str(e)}")
+                # Skip debates involving any excluded model
+                if any(excluded_model in [debate.proposition_model, debate.opposition_model]
+                       for excluded_model in EXCLUDED_MODELS):
+                    logger.info(f"Skipping debate with excluded model: {debate_path.name}")
+                    continue
 
-logger.info(f"Loaded {len(debates)} debates across {len(round_dirs)} rounds")
+                all_debates.append({
+                    "round": round_num,
+                    "path": debate_path,
+                    "debate": debate,
+                    "prop_model": debate.proposition_model,
+                    "opp_model": debate.opposition_model,
+                    "topic": debate.motion.topic_description,
+                    "tournament": tournament_dir.name
+                })
+                logger.info(f"Loaded debate: {debate_path.name} from {tournament_dir.name}")
+            except Exception as e:
+                logger.error(f"Failed to load debate {debate_path}: {str(e)}")
+
+logger.info(f"Loaded {len(all_debates)} debates across {len(tournament_dirs)} tournaments")
 
 # Initialize data structures for quantitative analysis
 win_rates_by_confidence = {
@@ -109,8 +131,18 @@ round_confidence = defaultdict(lambda: {"opening": [], "rebuttal": [], "closing"
 overconfidence_metrics = defaultdict(lambda: {"high_conf_losses": 0, "high_conf_debates": 0})
 judge_agreement_count = {"unanimous": 0, "split": 0}
 
+# Calibration data structures
+calibration_opp_only = defaultdict(lambda: {"confidence": [], "win": []})
+calibration_high_agreement = defaultdict(lambda: {"confidence": [], "win": []})
+calibration_winning_models = defaultdict(lambda: {"confidence": [], "win": []})
+
+# NEW: Additional Calibration Data Structures
+calibration_prop_only = defaultdict(lambda: {"confidence": [], "win": []})
+calibration_losing_models = defaultdict(lambda: {"confidence": [], "win": []})
+calibration_low_agreement = defaultdict(lambda: {"confidence": [], "win": []})
+
 # Extract quantitative data from debates
-for debate_data in debates:
+for debate_data in all_debates:
     debate = debate_data["debate"]
     if not debate.debator_bets or not debate.judge_results:
         continue
@@ -125,6 +157,9 @@ for debate_data in debates:
     # Check for judge agreement
     total_judges = len(debate.judge_results)
     max_agreement = max(winner_counts.values())
+    is_high_agreement = max_agreement == total_judges  # Boolean for high agreement
+    is_low_agreement = max_agreement < total_judges   # NEW: Boolean for low agreement
+
     if max_agreement == total_judges:
         judge_agreement_count["unanimous"] += 1
     else:
@@ -178,6 +213,30 @@ for debate_data in debates:
             if winner != "proposition":
                 overconfidence_metrics[debate.proposition_model]["high_conf_losses"] += 1
 
+        # Calibration - Winning Models (Prop)
+        if winner == "proposition":
+            calibration_winning_models[debate.proposition_model]["confidence"].append(prop_initial)
+            calibration_winning_models[debate.proposition_model]["win"].append(1)
+
+        # Calibration - High Agreement (Prop)
+        if is_high_agreement:
+            calibration_high_agreement[debate.proposition_model]["confidence"].append(prop_initial)
+            calibration_high_agreement[debate.proposition_model]["win"].append(1 if winner == "proposition" else 0)
+
+        # NEW: Calibration - Proposition Models Only
+        calibration_prop_only[debate.proposition_model]["confidence"].append(prop_initial)
+        calibration_prop_only[debate.proposition_model]["win"].append(1 if winner == "proposition" else 0)
+
+        # NEW: Calibration - Losing Models (Prop)
+        if winner != "proposition":
+            calibration_losing_models[debate.proposition_model]["confidence"].append(prop_initial)
+            calibration_losing_models[debate.proposition_model]["win"].append(0)
+
+        # NEW: Calibration - Low Agreement Debates (Prop)
+        if is_low_agreement:
+            calibration_low_agreement[debate.proposition_model]["confidence"].append(prop_initial)
+            calibration_low_agreement[debate.proposition_model]["win"].append(1 if winner == "proposition" else 0)
+
     if SpeechType.OPENING in opp_bets and SpeechType.CLOSING in opp_bets:
         opp_change = opp_bets[SpeechType.CLOSING] - opp_bets[SpeechType.OPENING]
         model_confidence_changes[debate.opposition_model].append(opp_change)
@@ -209,6 +268,30 @@ for debate_data in debates:
             overconfidence_metrics[debate.opposition_model]["high_conf_debates"] += 1
             if winner != "opposition":
                 overconfidence_metrics[debate.opposition_model]["high_conf_losses"] += 1
+
+        # Calibration - Opposition Only
+        calibration_opp_only[debate.opposition_model]["confidence"].append(opp_initial)
+        calibration_opp_only[debate.opposition_model]["win"].append(1 if winner == "opposition" else 0)
+
+        # Calibration - Winning Models (Opp)
+        if winner == "opposition":
+            calibration_winning_models[debate.opposition_model]["confidence"].append(opp_initial)
+            calibration_winning_models[debate.opposition_model]["win"].append(1)
+
+        # Calibration - High Agreement (Opp)
+        if is_high_agreement:
+            calibration_high_agreement[debate.opposition_model]["confidence"].append(opp_initial)
+            calibration_high_agreement[debate.opposition_model]["win"].append(1 if winner == "opposition" else 0)
+
+        # NEW: Calibration - Losing Models (Opp)
+        if winner != "opposition":
+            calibration_losing_models[debate.opposition_model]["confidence"].append(opp_initial)
+            calibration_losing_models[debate.opposition_model]["win"].append(0)
+
+        # NEW: Calibration - Low Agreement Debates (Opp)
+        if is_low_agreement:
+            calibration_low_agreement[debate.opposition_model]["confidence"].append(opp_initial)
+            calibration_low_agreement[debate.opposition_model]["win"].append(1 if winner == "opposition" else 0)
 
     # Calculate confidence gap if both sides have opening bets
     if SpeechType.OPENING in prop_bets and SpeechType.OPENING in opp_bets:
@@ -246,13 +329,40 @@ for model in set(model_confidence_in_wins.keys()) | set(model_confidence_in_loss
         print(f"{model}: Avg confidence in wins {avg_win_conf:.2f}, in losses {avg_loss_conf:.2f}, ratio {ratio:.2f}")
 
 # 4. Judge agreement
+# 4. Judge agreement
 print("\n=== JUDGE AGREEMENT ===")
 total_judged = judge_agreement_count["unanimous"] + judge_agreement_count["split"]
 if total_judged > 0:
+    # Create a distribution by number of dissenting judges
+    dissent_distribution = defaultdict(int)
+
+    for debate_data in all_debates:
+        debate = debate_data["debate"]
+        if not debate.judge_results:
+            continue
+
+        winner_counts = {"proposition": 0, "opposition": 0}
+        for result in debate.judge_results:
+            winner_counts[result.winner] += 1
+
+        total_judges = len(debate.judge_results)
+        max_votes = max(winner_counts.values())
+        dissenting_votes = total_judges - max_votes
+
+        dissent_distribution[dissenting_votes] += 1
+
+    # Display the unanimous and split statistics
     unanimous_pct = (judge_agreement_count["unanimous"] / total_judged) * 100
     split_pct = (judge_agreement_count["split"] / total_judged) * 100
     print(f"Unanimous decisions: {judge_agreement_count['unanimous']}/{total_judged} ({unanimous_pct:.1f}%)")
     print(f"Split decisions: {judge_agreement_count['split']}/{total_judged} ({split_pct:.1f}%)")
+
+    # Display the detailed distribution by number of dissenting judges
+    print("\nJudge decision distribution by number of dissenting judges:")
+    for dissent_count, debate_count in sorted(dissent_distribution.items()):
+        percentage = (debate_count / total_judged) * 100
+        print(f"  {dissent_count} dissenting judge{'s' if dissent_count != 1 else ''}: {debate_count} debates ({percentage:.1f}%)")
+
 
 # 5. Topic difficulty index
 print("\n=== TOPIC DIFFICULTY INDEX ===")
@@ -317,11 +427,7 @@ for model, data in overconfidence_metrics.items():
         overconf_rate = (data["high_conf_losses"] / data["high_conf_debates"]) * 100
         print(f"{model}: Lost {data['high_conf_losses']}/{data['high_conf_debates']} high-confidence debates ({overconf_rate:.1f}%)")
 
-print("\nQuantitative analysis complete!")
-
-
-# Add this section after the other analyses
-
+# 10. Confidence vs Topic Contentiousness
 print("\n=== CONFIDENCE VS TOPIC CONTENTIOUSNESS ===")
 
 # Create a contentiousness score for each topic (0-100)
@@ -338,7 +444,7 @@ for topic, data in topic_difficulty.items():
         }
 
 # Now collect confidence data for each topic
-for debate_data in debates:
+for debate_data in all_debates:
     debate = debate_data["debate"]
     if not debate.debator_bets or not debate.judge_results:
         continue
@@ -433,3 +539,329 @@ if len(contentiousness_values) >= 3:  # Need at least 3 points for meaningful co
     if ratio_correlation > 0:
         print("\nLoser/winner confidence ratio increases with topic contentiousness, suggesting models are less able to identify winning arguments on difficult topics.")
 
+# Add tournament comparison section
+print("\n=== TOURNAMENT COMPARISON ===")
+
+# Group debates by tournament
+debates_by_tournament = defaultdict(list)
+for debate_data in all_debates:
+    tournament = debate_data["tournament"]
+    debates_by_tournament[tournament].append(debate_data)
+
+# Compare key metrics across tournaments
+for tournament, debates in debates_by_tournament.items():
+    print(f"\n{tournament} - {len(debates)} debates")
+
+    # Calculate tournament-specific judge agreement
+    tournament_judge_agreement = {"unanimous": 0, "split": 0}
+
+    for debate_data in debates:
+        debate = debate_data["debate"]
+        if not debate.judge_results:
+            continue
+
+        winner_counts = {"proposition": 0, "opposition": 0}
+        for result in debate.judge_results:
+            winner_counts[result.winner] += 1
+
+        total_judges = len(debate.judge_results)
+        max_agreement = max(winner_counts.values())
+        if max_agreement == total_judges:
+            tournament_judge_agreement["unanimous"] += 1
+        else:
+            tournament_judge_agreement["split"] += 1
+
+    total_judged = tournament_judge_agreement["unanimous"] + tournament_judge_agreement["split"]
+    if total_judged > 0:
+        unanimous_pct = (tournament_judge_agreement["unanimous"] / total_judged) * 100
+        split_pct = (tournament_judge_agreement["split"] / total_judged) * 100
+        print(f"  Judge Agreement: {tournament_judge_agreement['unanimous']}/{total_judged} unanimous ({unanimous_pct:.1f}%)")
+
+    # Calculate average confidence
+    tournament_confidences = []
+    for debate_data in debates:
+        debate = debate_data["debate"]
+        for bet in debate.debator_bets:
+            if bet.speech_type == SpeechType.OPENING:
+                tournament_confidences.append(bet.amount)
+
+    if tournament_confidences:
+        avg_conf = sum(tournament_confidences) / len(tournament_confidences)
+        print(f"  Average opening confidence: {avg_conf:.2f}")
+
+# Calibration Breakdowns
+print("\n=== CALIBRATION BREAKDOWN ===")
+
+# 1. Opposition Models Only
+print("\n--- Calibration: Opposition Models Only ---")
+for model, data in calibration_opp_only.items():
+    if data["confidence"] and data["win"]:
+        n = len(data["confidence"])
+        calibration_score = sum((data["confidence"][i]/100 - data["win"][i])**2 for i in range(n)) / n
+        print(f"{model}: Calibration score {calibration_score:.4f} (lower is better)")
+
+# 2. High-Agreement Debates Only
+print("\n--- Calibration: High-Agreement Debates Only ---")
+for model, data in calibration_high_agreement.items():
+    if data["confidence"] and data["win"]:
+        n = len(data["confidence"])
+        calibration_score = sum((data["confidence"][i]/100 - data["win"][i])**2 for i in range(n)) / n
+        print(f"{model}: Calibration score {calibration_score:.4f} (lower is better)")
+
+# 3. Winning Models Only
+print("\n--- Calibration: Winning Models Only ---")
+for model, data in calibration_winning_models.items():
+    if data["confidence"] and data["win"]:
+        n = len(data["confidence"])
+        calibration_score = sum((data["confidence"][i]/100 - data["win"][i])**2 for i in range(n)) / n
+        print(f"{model}: Calibration score {calibration_score:.4f} (lower is better)")
+
+# NEW: 4. Proposition Models Only
+print("\n--- Calibration: Proposition Models Only ---")
+for model, data in calibration_prop_only.items():
+    if data["confidence"] and data["win"]:
+        n = len(data["confidence"])
+        calibration_score = sum((data["confidence"][i]/100 - data["win"][i])**2 for i in range(n)) / n
+        print(f"{model}: Calibration score {calibration_score:.4f} (lower is better)")
+
+# NEW: 5. Losing Models Only
+print("\n--- Calibration: Losing Models Only ---")
+for model, data in calibration_losing_models.items():
+    if data["confidence"] and data["win"]:
+        n = len(data["confidence"])
+        calibration_score = sum((data["confidence"][i]/100 - data["win"][i])**2 for i in range(n)) / n
+        print(f"{model}: Calibration score {calibration_score:.4f} (lower is better)")
+
+# NEW: 6. Low-Agreement Debates Only
+print("\n--- Calibration: Low-Agreement Debates Only ---")
+for model, data in calibration_low_agreement.items():
+    if data["confidence"] and data["win"]:
+        n = len(data["confidence"])
+        calibration_score = sum((data["confidence"][i]/100 - data["win"][i])**2 for i in range(n)) / n
+        print(f"{model}: Calibration score {calibration_score:.4f} (lower is better)")
+
+print("\nQuantitative analysis complete!")
+
+# === STATISTICAL HYPOTHESIS TESTING ===
+print("\n=== STATISTICAL HYPOTHESIS TESTING ===")
+
+# Prepare data structures for statistical tests
+all_opening_confidences = []
+all_win_outcomes = []
+prop_opening_confidences = []
+prop_win_outcomes = []
+opp_opening_confidences = []
+opp_win_outcomes = []
+
+# Contingency table for side vs. outcome
+side_outcome_counts = {"proposition": {"win": 0, "loss": 0},
+                       "opposition": {"win": 0, "loss": 0}}
+
+for debate_data in all_debates:
+    debate = debate_data["debate"]
+    if not debate.debator_bets or not debate.judge_results:
+        continue
+
+    # Determine winner
+    winner_counts = {"proposition": 0, "opposition": 0}
+    for result in debate.judge_results:
+        winner_counts[result.winner] += 1
+
+    winner = "proposition" if winner_counts["proposition"] > winner_counts["opposition"] else "opposition"
+
+    # Extract opening confidences
+    prop_conf = None
+    opp_conf = None
+
+    for bet in debate.debator_bets:
+        if bet.speech_type == SpeechType.OPENING:
+            if bet.side == Side.PROPOSITION:
+                prop_conf = bet.amount
+            elif bet.side == Side.OPPOSITION:
+                opp_conf = bet.amount
+
+    # Update data structures if we have both confidences
+    if prop_conf is not None and opp_conf is not None:
+        # Update proposition data
+        prop_opening_confidences.append(prop_conf)
+        prop_win = 1 if winner == "proposition" else 0
+        prop_win_outcomes.append(prop_win)
+
+        # Update opposition data
+        opp_opening_confidences.append(opp_conf)
+        opp_win = 1 if winner == "opposition" else 0
+        opp_win_outcomes.append(opp_win)
+
+        # Update all data
+        all_opening_confidences.extend([prop_conf, opp_conf])
+        all_win_outcomes.extend([prop_win, opp_win])
+
+        # Update contingency table
+        if winner == "proposition":
+            side_outcome_counts["proposition"]["win"] += 1
+            side_outcome_counts["opposition"]["loss"] += 1
+        else:
+            side_outcome_counts["proposition"]["loss"] += 1
+            side_outcome_counts["opposition"]["win"] += 1
+
+# Create contingency table for chi-square test
+contingency_table = [
+    [side_outcome_counts["proposition"]["win"], side_outcome_counts["proposition"]["loss"]],
+    [side_outcome_counts["opposition"]["win"], side_outcome_counts["opposition"]["loss"]]
+]
+
+print("\n--- Hypothesis 1: General Overconfidence ---")
+
+# Test 1: One-sample t-test for overall confidence > 50
+t_stat, p_value = ttest_1samp(all_opening_confidences, 50)
+print(f"One-sample t-test (Confidence > 50):")
+print(f"  Mean confidence: {np.mean(all_opening_confidences):.2f}")
+print(f"  t-statistic: {t_stat:.3f}")
+print(f"  p-value: {p_value/2:.4f} (one-tailed)")  # Divide by 2 for one-tailed test
+print(f"  Result: {'Statistically significant overconfidence' if p_value/2 < 0.05 else 'No significant overconfidence'}")
+
+# Test 2: Paired t-test for confidence vs. outcomes
+paired_t_stat, paired_p_value = ttest_rel(all_opening_confidences, [x*100 for x in all_win_outcomes])
+print(f"\nPaired t-test (Confidence vs. Actual Win Rate):")
+print(f"  Mean confidence: {np.mean(all_opening_confidences):.2f}")
+print(f"  Mean win rate: {np.mean(all_win_outcomes)*100:.2f}%")
+print(f"  Mean difference: {np.mean(np.array(all_opening_confidences) - np.array(all_win_outcomes)*100):.2f}")
+print(f"  t-statistic: {paired_t_stat:.3f}")
+print(f"  p-value: {paired_p_value/2:.4f} (one-tailed)")  # Divide by 2 for one-tailed test
+print(f"  Result: {'Statistically significant overconfidence' if paired_p_value/2 < 0.05 else 'No significant overconfidence'}")
+
+# Non-parametric alternative: Wilcoxon signed-rank test
+if len(all_opening_confidences) > 20:  # Only run if we have enough samples
+    try:
+        w_stat, w_p_value = wilcoxon(np.array(all_opening_confidences) - np.array(all_win_outcomes)*100)
+        print(f"\nWilcoxon signed-rank test (non-parametric alternative):")
+        print(f"  W-statistic: {w_stat}")
+        print(f"  p-value: {w_p_value/2:.4f} (one-tailed)")
+        print(f"  Result: {'Statistically significant overconfidence' if w_p_value/2 < 0.05 else 'No significant overconfidence'}")
+    except Exception as e:
+        print(f"\nWilcoxon test failed: {str(e)}")
+
+print("\n--- Hypothesis 2: Proposition Disadvantage and Metacognitive Failure ---")
+
+# Test 1: Chi-square test for side vs. outcome
+chi2, p_value, dof, expected = chi2_contingency(contingency_table)
+print(f"Chi-square test (Side vs. Outcome):")
+print(f"  Contingency table:")
+print(f"    Proposition: {contingency_table[0][0]} wins, {contingency_table[0][1]} losses ({contingency_table[0][0]/(contingency_table[0][0]+contingency_table[0][1])*100:.1f}% win rate)")
+print(f"    Opposition: {contingency_table[1][0]} wins, {contingency_table[1][1]} losses ({contingency_table[1][0]/(contingency_table[1][0]+contingency_table[1][1])*100:.1f}% win rate)")
+print(f"  Chi-square: {chi2:.3f}")
+print(f"  p-value: {p_value:.4f}")
+print(f"  Result: {'Statistically significant proposition disadvantage' if p_value < 0.05 else 'No significant proposition disadvantage'}")
+
+# Fisher's exact test for small sample sizes
+oddsratio, fisher_p_value = fisher_exact(contingency_table)
+print(f"\nFisher's exact test (for small samples):")
+print(f"  Odds ratio: {oddsratio:.3f}")
+print(f"  p-value: {fisher_p_value:.4f}")
+print(f"  Result: {'Statistically significant proposition disadvantage' if fisher_p_value < 0.05 else 'No significant proposition disadvantage'}")
+
+# Test 2: Independent t-test for proposition vs opposition confidence
+t_stat, p_value = ttest_ind(prop_opening_confidences, opp_opening_confidences)
+print(f"\nIndependent t-test (Proposition vs. Opposition Confidence):")
+print(f"  Mean proposition confidence: {np.mean(prop_opening_confidences):.2f}")
+print(f"  Mean opposition confidence: {np.mean(opp_opening_confidences):.2f}")
+print(f"  Difference: {np.mean(prop_opening_confidences) - np.mean(opp_opening_confidences):.2f}")
+print(f"  t-statistic: {t_stat:.3f}")
+print(f"  p-value: {p_value/2:.4f} (one-tailed for prop > opp)")  # Divide by 2 for one-tailed test
+print(f"  Result: {'Proposition models show higher confidence' if p_value/2 < 0.05 and t_stat > 0 else 'No significant difference in confidence'}")
+
+# Mann-Whitney U test (non-parametric alternative)
+u_stat, mw_p_value = mannwhitneyu(prop_opening_confidences, opp_opening_confidences, alternative='two-sided')
+print(f"\nMann-Whitney U test (non-parametric alternative):")
+print(f"  U-statistic: {u_stat}")
+print(f"  p-value: {mw_p_value:.4f}")
+print(f"  Result: {'Significant difference in confidence distributions' if mw_p_value < 0.05 else 'No significant difference in confidence distributions'}")
+
+# Test 3: ANCOVA-like analysis using linear regression
+# Combine data for regression
+sides = [0] * len(prop_opening_confidences) + [1] * len(opp_opening_confidences)  # 0 for proposition, 1 for opposition
+confidences = prop_opening_confidences + opp_opening_confidences
+outcomes = prop_win_outcomes + opp_win_outcomes
+
+# Add constant term for intercept
+X = sm.add_constant(np.column_stack((sides, confidences)))
+model = sm.OLS(outcomes, X)
+results = model.fit()
+
+print("\nRegression analysis (ANCOVA-like approach):")
+print("  Model: Win ~ Intercept + Side + Confidence")
+print(f"  R-squared: {results.rsquared:.4f}")
+print("  Coefficients:")
+print(f"    Intercept: {results.params[0]:.4f} (p={results.pvalues[0]:.4f})")
+print(f"    Side (Opp=1): {results.params[1]:.4f} (p={results.pvalues[1]:.4f})")
+print(f"    Confidence: {results.params[2]:.4f} (p={results.pvalues[2]:.4f})")
+
+side_effect = "has" if results.pvalues[1] < 0.05 else "does not have"
+confidence_effect = "is" if results.pvalues[2] < 0.05 else "is not"
+print(f"  Interpretation: After controlling for confidence, debate side {side_effect} a significant effect on winning.")
+print(f"                  Confidence {confidence_effect} a significant predictor of winning.")
+
+if results.pvalues[1] < 0.05 and results.params[1] > 0:
+    print("  This suggests Opposition has an advantage even after accounting for confidence differences.")
+elif results.pvalues[1] < 0.05 and results.params[1] < 0:
+    print("  This suggests Proposition has an advantage after accounting for confidence differences.")
+
+# Model-specific overconfidence analysis
+print("\n--- Model-Specific Overconfidence Analysis ---")
+model_data = {}
+
+for debate_data in all_debates:
+    debate = debate_data["debate"]
+    if not debate.debator_bets or not debate.judge_results:
+        continue
+
+    # Determine winner
+    winner_counts = {"proposition": 0, "opposition": 0}
+    for result in debate.judge_results:
+        winner_counts[result.winner] += 1
+
+    winner = "proposition" if winner_counts["proposition"] > winner_counts["opposition"] else "opposition"
+
+    # Process proposition
+    prop_model = debate.proposition_model
+    if prop_model not in model_data:
+        model_data[prop_model] = {"confidences": [], "outcomes": []}
+
+    # Process opposition
+    opp_model = debate.opposition_model
+    if opp_model not in model_data:
+        model_data[opp_model] = {"confidences": [], "outcomes": []}
+
+    # Add confidences and outcomes for both sides
+    for bet in debate.debator_bets:
+        if bet.speech_type == SpeechType.OPENING:
+            if bet.side == Side.PROPOSITION:
+                model_data[prop_model]["confidences"].append(bet.amount)
+                model_data[prop_model]["outcomes"].append(1 if winner == "proposition" else 0)
+            elif bet.side == Side.OPPOSITION:
+                model_data[opp_model]["confidences"].append(bet.amount)
+                model_data[opp_model]["outcomes"].append(1 if winner == "opposition" else 0)
+
+# Run t-test for each model
+print("\nOverconfidence by model (t-test comparing confidence to win rate):")
+for model, data in model_data.items():
+    if len(data["confidences"]) >= 5:  # Only test if we have enough samples
+        confs = data["confidences"]
+        outcomes = [x*100 for x in data["outcomes"]]  # Scale to percentage
+        t_stat, p_value = ttest_rel(confs, outcomes)
+        mean_diff = np.mean(np.array(confs) - np.array(outcomes))
+        print(f"{model}:")
+        print(f"  Samples: {len(confs)}")
+        print(f"  Mean confidence: {np.mean(confs):.2f}%")
+        print(f"  Win rate: {np.mean(data['outcomes'])*100:.2f}%")
+        print(f"  Mean difference: {mean_diff:.2f}%")
+        print(f"  t-statistic: {t_stat:.3f}")
+        print(f"  p-value: {p_value/2:.4f} (one-tailed)")
+        if p_value/2 < 0.05:
+            if mean_diff > 0:
+                print(f"  Result: OVERCONFIDENT (statistically significant)")
+            else:
+                print(f"  Result: UNDERCONFIDENT (statistically significant)")
+        else:
+            print(f"  Result: Well-calibrated (no significant difference)")
+        print("")

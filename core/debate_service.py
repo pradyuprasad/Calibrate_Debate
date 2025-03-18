@@ -17,8 +17,6 @@ from utils.utils import make_rounds
 from core.api_client import OpenRouterClient
 from core.message_formatter import MessageFormatter
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 class DebateService:
@@ -27,10 +25,12 @@ class DebateService:
         api_client: OpenRouterClient,
         message_formatter: MessageFormatter,
         bet_pattern_config: BetPatternConfig,
+        logger: logging.Logger
     ):
         self.api_client = api_client
         self.message_formatter = message_formatter
         self.bet_pattern_config = bet_pattern_config
+        self.logger = logger
 
     def extract_bet_amount(self, speech_text: str, model: str, round: Round) -> int:
         """
@@ -54,10 +54,10 @@ class DebateService:
             return max(0, min(bet_amount, 100))
 
         # If no valid bet found, ask for manual input
-        logger.warning(
+        self.logger.warning(
             f"Could not extract bet from {model} for {round.side.value} {round.speech_type.value}"
         )
-        logger.info(f"Speech content: {speech_text}... (truncated)")
+        self.logger.info(f"Speech content: {speech_text}... (truncated)")
 
         while True:
             try:
@@ -67,9 +67,9 @@ class DebateService:
                 bet_amount = int(user_input.strip())
                 if 0 <= bet_amount <= 100:
                     return bet_amount
-                logger.error("Bet must be between 0 and 100")
+                self.logger.error("Bet must be between 0 and 100")
             except ValueError:
-                logger.error("Please enter a valid number")
+                self.logger.error("Please enter a valid number")
 
     def extract_bet_logic(self, speech_text: str, model: str, round: Round) -> str:
         """
@@ -87,10 +87,10 @@ class DebateService:
         if match:
             bet_logic_private = match.group(1).strip()
             return bet_logic_private
-        logger.warning(
+        self.logger.warning(
             f"Could not extract bet logic from {model} for {round.side.value} {round.speech_type.value}"
         )
-        logger.info(f"Speech content: {speech_text}")
+        self.logger.info(f"Speech content: {speech_text}")
         user_input = input(
             f"\nEnter bet logic for {model} {round.side.value} {round.speech_type.value}: "
         )
@@ -117,9 +117,9 @@ class DebateService:
         Returns:
             DebateTotal: The completed debate
         """
-        logger.debug("running debate!")
-        logger.info(f"Starting debate on motion: {motion.topic_description}")
-        logger.info(f"Debate type: {debate_type.value}")
+        self.logger.debug("running debate!")
+        self.logger.info(f"Starting debate on motion: {motion.topic_description}")
+        self.logger.info(f"Debate type: {debate_type.value}")
 
         # Initialize debate
         debate = DebateTotal(
@@ -135,17 +135,17 @@ class DebateService:
         # Run debate rounds
         rounds = make_rounds()
         for round in rounds:
-            logger.info(f"Executing round: {round.speech_type} for {round.side}")
+            self.logger.info(f"Executing round: {round.speech_type} for {round.side}")
             self._execute_round(debate, round)
             debate.save_to_json()
 
-        logger.info("Debate completed successfully")
+        self.logger.info("Debate completed successfully")
         return debate
 
     @retry(
         stop=stop_after_attempt(10),
         wait=wait_exponential(multiplier=1, min=10, max=20),
-        before_sleep=lambda retry_state: logger.warning(
+        before_sleep=lambda retry_state: print(
             f"Attempt {retry_state.attempt_number} failed. Retrying..."
         ),
     )
@@ -172,7 +172,7 @@ class DebateService:
                 bet_logic_private = self.extract_bet_logic(
                     response.content, model, round
                 )
-                logger.info(
+                self.logger.info(
                     f"Extracted bet amount {bet_amount} \n with logic {bet_logic_private}"
                 )
                 new_bet = DebatorBet(
@@ -186,7 +186,7 @@ class DebateService:
                     debate.debator_bets = []
 
                 debate.debator_bets.append(new_bet)
-                logger.info(
+                self.logger.info(
                     f"Recorded bet: {bet_amount} for {round.side.value} {round.speech_type.value}"
                 )
                 cleaned_speech = re.sub(
@@ -217,7 +217,7 @@ class DebateService:
                 total_tokens=response.completion_tokens + response.prompt_tokens,
             )
 
-            logger.info(f"Successfully completed {round.speech_type} for {round.side}")
+            self.logger.info(f"Successfully completed {round.speech_type} for {round.side}")
 
         except Exception as e:
             # Track failed token usage if available
@@ -231,7 +231,7 @@ class DebateService:
                     prompt_tokens=usage.get("prompt_tokens", 0),
                     total_tokens=usage.get("total_tokens", 0),
                 )
-            logger.error(f"Error in debate round: {str(e)}")
+            self.logger.error(f"Error in debate round: {str(e)}")
             raise
 
     def continue_debate(self, debate_path: Path) -> DebateTotal:
@@ -244,7 +244,7 @@ class DebateService:
         Returns:
             DebateTotal: The completed debate
         """
-        logger.info(f"Continuing debate from {debate_path}")
+        self.logger.info(f"Continuing debate from {debate_path}")
 
         # Load the existing debate
         debate = DebateTotal.load_from_json(debate_path)
@@ -264,9 +264,9 @@ class DebateService:
 
         # Complete missing rounds
         for round in incomplete_rounds:
-            logger.info(f"Completing missing {round.speech_type} for {round.side}")
+            self.logger.info(f"Completing missing {round.speech_type} for {round.side}")
             self._execute_round(debate, round)
             debate.save_to_json()
 
-        logger.info("Debate continuation completed")
+        self.logger.info("Debate continuation completed")
         return debate
