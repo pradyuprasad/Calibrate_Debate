@@ -1,8 +1,9 @@
-# "They Both Can't Be Right": Systematic Overconfidence in Language Models - Project Summary
+# They Both Can't Be Right': Unveiling Metacognitive Deficits in LLM Debaters
 
 ## Overview
 
-This project investigates the metacognitive abilities of large language models (LLMs) – specifically, their understanding of their own argumentative strengths and weaknesses – within the context of competitive policy debate. We developed a novel debate framework, a betting-based confidence elicitation method, and a robust AI jury system to demonstrate that state-of-the-art LLMs exhibit systematic and often logically impossible overconfidence.
+This project investigates the metacognitive abilities of large language models (LLMs) in competitive policy debate, revealing a profound disconnect between their perceived and actual argumentative performance. We conducted 42 simulated debates between ten state-of-the-art LLMs, using structured prompts and a private, betting-based confidence elicitation method (0-100) after each of the three rounds (opening, rebuttal, final). A rigorously selected AI jury judged the debates. The results paint a stark picture of systematic overconfidence: LLMs averaged 73% confidence despite a mathematically guaranteed 50% overall win rate. Most strikingly, in 71.4% of debates, both competing LLMs expressed confidence exceeding 75% – a logical impossibility. High confidence was inversely correlated with success; LLMs with 76-100% confidence won a mere 42.1% of their debates. A significant opposition-side advantage (78.6% win rate vs. 21.4% for proposition) went completely unrecognized, with models showing statistically indistinguishable confidence levels regardless of role. Calibration was generally poor, and confidence consistently increased throughout debates, irrespective of performance. These findings demonstrate that, despite their linguistic prowess, these LLMs exhibit a fundamental inability to accurately assess their own argumentative strengths and weaknesses.
+
 
 ## Methodology
 
