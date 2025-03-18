@@ -39,7 +39,7 @@ Our final jury comprised:
 *   **google/gemini-pro-1.5** (2 instances): High reliability, excellent calibration, premium pricing justified by quality.
 *   **deepseek/deepseek-chat** (2 instances): Good reliability, consistent calibration, and moderate pricing.
 
-This configuration provides architectural diversity, strong overall reliability (calculated probability of correct majority verdict: ~99.7%), and a favorable cost structure.
+This configuration provides architectural diversity, strong overall reliability, and a favorable cost structure.
 
 **Judging Prompt and Criteria:**
 
