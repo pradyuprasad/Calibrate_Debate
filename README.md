@@ -1,4 +1,4 @@
-# They Both Can't Be Right': Unveiling Metacognitive Deficits in LLM Debaters
+# "They Both Can't Be Right": Unveiling Metacognitive Deficits in LLM Debaters
 
 ## Overview
 
