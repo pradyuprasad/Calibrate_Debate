@@ -6,13 +6,15 @@ Analyzes calibration, confidence patterns, and performance metrics across differ
 
 import json
 import logging
-import numpy as np
-from pathlib import Path
 from collections import defaultdict
-from typing import Dict, Tuple, Optional
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Dict, Optional, Tuple
+
+import numpy as np
 
 from core.models import DebateTotal, Side, SpeechType
+
 
 # Data structures
 @dataclass

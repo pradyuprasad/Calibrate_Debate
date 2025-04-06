@@ -5,10 +5,12 @@ Simple script to run a sample debate with confidence betting.
 
 import logging
 from pathlib import Path
+
 from dotenv import load_dotenv
+
 from config import Config
-from topics.load_topics import load_topics
 from core.models import DebateType
+from topics.load_topics import load_topics
 
 # Set up logging
 logging.basicConfig(

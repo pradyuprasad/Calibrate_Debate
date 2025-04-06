@@ -5,14 +5,15 @@ Script to extract detailed quantitative metrics from debate tournament data.
 
 import json
 import logging
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
-from core.models import DebateTotal, Side, SpeechType
 import numpy as np
 import statsmodels.api as sm
-from scipy.stats import ttest_1samp, ttest_ind, ttest_rel, chi2_contingency, fisher_exact, wilcoxon, mannwhitneyu
+from scipy.stats import (chi2_contingency, fisher_exact, mannwhitneyu,
+                         ttest_1samp, ttest_ind, ttest_rel, wilcoxon)
 
+from core.models import DebateTotal, Side, SpeechType
 
 # Set up logging
 logging.basicConfig(

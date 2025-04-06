@@ -1,9 +1,11 @@
-from core.models import DebateTotal, SpeechType
-from config import Config
-from ai_models.load_models import load_judge_models
-from pathlib import Path
-from dotenv import load_dotenv
 import logging
+from pathlib import Path
+
+from dotenv import load_dotenv
+
+from ai_models.load_models import load_judge_models
+from config import Config
+from core.models import DebateTotal, SpeechType
 
 load_dotenv()
 

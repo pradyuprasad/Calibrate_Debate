@@ -1,7 +1,9 @@
+from typing import Dict, Tuple
+
+import numpy as np
+
 from config import Config
 from core.models import DebateTotal
-import numpy as np
-from typing import Dict, Tuple
 
 
 def analyze_debate_token_counts(config: Config) -> Dict[str, Tuple[float, float]]:

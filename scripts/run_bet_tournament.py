@@ -5,17 +5,18 @@ Only uses predefined pairings for round 1, then dynamically pairs models based o
 """
 
 import json
-from pathlib import Path
 import random
 from datetime import datetime
-from typing import List, Dict, Literal, Optional, Tuple, TypedDict
+from pathlib import Path
+from typing import Dict, List, Literal, Optional, Tuple, TypedDict
 
 from dotenv import load_dotenv
-from core.models import DebateTopic, DebateType, JudgeResult
-from config import Config
-from topics.load_topics import load_topics
-from scripts.utils import sanitize_model_name, checkIfComplete
+
 from ai_models.load_models import load_debate_models
+from config import Config
+from core.models import DebateTopic, DebateType, JudgeResult
+from scripts.utils import checkIfComplete, sanitize_model_name
+from topics.load_topics import load_topics
 
 
 class ModelStats(TypedDict):

@@ -7,8 +7,8 @@ Supports multiple tournament directories.
 
 import json
 import logging
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 from core.models import DebateTotal, Side, SpeechType
 

@@ -1,6 +1,9 @@
-import pandas as pd
 import json
+
+import pandas as pd
+
 from .load_data import load_debate_data
+
 
 def recommend_balanced_unique_debate_schedule(output_file="balance_debate.json"):
     """

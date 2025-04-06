@@ -1,5 +1,6 @@
-from config import Config
 import logging
+
+from config import Config
 from core.models import DebateTotal
 
 judges_list = ["google/gemini-2.0-flash-lite-001"]

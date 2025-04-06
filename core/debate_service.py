@@ -1,22 +1,15 @@
 import logging
 import re
 from pathlib import Path
+
 import requests
 from tenacity import retry, stop_after_attempt, wait_exponential
 
-from core.models import (
-    DebateTotal,
-    DebateTopic,
-    Round,
-    Side,
-    DebateType,
-    DebatorBet,
-    BetPatternConfig,
-)
-from utils.utils import make_rounds
 from core.api_client import OpenRouterClient
 from core.message_formatter import MessageFormatter
-
+from core.models import (BetPatternConfig, DebateTopic, DebateTotal,
+                         DebateType, DebatorBet, Round, Side)
+from utils.utils import make_rounds
 
 
 class DebateService:

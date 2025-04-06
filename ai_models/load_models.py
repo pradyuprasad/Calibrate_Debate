@@ -1,6 +1,7 @@
-from config import Config
-from typing import List, Dict
 import json
+from typing import Dict, List
+
+from config import Config
 
 
 def load_debate_models(config: Config) -> Dict[str, List[float]]:

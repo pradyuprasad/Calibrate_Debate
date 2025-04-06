@@ -6,8 +6,9 @@ regardless of topic difficulty.
 
 import json
 import logging
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
+
 import numpy as np
 
 from core.models import DebateTotal, Side, SpeechType

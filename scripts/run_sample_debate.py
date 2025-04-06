@@ -1,14 +1,15 @@
 import logging
 import random
 from pathlib import Path
+from typing import Dict, List, Tuple
+
+from ai_models.load_models import load_debate_models, load_judge_models
 from config import Config
 from core.debate_service import DebateService
-from topics.load_topics import load_topics
-from core.models import DebateTopic, DebateType
 from core.judgement_processor import JudgementProcessor
-from ai_models.load_models import load_debate_models, load_judge_models
-from typing import Dict, List, Tuple
+from core.models import DebateTopic, DebateType
 from scripts.utils import sanitize_model_name
+from topics.load_topics import load_topics
 
 # Set up logging
 logging.basicConfig(

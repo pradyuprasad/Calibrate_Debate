@@ -1,11 +1,13 @@
+import logging
+import os
 from pathlib import Path
+
+import requests
+from dotenv import load_dotenv
+
+from config import Config
 from core.models import DebateTotal, Side, SpeechType
 from scripts.analyse_sample_debates import checkIfComplete
-import logging
-import requests
-import os
-from dotenv import load_dotenv
-from config import Config
 
 
 def get_valid_response(messages: list, model: str) -> tuple[str, dict]:

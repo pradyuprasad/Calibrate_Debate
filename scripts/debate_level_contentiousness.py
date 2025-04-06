@@ -4,8 +4,9 @@ correlation_confidence_win_margin.py - Analyzes correlation between model confid
 """
 
 import logging
-import numpy as np
 from pathlib import Path
+
+import numpy as np
 
 from core.models import DebateTotal, Side, SpeechType
 

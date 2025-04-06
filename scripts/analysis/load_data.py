@@ -1,10 +1,12 @@
-from typing import List
-from pathlib import Path
 import logging
-from core.models import DebateTotal, Side
+from pathlib import Path
+from typing import List
 
+from core.models import DebateTotal, Side
 # Import Pydantic models
-from scripts.analysis.models import DebateData, ModelStats, TopicStats, DebateResults
+from scripts.analysis.models import (DebateData, DebateResults, ModelStats,
+                                     TopicStats)
+
 
 def load_debate_data() -> DebateResults:
     """

@@ -4,13 +4,15 @@ debate_analysis.py - Analyzes debate results with statistical testing and error 
 """
 
 import logging
-import numpy as np
-import matplotlib.pyplot as plt
-from pathlib import Path
 from collections import defaultdict
-from scipy.stats import fisher_exact, ttest_1samp, mannwhitneyu
+from pathlib import Path
+
+import matplotlib.pyplot as plt
+import numpy as np
+from scipy.stats import fisher_exact, mannwhitneyu, ttest_1samp
 
 from core.models import DebateTotal, Side, SpeechType
+
 
 def wilson_score_interval(wins, n, z=1.96):
     """Calculate Wilson score interval for binomial proportion."""

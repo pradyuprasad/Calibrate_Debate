@@ -4,9 +4,10 @@ model_calibration_curve.py - Analyzes model confidence calibration in debates
 """
 
 import logging
-import matplotlib.pyplot as plt
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
+
+import matplotlib.pyplot as plt
 
 from core.models import DebateTotal, Side, SpeechType
 

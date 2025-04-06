@@ -1,7 +1,8 @@
+import json
+from typing import List
+
 from config import Config
 from core.models import DebateTopic
-from typing import List
-import json
 
 
 def load_topics(config: Config) -> List[DebateTopic]:

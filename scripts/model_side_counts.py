@@ -5,8 +5,8 @@ and opposition sides in a set of debate tournaments.
 """
 
 import logging
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
 
 from core.models import DebateTotal
 

@@ -1,6 +1,8 @@
 import pytest
+
 from core.message_formatter import MessageFormatter
-from core.models import DebatePrompts, DebateTotal, Round, Side, SpeechType, DebateTopic
+from core.models import (DebatePrompts, DebateTopic, DebateTotal, Round, Side,
+                         SpeechType)
 
 
 @pytest.fixture

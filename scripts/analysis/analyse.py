@@ -1,14 +1,17 @@
 import json
 import logging
+from collections import defaultdict, namedtuple
 from pathlib import Path
-from collections import namedtuple
-from typing import DefaultDict, List, Dict, Optional, Any
-from collections import defaultdict
+from typing import Any, DefaultDict, Dict, List, Optional
+
 import numpy as np
 import statsmodels.api as sm
-from scipy.stats import ttest_1samp, ttest_ind, ttest_rel, chi2_contingency, fisher_exact, wilcoxon, mannwhitneyu
+from scipy.stats import (chi2_contingency, fisher_exact, mannwhitneyu,
+                         ttest_1samp, ttest_ind, ttest_rel, wilcoxon)
 
 from core.models import DebateTotal, Side
+from scripts.analysis.load_data import load_debate_data
+from scripts.analysis.models import DebateResults
 
 # Define a standardized debate structure for analysis
 DebateData = namedtuple('DebateData', [
@@ -1227,13 +1230,64 @@ def analyze_model_betting_behavior(tournament_data: Dict[str, Any]) -> Dict[str,
 
     return model_betting
 
+def convert_debate_results_to_old_format(debate_results: DebateResults) -> dict:
+    """
+    Convert a DebateResults object to the dictionary format expected by the old analysis functions.
+
+    Args:
+        debate_results: DebateResults object from the new data loading function
+
+    Returns:
+        Dictionary in the format expected by the old analysis functions
+    """
+    # Extract all unique models and topics
+    models = set()
+    topics = set()
+
+    for debate in debate_results.debates:
+        models.add(debate.proposition_model)
+        models.add(debate.opposition_model)
+        topics.add(debate.topic)
+
+    # Extract tournament information
+    tournaments = {}
+    for debate in debate_results.debates:
+        if debate.tournament not in tournaments:
+            tournaments[debate.tournament] = {
+                "path": debate.path,
+                "debate_count": 0,
+                "rounds": set()
+            }
+        tournaments[debate.tournament]["debate_count"] += 1
+        tournaments[debate.tournament]["rounds"].add(debate.round)
+
+    # Convert model stats
+    model_stats = {}
+    for model_name, stats in debate_results.model_stats.items():
+        model_stats[model_name] = {
+            "wins": stats.wins,
+            "losses": stats.losses,
+            "total_debates": stats.debates,
+            "win_rate": stats.win_rate,
+            "prop_win_rate": stats.prop_win_rate,
+            "opp_win_rate": stats.opp_win_rate
+        }
+
+    # Return the dictionary in the old format
+    return {
+        "debates": debate_results.debates,  # This is already in the right format
+        "models": models,
+        "topics": topics,
+        "tournaments": tournaments,
+        "model_stats": model_stats
+    }
+
 
 def main():
     """
     Main function to run the complete tournament analysis.
     """
     import logging
-    from pathlib import Path
 
     # Set up logging
     logging.basicConfig(
@@ -1243,41 +1297,10 @@ def main():
     logger = logging.getLogger("tournament_analysis")
 
     # Set the tournament directories
-    tournament_dirs = [
-        Path("tournament/bet_tournament_20250316_1548"),
-        Path("tournament/bet_tournament_20250317_1059")
-    ]
 
-    # Ask user which models to exclude
-    print("\n=== AVAILABLE MODELS ===")
-    # First load just the tournament results to get model names
-    temp_data = load_tournament_data(tournament_dirs)
-    all_models = list(temp_data["models"])
+    debate_results = load_debate_data()
+    data = convert_debate_results_to_old_format(debate_results)
 
-    for i, model in enumerate(all_models):
-        print(f"[{i}] {model}")
-
-    excluded_models = []
-    exclude_option = input("\nDo you want to exclude any models from analysis? (y/n): ").strip().lower()
-
-    if exclude_option == 'y':
-        exclude_indices = input("Enter indices of models to exclude (comma-separated): ").strip()
-        try:
-            indices = [int(idx.strip()) for idx in exclude_indices.split(',') if idx.strip()]
-            for idx in indices:
-                if 0 <= idx < len(all_models):
-                    excluded_model = all_models[idx]
-                    excluded_models.append(excluded_model)
-                    print(f"Excluding: {excluded_model}")
-                else:
-                    print(f"Warning: Invalid index {idx}, ignoring")
-        except ValueError:
-            print("Warning: Invalid input format. No models will be excluded.")
-
-    # Load tournament data
-    logger.info("Loading tournament data...")
-    data = load_tournament_data(tournament_dirs, excluded_models)
-    logger.info(f"Loaded {len(data['debates'])} debates with {len(data['models'])} models")
 
     # Run analyses
     logger.info("Running win rate analysis...")

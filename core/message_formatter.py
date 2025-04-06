@@ -1,14 +1,7 @@
-from typing import List, Dict, Optional
-from core.models import (
-    SpeechType,
-    Round,
-    DebatePrompts,
-    DebateTotal,
-    Side,
-    DebateType,
-    DebatorBet,
-    BetPatternConfig,
-)
+from typing import Dict, List, Optional
+
+from core.models import (BetPatternConfig, DebatePrompts, DebateTotal,
+                         DebateType, DebatorBet, Round, Side, SpeechType)
 
 
 class MessageFormatter:

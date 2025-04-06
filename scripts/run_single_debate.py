@@ -1,8 +1,8 @@
-from config import Config
-from topics.load_topics import load_topics
-from core.models import DebateTotal
-
 from dotenv import load_dotenv
+
+from config import Config
+from core.models import DebateTotal
+from topics.load_topics import load_topics
 
 load_dotenv()
 config = Config()

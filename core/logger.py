@@ -2,6 +2,7 @@ import logging
 import sys
 from typing import Optional
 
+
 class LoggerFactory:
     _instance = None
     _loggers = {}

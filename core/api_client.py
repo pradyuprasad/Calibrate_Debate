@@ -1,7 +1,9 @@
-from typing import Dict, List
-from core.models import APIResponse
-import requests
 import logging
+from typing import Dict, List
+
+import requests
+
+from core.models import APIResponse
 
 
 class OpenRouterClient:

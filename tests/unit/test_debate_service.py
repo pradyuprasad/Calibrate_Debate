@@ -1,9 +1,11 @@
-import pytest
 from unittest.mock import MagicMock
-from core.debate_service import DebateService
+
+import pytest
+
 from core.api_client import OpenRouterClient
+from core.debate_service import DebateService
 from core.message_formatter import MessageFormatter
-from core.models import DebateTopic, DebatePrompts, APIResponse, DebateTotal
+from core.models import APIResponse, DebatePrompts, DebateTopic, DebateTotal
 
 
 @pytest.fixture

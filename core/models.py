@@ -1,10 +1,11 @@
+import json
+import logging
 from dataclasses import dataclass
 from enum import Enum
-import json
 from pathlib import Path
-from typing import Dict, List, Optional, Union, Literal, cast
+from typing import Dict, List, Literal, Optional, Union, cast
+
 from pydantic import BaseModel, Field
-import logging
 
 
 class DebateTopic(BaseModel):

@@ -4,8 +4,9 @@ judge_confidence_analysis.py - Analyzes judge confidence patterns in relation to
 """
 
 import logging
-import numpy as np
 from pathlib import Path
+
+import numpy as np
 
 from core.models import DebateTotal, Side, SpeechType
 

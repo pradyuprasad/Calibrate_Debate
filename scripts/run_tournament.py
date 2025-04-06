@@ -1,27 +1,22 @@
-from pathlib import Path
-from typing import List, Set, Deque, Tuple, Literal
-from collections import deque
+import json
 import logging
 import random
-import json
+from collections import deque
 from itertools import cycle, islice
+from pathlib import Path
+from typing import Deque, List, Literal, Set, Tuple
+
 from dotenv import load_dotenv
 
-from core.models import (
-    Match,
-    DebatePrompts,
-    DebateTopic,
-    DebateTotal,
-    ConfidenceAdjustedJudgement,
-    JudgeResult,
-)
+from ai_models.load_models import load_debate_models
+from config import Config
 from core.debate_service import DebateService
 from core.judgement_processor import JudgementProcessor
-from ai_models.load_models import load_debate_models
-from topics.load_topics import load_topics
+from core.models import (ConfidenceAdjustedJudgement, DebatePrompts,
+                         DebateTopic, DebateTotal, JudgeResult, Match)
 from prompts.load_prompts import get_debate_prompt
-from config import Config
-from scripts.utils import sanitize_model_name, checkIfComplete
+from scripts.utils import checkIfComplete, sanitize_model_name
+from topics.load_topics import load_topics
 
 logger = logging.getLogger(__name__)
 load_dotenv()

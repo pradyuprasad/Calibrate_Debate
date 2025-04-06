@@ -1,6 +1,7 @@
-from core.models import DebatePrompts
 import yaml
+
 from config import Config
+from core.models import DebatePrompts
 
 
 def get_debate_prompt(config: Config) -> DebatePrompts:

@@ -1,14 +1,16 @@
+import os
 from dataclasses import dataclass, field
 from pathlib import Path
-import os
-from dotenv import load_dotenv
-from core.models import DebatePrompts, BetPatternConfig
+
 import yaml
-from core.message_formatter import MessageFormatter
+from dotenv import load_dotenv
+
 from core.api_client import OpenRouterClient
 from core.debate_service import DebateService
 from core.judgement_processor import JudgementProcessor
 from core.logger import LoggerFactory
+from core.message_formatter import MessageFormatter
+from core.models import BetPatternConfig, DebatePrompts
 
 
 @dataclass

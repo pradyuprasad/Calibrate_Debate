@@ -1,6 +1,7 @@
 from collections import defaultdict
-from core.models import DebateTotal
+
 from config import Config
+from core.models import DebateTotal
 
 
 def analyze_judge_consistency(sample_debates_list):

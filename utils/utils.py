@@ -1,5 +1,6 @@
 from collections import Counter
 from typing import List
+
 from core.models import Round, Side, SpeechType
 
 

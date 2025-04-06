@@ -2,12 +2,12 @@
 
 ## Overview
 
-This project investigates the metacognitive abilities of large language models (LLMs) in competitive policy debate, revealing a profound disconnect between their perceived and actual argumentative performance. We conducted 42 simulated debates between ten state-of-the-art LLMs, using structured prompts and a private, betting-based confidence elicitation method (0-100) after each of the three rounds (opening, rebuttal, final). A rigorously selected AI jury judged the debates. The results paint a stark picture of systematic overconfidence: LLMs averaged 73% confidence despite a mathematically guaranteed 50% overall win rate. Most strikingly, in 71.4% of debates, both competing LLMs expressed confidence exceeding 75% – a logical impossibility. High confidence was inversely correlated with success; LLMs with 76-100% confidence won a mere 42.1% of their debates. A significant opposition-side advantage (78.6% win rate vs. 21.4% for proposition) went completely unrecognized, with models showing statistically indistinguishable confidence levels regardless of role. Calibration was generally poor, and confidence consistently increased throughout debates, irrespective of performance. These findings demonstrate that, despite their linguistic prowess, these LLMs exhibit a fundamental inability to accurately assess their own argumentative strengths and weaknesses.
+This project investigates the metacognitive abilities of large language models (LLMs) in competitive policy debate, revealing a profound disconnect between their perceived and actual argumentative performance. We conducted 59 simulated debates between ten state-of-the-art LLMs, using structured prompts and a betting-based confidence elicitation method (0-100) after each of the three rounds (opening, rebuttal, final). A rigorously selected AI jury judged the debates. The results paint a stark picture of systematic overconfidence: LLMs averaged 72.92% confidence despite a mathematically guaranteed 50% overall win rate. Most strikingly, in 71.2% of debates, both competing LLMs expressed high confidence (75% or more) – a logical impossibility. High confidence was inversely correlated with success; LLMs with 76-100% confidence won only 45.2% of their debates. A significant opposition-side advantage (71.2% win rate vs. 28.8% for proposition) went unrecognized, with proposition sides actually showing higher confidence (74.58% vs 71.27% for opposition, p=0.0115). Calibration varied widely between models (calibration scores from 0.1362 to 0.5355), and confidence typically increased throughout debates regardless of performance. These findings demonstrate that, despite their linguistic prowess, these LLMs exhibit a fundamental inability to accurately assess their own argumentative strengths and weaknesses.
 
 
 ## Methodology
 
-We conducted 42 simulated policy debates across six diverse topics from the World Schools Debating Championships, modified to include explicit burdens of proof. Each debate:
+We conducted 59 simulated policy debates across six diverse topics from the World Schools Debating Championships, modified to include explicit burdens of proof. Each debate:
 
 *   Involved two randomly assigned LLMs from a pool of ten state-of-the-art models.
 *   Followed a three-round format: opening speeches, rebuttals, and final speeches.
@@ -57,34 +57,50 @@ The prompt also explicitly listed common judging errors to avoid (intervention, 
 
 ## Key Findings
 
-*   **Pervasive Overconfidence:** Models averaged 73% confidence despite the mathematical reality of a 50% overall win rate (One-sample t-test: p < 0.0001; Wilcoxon signed-rank test: p < 0.0001).
-*   **Position Asymmetry:** Opposition models won 78.6% of debates, while proposition models won only 21.4% (Chi-square test: p < 0.0001; Fisher's exact test: p < 0.0001).
-*   **Failure to Recognize Disadvantage:** Despite vastly different win rates, proposition (73.9%) and opposition (71.19%) models maintained statistically indistinguishable confidence levels (Independent t-test: p = 0.0658; Mann-Whitney U test: p = 0.1914).
-*   **Logically Impossible Confidence:** In 71.4% of debates, both models expressed confidence exceeding 75%.
-*   **Poor Calibration and High-Confidence Failures:** The weighted average calibration error across all models was 31.39%. Models expressing high confidence (76-100%) won only 42.1% of their debates, while those with confidence between 51-75% won 51.6% of the time. There was only 1 instance in range 26-50 and 0 in range 0-25.
-*   **Statistical Confirmation:** Regression analysis showed debate side (p < 0.0001) was a significant predictor of winning, while confidence (p = 0.1096) was not.
-*   **Confidence Escalation:** Nearly all models increased their confidence throughout debates, regardless of actual performance. The average confidence change across models ranged from -0.56 to +20.00, with absolute average changes ranging from 5.44 to 20.00.
+* **Pervasive Overconfidence:** Models averaged 72.92% confidence despite the mathematical reality of a 50% overall win rate (One-sample t-test: p < 0.0001; Wilcoxon signed-rank test: p < 0.0001).
+
+* **Position Asymmetry:** Opposition models won 71.2% of debates, while proposition models won only 28.8% (Chi-square test: p < 0.0001; Fisher's exact test: p < 0.0001).
+
+* **Failure to Recognize Disadvantage:** Despite vastly different win rates, proposition models showed higher confidence (74.58%) than opposition (71.27%) (Independent t-test: p = 0.0115; Mann-Whitney U test: p = 0.0307).
+
+* **Logically Impossible Confidence:** In 71.2% of debates, both debaters expressed confidence of 75% or more.
+
+* **Poor Calibration and High-Confidence Failures:** Calibration scores varied widely across models (0.1362 to 0.5355). Models expressing high confidence (76-100%) won only 45.2% of their debates, while those with confidence between 51-75% won 51.2% of the time. There was only 1 instance in range 26-50 (100% win rate) and 0 in range 0-25.
+
+* **Statistical Confirmation:** Regression analysis showed debate side was a significant predictor of winning (p < 0.0001), while confidence was not (p = 0.1435).
+
+* **Confidence Escalation:** Models typically increased their confidence throughout debates, regardless of performance. The average confidence change across models ranged from -1.42 to +20.83, with absolute average changes ranging from 7.00 to 20.83.
 
 ## Model Betting Behavior Summary
-
 | Model                                   | Opening | Rebuttal | Closing | Change |
 |-----------------------------------------|---------|----------|---------|--------|
-| anthropic/claude-3.5-haiku              | 71.25   | 75.00    | 85.62   | +14.37 |
-| anthropic/claude-3.7-sonnet             | 66.43   | 73.57    | 84.29   | +17.86 |
-| deepseek/deepseek-chat                  | 74.29   | 74.29    | 77.14   | +2.85  |
-| deepseek/deepseek-r1-distill-qwen-14b   | 77.22   | 80.00    | 85.00   | +7.78  |
-| google/gemini-2.0-flash-001             | 63.89   | 64.44    | 63.33   | -0.56  |
-| google/gemma-3-27b-it                   | 68.50   | 79.50    | 88.50   | +20.00 |
-| openai/gpt-4o-mini                      | 73.89   | 77.78    | 82.78   | +8.89  |
-| openai/o3-mini                          | 78.89   | 82.22    | 84.33   | +5.44  |
-| qwen/qwen-max                           | 73.33   | 81.44    | 88.33   | +15.00 |
-| qwen/qwq-32b:free                       | 78.57   | 88.14    | 92.29   | +13.72 |
+| anthropic/claude-3.5-haiku              | 71.67   | 73.75    | 83.33   | +11.66 |
+| anthropic/claude-3.7-sonnet             | 67.50   | 73.75    | 82.92   | +15.42 |
+| deepseek/deepseek-chat                  | 74.58   | 77.92    | 80.00   | +5.42  |
+| deepseek/deepseek-r1-distill-qwen-14b   | 79.09   | 80.45    | 86.36   | +7.27  |
+| google/gemini-2.0-flash-001             | 65.42   | 63.75    | 64.00   | -1.42  |
+| google/gemma-3-27b-it                   | 67.50   | 78.33    | 88.33   | +20.83 |
+| openai/gpt-4o-mini                      | 74.55   | 77.73    | 81.36   | +6.81  |
+| openai/o3-mini                          | 77.50   | 81.25    | 84.50   | +7.00  |
+| qwen/qwen-max                           | 73.33   | 81.92    | 88.75   | +15.42 |
+| qwen/qwq-32b:free                       | 78.75   | 87.67    | 92.83   | +14.08 |
 
 ## Model-Specific Performance and Calibration Analysis
 
-*   **Calibration Variation:** Calibration scores ranged widely, from excellent (Qwen/qwen-max: 0.1011) to poor (Deepseek/deepseek-r1-distill-qwen-14b: 0.4842).
-*   **Well-Calibrated Models:** Qwen family, Gemini, and Claude-3.7-Sonnet showed reasonable calibration.
-*   **Significantly Overconfident:** Several models, including Claude-3.5-Haiku, GPT-4o-mini, and Deepseek models, exhibited statistically significant overconfidence (confirmed via t-tests and Wilcoxon signed-rank tests).
+* **Calibration Variation:** Calibration scores ranged widely, from well-calibrated (qwen/qwen-max: 0.1362; qwen/qwq-32b:free: 0.1552) to poorly calibrated (deepseek/deepseek-r1-distill-qwen-14b:free: 0.5355).
+
+* **Well-Calibrated Models:** Several models showed good calibration between confidence and performance:
+  - qwen/qwen-max (83.3% win rate with 73.3% confidence)
+  - qwen/qwq-32b:free (83.3% win rate with 78.8% confidence)
+  - anthropic/claude-3.7-sonnet (75.0% win rate with 67.5% confidence)
+  - google/gemma-3-27b-it and google/gemini-2.0-flash-001 also showed reasonable calibration
+
+* **Significantly Overconfident:** Statistical testing confirmed several models displayed significant overconfidence:
+  - anthropic/claude-3.5-haiku (33.3% win rate with 71.7% confidence)
+  - deepseek/deepseek-chat (33.3% win rate with 74.6% confidence)
+  - openai/gpt-4o-mini (27.3% win rate with 74.5% confidence)
+  - openai/o3-mini (33.3% win rate with 77.5% confidence)
+  - deepseek/deepseek-r1-distill-qwen-14b:free (18.2% win rate with 79.1% confidence)
 
 **Calibration Analysis Methodology:**
 
@@ -100,7 +116,7 @@ These metrics were calculated for each model based on its confidence bets and wi
 
 ## Judge Agreement
 
-Judges showed strong consensus: 38.1% unanimous decisions and 61.9% split decisions. The distribution of dissenting judges was: 0 (38.1%), 1 (19.0%), 2 (26.2%), and 3 (16.7%). This indicates strong inter-rater reliability.
+Judges showed relatively consistent evaluation patterns: 37.3% unanimous decisions and 62.7% split decisions. The distribution of dissenting judges was: 0 dissenting (37.3%), 1 dissenting (18.6%), 2 dissenting (32.2%), and 3 dissenting (11.9%). This indicates moderate inter-rater reliability, with judges reaching complete consensus in over a third of debates while showing meaningful disagreement patterns in complex cases.
 
 ## Topic Difficulty
 
