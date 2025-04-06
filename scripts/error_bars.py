@@ -3,13 +3,12 @@
 debate_analysis.py - Analyzes debate results with statistical testing and error bars
 """
 
-import json
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import defaultdict
-from scipy.stats import norm, fisher_exact, ttest_1samp, mannwhitneyu
+from scipy.stats import fisher_exact, ttest_1samp, mannwhitneyu
 
 from core.models import DebateTotal, Side, SpeechType
 
@@ -182,7 +181,7 @@ stat, p_value_cal_diff = mannwhitneyu(prop_errors, opp_errors, alternative='grea
 
 # Print results
 print("\n=== DEBATE ANALYSIS RESULTS ===")
-print(f"\nOverall Statistics:")
+print("\nOverall Statistics:")
 print(f"Total debates analyzed: {len(debates)}")
 print(f"Total predictions: {len(calibration_data)}")
 

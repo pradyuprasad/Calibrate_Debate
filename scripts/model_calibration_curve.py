@@ -3,9 +3,7 @@
 model_calibration_curve.py - Analyzes model confidence calibration in debates
 """
 
-import json
 import logging
-import numpy as np
 import matplotlib.pyplot as plt
 from pathlib import Path
 from collections import defaultdict

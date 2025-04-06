@@ -1,5 +1,4 @@
 from collections import defaultdict
-from typing import Dict, List, Tuple
 from core.models import DebateTotal
 from config import Config
 
@@ -70,7 +69,6 @@ def analyze_judge_consistency(sample_debates_list):
     model_consistency = {}
     for model_name, votes in model_votes.items():
         disagreements = 0
-        weighted_disagreements = 0
         total_votes = len(votes)
         total_confidence = 0
         confidence_correct_sum = 0

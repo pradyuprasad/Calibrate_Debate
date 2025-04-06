@@ -3,11 +3,9 @@
 judge_confidence_analysis.py - Analyzes judge confidence patterns in relation to debate outcomes
 """
 
-import json
 import logging
 import numpy as np
 from pathlib import Path
-from collections import defaultdict
 
 from core.models import DebateTotal, Side, SpeechType
 

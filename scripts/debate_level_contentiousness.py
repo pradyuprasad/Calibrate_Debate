@@ -3,11 +3,9 @@
 correlation_confidence_win_margin.py - Analyzes correlation between model confidence and win margins
 """
 
-import json
 import logging
 import numpy as np
 from pathlib import Path
-from collections import defaultdict
 
 from core.models import DebateTotal, Side, SpeechType
 

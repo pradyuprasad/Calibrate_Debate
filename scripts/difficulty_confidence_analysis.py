@@ -202,7 +202,7 @@ for model, topic_data in model_confidence_by_topic.items():
        try:
            correlation = np.corrcoef(topic_difficulties, topic_confidences)[0, 1]
            model_topic_sensitivity[model] = correlation
-       except:
+       except Exception:
            model_topic_sensitivity[model] = 0
    else:
        model_topic_sensitivity[model] = 0

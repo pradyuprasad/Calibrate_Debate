@@ -4,7 +4,6 @@ Script to count how many times each model was assigned to the proposition
 and opposition sides in a set of debate tournaments.
 """
 
-import json
 import logging
 from pathlib import Path
 from collections import defaultdict

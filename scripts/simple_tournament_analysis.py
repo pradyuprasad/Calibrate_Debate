@@ -11,7 +11,6 @@ from pathlib import Path
 from collections import defaultdict
 
 from core.models import DebateTotal, Side, SpeechType
-from scripts.utils import sanitize_model_name
 
 # Set up logging
 logging.basicConfig(

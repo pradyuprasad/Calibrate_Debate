@@ -9,9 +9,7 @@ from pathlib import Path
 from collections import defaultdict
 
 from core.models import DebateTotal, Side, SpeechType
-from scripts.utils import sanitize_model_name
 import numpy as np
-from scipy import stats
 import statsmodels.api as sm
 from scipy.stats import ttest_1samp, ttest_ind, ttest_rel, chi2_contingency, fisher_exact, wilcoxon, mannwhitneyu
 
@@ -714,7 +712,7 @@ print("\n--- Hypothesis 1: General Overconfidence ---")
 
 # Test 1: One-sample t-test for overall confidence > 50
 t_stat, p_value = ttest_1samp(all_opening_confidences, 50)
-print(f"One-sample t-test (Confidence > 50):")
+print("One-sample t-test (Confidence > 50):")
 print(f"  Mean confidence: {np.mean(all_opening_confidences):.2f}")
 print(f"  t-statistic: {t_stat:.3f}")
 print(f"  p-value: {p_value/2:.4f} (one-tailed)")  # Divide by 2 for one-tailed test
@@ -722,7 +720,7 @@ print(f"  Result: {'Statistically significant overconfidence' if p_value/2 < 0.0
 
 # Test 2: Paired t-test for confidence vs. outcomes
 paired_t_stat, paired_p_value = ttest_rel(all_opening_confidences, [x*100 for x in all_win_outcomes])
-print(f"\nPaired t-test (Confidence vs. Actual Win Rate):")
+print("\nPaired t-test (Confidence vs. Actual Win Rate):")
 print(f"  Mean confidence: {np.mean(all_opening_confidences):.2f}")
 print(f"  Mean win rate: {np.mean(all_win_outcomes)*100:.2f}%")
 print(f"  Mean difference: {np.mean(np.array(all_opening_confidences) - np.array(all_win_outcomes)*100):.2f}")
@@ -734,7 +732,7 @@ print(f"  Result: {'Statistically significant overconfidence' if paired_p_value/
 if len(all_opening_confidences) > 20:  # Only run if we have enough samples
     try:
         w_stat, w_p_value = wilcoxon(np.array(all_opening_confidences) - np.array(all_win_outcomes)*100)
-        print(f"\nWilcoxon signed-rank test (non-parametric alternative):")
+        print("\nWilcoxon signed-rank test (non-parametric alternative):")
         print(f"  W-statistic: {w_stat}")
         print(f"  p-value: {w_p_value/2:.4f} (one-tailed)")
         print(f"  Result: {'Statistically significant overconfidence' if w_p_value/2 < 0.05 else 'No significant overconfidence'}")
@@ -745,8 +743,8 @@ print("\n--- Hypothesis 2: Proposition Disadvantage and Metacognitive Failure --
 
 # Test 1: Chi-square test for side vs. outcome
 chi2, p_value, dof, expected = chi2_contingency(contingency_table)
-print(f"Chi-square test (Side vs. Outcome):")
-print(f"  Contingency table:")
+print("Chi-square test (Side vs. Outcome):")
+print("  Contingency table:")
 print(f"    Proposition: {contingency_table[0][0]} wins, {contingency_table[0][1]} losses ({contingency_table[0][0]/(contingency_table[0][0]+contingency_table[0][1])*100:.1f}% win rate)")
 print(f"    Opposition: {contingency_table[1][0]} wins, {contingency_table[1][1]} losses ({contingency_table[1][0]/(contingency_table[1][0]+contingency_table[1][1])*100:.1f}% win rate)")
 print(f"  Chi-square: {chi2:.3f}")
@@ -755,14 +753,14 @@ print(f"  Result: {'Statistically significant proposition disadvantage' if p_val
 
 # Fisher's exact test for small sample sizes
 oddsratio, fisher_p_value = fisher_exact(contingency_table)
-print(f"\nFisher's exact test (for small samples):")
+print("\nFisher's exact test (for small samples):")
 print(f"  Odds ratio: {oddsratio:.3f}")
 print(f"  p-value: {fisher_p_value:.4f}")
 print(f"  Result: {'Statistically significant proposition disadvantage' if fisher_p_value < 0.05 else 'No significant proposition disadvantage'}")
 
 # Test 2: Independent t-test for proposition vs opposition confidence
 t_stat, p_value = ttest_ind(prop_opening_confidences, opp_opening_confidences)
-print(f"\nIndependent t-test (Proposition vs. Opposition Confidence):")
+print("\nIndependent t-test (Proposition vs. Opposition Confidence):")
 print(f"  Mean proposition confidence: {np.mean(prop_opening_confidences):.2f}")
 print(f"  Mean opposition confidence: {np.mean(opp_opening_confidences):.2f}")
 print(f"  Difference: {np.mean(prop_opening_confidences) - np.mean(opp_opening_confidences):.2f}")
@@ -772,7 +770,7 @@ print(f"  Result: {'Proposition models show higher confidence' if p_value/2 < 0.
 
 # Mann-Whitney U test (non-parametric alternative)
 u_stat, mw_p_value = mannwhitneyu(prop_opening_confidences, opp_opening_confidences, alternative='two-sided')
-print(f"\nMann-Whitney U test (non-parametric alternative):")
+print("\nMann-Whitney U test (non-parametric alternative):")
 print(f"  U-statistic: {u_stat}")
 print(f"  p-value: {mw_p_value:.4f}")
 print(f"  Result: {'Significant difference in confidence distributions' if mw_p_value < 0.05 else 'No significant difference in confidence distributions'}")
@@ -859,9 +857,9 @@ for model, data in model_data.items():
         print(f"  p-value: {p_value/2:.4f} (one-tailed)")
         if p_value/2 < 0.05:
             if mean_diff > 0:
-                print(f"  Result: OVERCONFIDENT (statistically significant)")
+                print("  Result: OVERCONFIDENT (statistically significant)")
             else:
-                print(f"  Result: UNDERCONFIDENT (statistically significant)")
+                print("  Result: UNDERCONFIDENT (statistically significant)")
         else:
-            print(f"  Result: Well-calibrated (no significant difference)")
+            print("  Result: Well-calibrated (no significant difference)")
         print("")

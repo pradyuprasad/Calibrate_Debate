@@ -9,9 +9,8 @@ import logging
 import numpy as np
 from pathlib import Path
 from collections import defaultdict
-from typing import Dict, List, Tuple, Optional
+from typing import Dict, Tuple, Optional
 from dataclasses import dataclass
-from scipy.stats import norm, fisher_exact, ttest_1samp, mannwhitneyu, pearsonr
 
 from core.models import DebateTotal, Side, SpeechType
 
