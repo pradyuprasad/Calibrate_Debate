@@ -2,7 +2,7 @@ import json
 import logging
 from pathlib import Path
 from collections import namedtuple
-from typing import List, Dict, Optional, Any
+from typing import DefaultDict, List, Dict, Optional, Any
 from collections import defaultdict
 import numpy as np
 import statsmodels.api as sm
@@ -151,6 +151,114 @@ def load_tournament_data(tournament_dirs: List[Path], excluded_models: Optional[
         "model_stats": model_stats
     }
 
+def analyze_confidence_trends(tournament_data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Analyze how model confidence (through bets) evolves during debates,
+    comparing winners vs losers.
+
+    Args:
+        tournament_data: The output from load_tournament_data function
+
+    Returns:
+        Dictionary with confidence trend analysis containing:
+            - speech_transitions: List of transitions between speech types
+            - winner_confidence_changes: Average confidence changes for winners by transition
+            - loser_confidence_changes: Average confidence changes for losers by transition
+            - overall_winner_trend: Average confidence change across all transitions for winners
+            - overall_loser_trend: Average confidence change across all transitions for losers
+            - sample_size: Number of debates analyzed with complete bet data
+            - winner_changes_raw: Raw confidence changes for winners by transition
+            - loser_changes_raw: Raw confidence changes for losers by transition
+    """
+    debates = tournament_data["debates"]
+
+    # Initialize structures to track confidence changes
+    winner_confidence_changes: List[float] = []
+    loser_confidence_changes: List[float] = []
+
+    # Track changes by transition for more detailed analysis
+    winner_changes_by_transition: Dict[str, List[float]] = {}
+    loser_changes_by_transition: Dict[str, List[float]] = {}
+
+    # Speech types in chronological order
+    speech_order: List[str] = ["opening", "rebuttal", "closing"]
+
+    # Create transition labels
+    transitions: List[str] = [f"{speech_order[i]}→{speech_order[i+1]}"
+                              for i in range(len(speech_order)-1)]
+
+    # Initialize the transition dictionaries
+    for transition in transitions:
+        winner_changes_by_transition[transition] = []
+        loser_changes_by_transition[transition] = []
+
+    debates_with_complete_data: int = 0
+
+    for debate in debates:
+        # Determine which model is winner/loser
+        prop_won = debate.winner == "proposition"
+
+        # Get bet sequences for both sides
+        prop_bets = debate.prop_bets
+        opp_bets = debate.opp_bets
+
+        # Skip debates with incomplete betting data
+        if not all(speech in prop_bets for speech in speech_order) or \
+           not all(speech in opp_bets for speech in speech_order):
+            continue
+
+        debates_with_complete_data += 1
+
+        # Calculate changes in confidence for each side and transition
+        for i in range(len(speech_order)-1):
+            transition = transitions[i]
+            current_speech = speech_order[i]
+            next_speech = speech_order[i+1]
+
+            prop_change = prop_bets[next_speech] - prop_bets[current_speech]
+            opp_change = opp_bets[next_speech] - opp_bets[current_speech]
+
+            # Assign to winner/loser categories
+            if prop_won:
+                winner_changes_by_transition[transition].append(prop_change)
+                loser_changes_by_transition[transition].append(opp_change)
+                winner_confidence_changes.append(prop_change)
+                loser_confidence_changes.append(opp_change)
+            else:
+                winner_changes_by_transition[transition].append(opp_change)
+                loser_changes_by_transition[transition].append(prop_change)
+                winner_confidence_changes.append(opp_change)
+                loser_confidence_changes.append(prop_change)
+
+    # Calculate average confidence changes by transition
+    avg_winner_by_transition: Dict[str, float] = {}
+    avg_loser_by_transition: Dict[str, float] = {}
+
+    for transition in transitions:
+        if winner_changes_by_transition[transition]:
+            avg_winner_by_transition[transition] = sum(winner_changes_by_transition[transition]) / len(winner_changes_by_transition[transition])
+        else:
+            avg_winner_by_transition[transition] = 0.0
+
+        if loser_changes_by_transition[transition]:
+            avg_loser_by_transition[transition] = sum(loser_changes_by_transition[transition]) / len(loser_changes_by_transition[transition])
+        else:
+            avg_loser_by_transition[transition] = 0.0
+
+    # Calculate overall trends
+    overall_winner_trend: float = sum(winner_confidence_changes) / len(winner_confidence_changes) if winner_confidence_changes else 0.0
+    overall_loser_trend: float = sum(loser_confidence_changes) / len(loser_confidence_changes) if loser_confidence_changes else 0.0
+
+    return {
+        "speech_transitions": transitions,
+        "winner_confidence_changes": avg_winner_by_transition,
+        "loser_confidence_changes": avg_loser_by_transition,
+        "overall_winner_trend": overall_winner_trend,
+        "overall_loser_trend": overall_loser_trend,
+        "sample_size": debates_with_complete_data,
+        "winner_changes_raw": winner_changes_by_transition,
+        "loser_changes_raw": loser_changes_by_transition
+    }
 
 def analyze_win_rates_by_confidence(data: Dict[str, Any]) -> Dict[str, Dict[str, float]]:
     """
@@ -451,6 +559,83 @@ def analyze_model_calibration(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]
             }
 
     return results
+def analyze_opposition_calibration(data: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
+    """
+    Analyze how well calibrated each model's confidence is with actual outcomes,
+    but only when playing as opposition.
+
+    Args:
+        data: The tournament data dictionary from load_tournament_data
+
+    Returns:
+        Dictionary mapping models to calibration metrics when playing as opposition
+    """
+    # Initialize tracking structures for opposition only
+    model_calibration: DefaultDict[str, Dict[str, List]] = defaultdict(lambda: {"confidence": [], "win": []})
+
+    # Helper function for determining confidence tier
+    def get_confidence_tier(confidence: float) -> str:
+        if confidence <= 25:
+            return "0-25"
+        elif confidence <= 50:
+            return "26-50"
+        elif confidence <= 75:
+            return "51-75"
+        else:
+            return "76-100"
+
+    # Process each debate, focusing only on opposition performances
+    for debate in data["debates"]:
+        # Only process opposition bets
+        if "opening" in debate.opp_bets:
+            model = debate.opposition_model
+            confidence = debate.opp_bets["opening"]
+            win = 1 if debate.winner == "opposition" else 0
+            model_calibration[model]["confidence"].append(confidence)
+            model_calibration[model]["win"].append(win)
+
+    # Calculate calibration metrics for each model's opposition performances
+    results = {}
+    for model, data_points in model_calibration.items():
+        if data_points["confidence"] and data_points["win"]:
+            n = len(data_points["confidence"])
+
+            # Calculate basic calibration score (mean squared error)
+            calibration_score = sum([(data_points["confidence"][i]/100 - data_points["win"][i])**2
+                                    for i in range(n)]) / n
+
+            # Calculate average confidence and win rate
+            avg_confidence = sum(data_points["confidence"]) / n
+            win_rate = sum(data_points["win"]) / n * 100
+
+            # Calculate overconfidence measure
+            overconfidence = avg_confidence - win_rate
+
+            # Calculate additional breakdowns by confidence tier
+            tiers = {"0-25": [], "26-50": [], "51-75": [], "76-100": []}
+            for conf, win in zip(data_points["confidence"], data_points["win"]):
+                tier = get_confidence_tier(conf)
+                tiers[tier].append(win)
+
+            tier_accuracy = {}
+            for tier, wins in tiers.items():
+                if wins:
+                    tier_accuracy[tier] = {
+                        "count": len(wins),
+                        "win_rate": sum(wins) / len(wins) * 100
+                    }
+
+            results[model] = {
+                "calibration_score": calibration_score,
+                "avg_confidence": avg_confidence,
+                "win_rate": win_rate,
+                "overconfidence": overconfidence,
+                "sample_size": n,
+                "tier_accuracy": tier_accuracy
+            }
+
+    return results
+
 
 def analyze_confidence_gaps(data: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -1305,8 +1490,53 @@ def main():
     print(f"{'Model':<20} {'Opening':<10} {'Rebuttal':<10} {'Closing':<10} {'Total Debates':<15}")
     print("-" * 65)
 
-    for model, data in sorted(model_betting.items()):
-        print(f"{model:<20} {data['opening']:<10.2f} {data['rebuttal']:<10.2f} {data['closing']:<10.2f} {data['total_debates']:<15}")
+    for model, datapoint in sorted(model_betting.items()):
+        print(f"{model:<20} {datapoint['opening']:<10.2f} {datapoint['rebuttal']:<10.2f} {datapoint['closing']:<10.2f} {datapoint['total_debates']:<15}")
+
+    print("\n")
+
+    trends = analyze_confidence_trends(data)
+
+    # Print overall trends
+    print("========== CONFIDENCE TREND ANALYSIS ==========")
+    print(f"Sample size: {trends['sample_size']} debates with complete betting data")
+    print("Overall average confidence change:")
+    print(f"  Winners: {trends['overall_winner_trend']:.2f}")
+    print(f"  Losers:  {trends['overall_loser_trend']:.2f}")
+    print("\n")
+
+    # Print transitions
+    print("========== CONFIDENCE CHANGES BY TRANSITION ==========")
+    print(f"{'Transition':<20} {'Winners':<10} {'Losers':<10} {'Difference':<10}")
+    print("-" * 50)
+    for transition in trends['speech_transitions']:
+        winner_change = trends['winner_confidence_changes'][transition]
+        loser_change = trends['loser_confidence_changes'][transition]
+        difference = loser_change - winner_change
+        print(f"{transition:<20} {winner_change:+.2f}      {loser_change:+.2f}      {difference:+.2f}")
+    print("\n")
+
+    # Print summary
+    print("========== SUMMARY ==========")
+    if trends['overall_loser_trend'] > trends['overall_winner_trend']:
+        print("Losers tend to increase their confidence more than winners.")
+    elif trends['overall_loser_trend'] < trends['overall_winner_trend']:
+        print("Winners tend to increase their confidence more than losers.")
+    else:
+        print("No significant difference in confidence trends between winners and losers.")
+    print("\n")
+
+    opposition_calibration = analyze_opposition_calibration(data)
+
+    print("======== OPPOSITION CALIBRATION ANALYSIS ========")
+    print(f"{'Model':<20} {'Cal. Score':<12} {'Avg Conf%':<12} {'Win Rate%':<12} {'Overconf':<12} {'Sample':<8}")
+    print("-" * 76)
+
+    for model, metrics in sorted(opposition_calibration.items(),
+                                key=lambda x: x[1]['calibration_score']):
+        print(f"{model:<20} {metrics['calibration_score']:<12.4f} "
+            f"{metrics['avg_confidence']:<12.2f} {metrics['win_rate']:<12.2f} "
+            f"{metrics['overconfidence']:<+12.2f} {metrics['sample_size']:<8}")
 
     print("\n")
 
