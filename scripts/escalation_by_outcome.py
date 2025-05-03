@@ -6,7 +6,6 @@ separating results for winning and losing debates.
 
 import logging
 from collections import defaultdict
-from pathlib import Path
 from typing import Dict, List
 
 # Assuming your project structure allows importing from core and scripts.analysis
@@ -94,17 +93,17 @@ def analyze_confidence_escalation_by_outcome() -> None:
         avg_loss_change = sum(loss_changes) / len(loss_changes) if loss_changes else None
 
         print(f"\n--- Model: {model_name} ---")
-        print(f"  Average Confidence Change (Closing - Opening):")
+        print("  Average Confidence Change (Closing - Opening):")
 
         if avg_win_change is not None:
             print(f"    - In WINNING Debates ({len(win_changes)} instances): {avg_win_change:+.2f}")
         else:
-            print(f"    - In WINNING Debates (0 instances): N/A (No wins with complete bet data)")
+            print("    - In WINNING Debates (0 instances): N/A (No wins with complete bet data)")
 
         if avg_loss_change is not None:
             print(f"    - In LOSING Debates ({len(loss_changes)} instances): {avg_loss_change:+.2f}")
         else:
-            print(f"    - In LOSING Debates (0 instances): N/A (No losses with complete bet data)")
+            print("    - In LOSING Debates (0 instances): N/A (No losses with complete bet data)")
 
         # Optional: Comparison statement
         if avg_win_change is not None and avg_loss_change is not None:
