@@ -40,14 +40,6 @@ class PrivateSelfTournamentRunner:
         self.models = list(load_debate_models(config).keys())
         self.logger.info(f"Loaded {len(self.models)} models and {len(self.topics)} topics")
         
-        # Configure judges
-        self.judge_models = [
-            "qwen/qwq-32b",
-            "google/gemini-pro-1.5",
-            "deepseek/deepseek-chat",
-        ]
-        self.voting_rounds = 2
-        
         # Tournament settings
         self.debates_per_model = 3
         
@@ -55,10 +47,6 @@ class PrivateSelfTournamentRunner:
         self.results = {
             model: {
                 "debates": [],
-                "prop_wins": 0,
-                "opp_wins": 0,
-                "total_prop_confidence": 0,
-                "total_opp_confidence": 0,
                 "prop_bets": [],
                 "opp_bets": []
             } for model in self.models
@@ -86,27 +74,6 @@ class PrivateSelfTournamentRunner:
                 debate_type=DebateType.PRIVATE_SAME_DEBATOR
             )
             
-            # Run judging
-            judgments = []
-            for _ in range(self.voting_rounds):
-                for judge_model in self.judge_models:
-                    judgment = self.config.judgement_processor.process_judgment(
-                        debate=debate,
-                        model=judge_model
-                    )
-                    judgments.append(judgment)
-            
-            # Process results
-            prop_votes = sum(1 for j in judgments if j.winner == "proposition")
-            opp_votes = sum(1 for j in judgments if j.winner == "opposition")
-            winner = "proposition" if prop_votes > opp_votes else "opposition"
-            
-            # Update statistics
-            if winner == "proposition":
-                self.results[model]["prop_wins"] += 1
-            else:
-                self.results[model]["opp_wins"] += 1
-            
             # Track betting behavior
             if debate.debator_bets:
                 for bet in debate.debator_bets:
@@ -119,10 +86,10 @@ class PrivateSelfTournamentRunner:
             debate_result = {
                 "topic": topic.topic_description,
                 "path": str(output_path),
-                "winner": winner,
-                "prop_votes": prop_votes,
-                "opp_votes": opp_votes,
-                "judgments": [j.to_dict() for j in judgments]
+                "bet_history": {
+                    "proposition": [bet.amount for bet in debate.debator_bets if bet.side.value == "proposition"],
+                    "opposition": [bet.amount for bet in debate.debator_bets if bet.side.value == "opposition"]
+                } if debate.debator_bets else {}
             }
             self.results[model]["debates"].append(debate_result)
             
@@ -162,8 +129,6 @@ class PrivateSelfTournamentRunner:
             json.dump({
                 "timestamp": datetime.now().isoformat(),
                 "models": self.models,
-                "judge_models": self.judge_models,
-                "voting_rounds": self.voting_rounds,
                 "debates_per_model": self.debates_per_model,
                 "results": self.results
             }, f, indent=2)
@@ -177,18 +142,25 @@ class PrivateSelfTournamentRunner:
         for model in self.models:
             stats = self.results[model]
             total_debates = len(stats["debates"])
-            prop_win_rate = (stats["prop_wins"] / total_debates * 100) if total_debates > 0 else 0
             
             self.logger.info(f"\nModel: {model}")
             self.logger.info(f"Total debates: {total_debates}")
-            self.logger.info(f"Proposition wins: {stats['prop_wins']} ({prop_win_rate:.1f}%)")
-            self.logger.info(f"Opposition wins: {stats['opp_wins']}")
             
             if stats["prop_bets"]:
                 avg_prop_bet = sum(stats["prop_bets"]) / len(stats["prop_bets"])
                 avg_opp_bet = sum(stats["opp_bets"]) / len(stats["opp_bets"])
                 self.logger.info(f"Average proposition bet: {avg_prop_bet:.1f}")
                 self.logger.info(f"Average opposition bet: {avg_opp_bet:.1f}")
+                
+                # Show bet evolution
+                self.logger.info("\nBet sequences:")
+                for i, debate in enumerate(stats["debates"]):
+                    if "bet_history" in debate:
+                        prop_bets = debate["bet_history"].get("proposition", [])
+                        opp_bets = debate["bet_history"].get("opposition", [])
+                        self.logger.info(f"Debate {i+1}:")
+                        self.logger.info(f"  Proposition bets: {prop_bets}")
+                        self.logger.info(f"  Opposition bets: {opp_bets}")
 
 
 def main():
