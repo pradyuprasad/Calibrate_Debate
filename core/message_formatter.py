@@ -30,8 +30,14 @@ class MessageFormatter:
 
     def _get_user_message(self, debate: DebateTotal, next_round: Round) -> str:
         """Format the debate motion and history for the next round."""
-        return f"""The motion is: {debate.motion.topic_description}
-       {self._get_debate_history(debate, next_round)}"""
+        message = f"""The motion is: {debate.motion.topic_description}"""
+
+        # Add special note for same debator debates
+        if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR]:
+            message += "\nNOTE: In this debate, you are debating against yourself. The other debate is without question another copy of yourself and has the same competence as you have."
+
+        message += f"\n{self._get_debate_history(debate, next_round)}"
+        return message
 
     def _find_bet(
         self,
@@ -79,7 +85,7 @@ class MessageFormatter:
             return False
         elif debate.debate_type == DebateType.PUBLIC_BET:
             return True
-        elif debate.debate_type == DebateType.PRIVATE_BET:
+        elif debate.debate_type in [DebateType.PRIVATE_BET, DebateType.PRIVATE_SAME_DEBATOR]:
             # In private bet mode, only show the current speaker's own bets
             return speech_side == current_side
         return False
@@ -94,14 +100,16 @@ class MessageFormatter:
                 else "private (not visible to your opponent)"
             )
 
-            task += f"\nAfter your speech, you must include a {bet_visibility} confidence bet (0-100) indicating how likely you think you are to win this debate.\n. You will get the amount that you, and your opponent will bet if you win. If you lose, you'll lose this amount and it will go to your opponent. You start off with a 100 tokens in this debate"
+            task += f"\nAfter your speech, you must include a {bet_visibility} confidence bet (0-100) indicating how likely you think you are to win this debate.\n"
+
+            if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR]:
+                task += "Remember that you are debating yourself, a model with the same competence as you have.\n"
+
+            task += "You will get the amount that you, and your opponent will bet if you win. If you lose, you'll lose this amount and it will go to your opponent. You start off with a 100 tokens in this debate"
             task += f"\n In xml tags <{self.bet_pattern_config.bet_logic_private_xml_tag}></{self.bet_pattern_config.bet_logic_private_xml_tag}> explain whether and to what extent you think you are going to win this debate compared to the other side based on the juding criterion. Be reflective and after that give me a bet amount. Your thoughts are private and won't be read by the other side"
 
             task += f"Use the format <{self.bet_pattern_config.bet_amount_xml_tag}>NUMBER</{self.bet_pattern_config.bet_amount_xml_tag}> at the end of your speech.\n"
 
-        print(
-            f"The bet visibility is: {bet_visibility if debate.debate_type != DebateType.BASELINE else 'none - baseline debate'}"
-        )
         if next_round.speech_type == SpeechType.OPENING:
             return "This is the opening speech of the debate." + task
 
@@ -118,7 +126,8 @@ class MessageFormatter:
 
             # Add proposition speech and any associated bet
             if prop_speeches[speech_type] != -1:
-                speech_text = f"PROPOSITION {speech_type.value.upper()}\n{prop_speeches[speech_type]}"
+                prefix = "PROPOSITION" if debate.debate_type not in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR] else "YOUR PROPOSITION"
+                speech_text = f"{prefix} {speech_type.value.upper()}\n{prop_speeches[speech_type]}"
 
                 if debate.debator_bets and self._should_show_bet(
                     debate, Side.PROPOSITION, current_side
@@ -136,7 +145,8 @@ class MessageFormatter:
 
             # Add opposition speech and any associated bet
             if opp_speeches[speech_type] != -1:
-                speech_text = f"OPPOSITION {speech_type.value.upper()}\n{opp_speeches[speech_type]}"
+                prefix = "OPPOSITION" if debate.debate_type not in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR] else "YOUR OPPOSITION"
+                speech_text = f"{prefix} {speech_type.value.upper()}\n{opp_speeches[speech_type]}"
 
                 # Add bet information if applicable
                 if debate.debator_bets and self._should_show_bet(
@@ -157,8 +167,4 @@ class MessageFormatter:
         task += f"=== YOUR TASK ===\nYou are on the {next_round.side.value} side.\n"
         task += f"You must now give your {next_round.speech_type.value} speech.\n"
 
-        bet_visibility = ""
-
-        # Add information about confidence bet requirements based on debate type
-
-        return history + task + bet_visibility
+        return history + task
