@@ -1,12 +1,13 @@
-# generate_model_win_loss_confidence_dumbbell_plot.py
+# generate_model_win_loss_confidence_dumbbell_arrow_plot.py
 
 import logging
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple, Any
 
 import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.patches as patches # Import for FancyArrowPatch
 
 # Import necessary components from your project structure
 # Assuming these paths are correct relative to where you run this script
@@ -90,10 +91,10 @@ def calculate_model_avg_win_loss_confidences(debates_data_list: List[DebateData]
     return avg_model_confidences
 
 
-def generate_model_win_loss_confidence_dumbbell_plot(avg_model_confs: Dict[str, Dict[str, float]]):
+def generate_model_win_loss_confidence_dumbbell_arrow_plot(avg_model_confs: Dict[str, Dict[str, float]]):
     """
-    Generates a dumbbell plot showing average opening vs. closing confidence per model,
-    separated for winning and losing instances.
+    Generates a dumbbell plot with arrows showing average opening vs. closing confidence
+    per model, separated for winning (solid green) and losing (dotted red) instances.
     """
 
     # Apply ggplot style
@@ -101,8 +102,6 @@ def generate_model_win_loss_confidence_dumbbell_plot(avg_model_confs: Dict[str, 
 
     # Prepare data for plotting
     # Each entry is (model, win_opening, win_closing, loss_opening, loss_closing)
-    # We filter for models that have data for AT LEAST one outcome (either win or loss) for both rounds.
-    # If a model never wins/loses, that progression won't be plotted.
     plot_data = []
     for model, confs in avg_model_confs.items():
         win_opening = confs.get('win_opening', np.nan)
@@ -125,9 +124,10 @@ def generate_model_win_loss_confidence_dumbbell_plot(avg_model_confs: Dict[str, 
         return
 
     # Sort data by average CLOSING confidence WHEN WINNING (highest first = reverse=False for standard y-axis)
-    # If a model has no winning data (win_closing is NaN), sort it to the bottom.
+    # If a model has no winning data (win_closing is NaN), sort it to the bottom (-1).
+    # If two models have NaN win_closing, their relative order doesn't strictly matter for the plot,
+    # but key=lambda... will handle it consistently.
     sorted_plot_data = sorted(plot_data, key=lambda item: item[2] if not np.isnan(item[2]) else -1, reverse=False)
-
 
     models = [item[0] for item in sorted_plot_data]
     win_opening_confs = [item[1] for item in sorted_plot_data]
@@ -136,97 +136,104 @@ def generate_model_win_loss_confidence_dumbbell_plot(avg_model_confs: Dict[str, 
     loss_closing_confs = [item[4] for item in sorted_plot_data]
 
     y_positions = np.arange(len(models)) # Y-axis positions for each model (0, 1, 2, ...)
-    # Small offset to place winning/losing dumbbells slightly above/below the main tick
+    # Offset to place winning/losing dumbbells slightly above/below the main tick
+    # Positive offset for Winning (above), negative offset for Losing (below)
     offset = 0.15
 
     # Determine figure height dynamically based on the number of models
     fig_height = max(6, len(models) * 0.8) # Adjust 0.8 for spacing
     fig, ax = plt.subplots(figsize=(12, fig_height)) # Create figure and axes objects
 
-    # Plot Winning Dumbbells (Green lines, Green markers)
+    # Arrow properties
+    arrow_style = '-|>' # Line ending with an arrow
+    arrow_mutation_scale = 15 # Adjust arrow head size
+    arrow_lw = 3 # Line width
+
+    # Text label offset
+    text_offset_points = 10 # Horizontal offset
+
+    # Plot Winning Dumbbells (Solid Green arrows, Green markers)
     for i in range(len(models)):
         # Only plot if winning data exists for this model
         if not np.isnan(win_opening_confs[i]) and not np.isnan(win_closing_confs[i]):
-            # Determine line color based on confidence change (within winning context)
-            if win_closing_confs[i] > win_opening_confs[i]:
-                line_color = 'darkgreen' # Indicate increase
-            elif win_closing_confs[i] < win_opening_confs[i]:
-                line_color = 'seagreen' # Indicate decrease (lighter green)
-            else:
-                line_color = 'lightgray' # Indicate no change
+            y_pos = y_positions[i] + offset # Position for Winning row
 
-            ax.hlines(y=y_positions[i] - offset, # Plot slightly below the tick
-                      xmin=min(win_opening_confs[i], win_closing_confs[i]),
-                      xmax=max(win_opening_confs[i], win_closing_confs[i]),
-                      color=line_color, lw=3, zorder=1, label='_nolegend_') # Draw lines behind points, no legend entry
+            # Draw the arrow line from opening to closing confidence
+            p = patches.FancyArrowPatch((win_opening_confs[i], y_pos), # Start point
+                                        (win_closing_confs[i], y_pos), # End point
+                                        arrowstyle=arrow_style,
+                                        mutation_scale=arrow_mutation_scale,
+                                        lw=arrow_lw,
+                                        color='darkgreen',
+                                        linestyle='-', # Solid line for Winning
+                                        zorder=1) # Draw behind points
+            ax.add_patch(p)
 
             # Plot opening confidence point (Green Circle)
-            ax.scatter(win_opening_confs[i], y_positions[i] - offset, color='green', s=150, marker='o', label='Avg Opening Confidence (Win)', zorder=5) # Use ax.scatter
+            ax.scatter(win_opening_confs[i], y_pos, color='green', s=150, marker='o', label='Avg Opening Confidence (Win)', zorder=5)
 
-            # Plot closing confidence point (Green Triangle)
-            ax.scatter(win_closing_confs[i], y_positions[i] - offset, color='forestgreen', s=150, marker='^', label='Avg Closing Confidence (Win)', zorder=5) # Use a different marker, darker green
+            # Plot closing confidence point (Green Circle)
+            ax.scatter(win_closing_confs[i], y_pos, color='forestgreen', s=150, marker='o', label='Avg Closing Confidence (Win)', zorder=5) # Still use darker shade for Closing
 
             # Add value labels using ax.annotate
-            text_offset_points = 10 # Horizontal offset
-
             # Label for Opening Confidence (to the left)
             ax.annotate(f'{win_opening_confs[i]:.1f}%',
-                        xy=(win_opening_confs[i], y_positions[i] - offset),
+                        xy=(win_opening_confs[i], y_pos),
                         xytext=(-text_offset_points, 0), textcoords='offset points',
                         ha='right', va='center', fontsize=9, color='black',
                         bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.5))
 
             # Label for Closing Confidence (to the right)
             ax.annotate(f'{win_closing_confs[i]:.1f}%',
-                        xy=(win_closing_confs[i], y_positions[i] - offset),
+                        xy=(win_closing_confs[i], y_pos),
                         xytext=(text_offset_points, 0), textcoords='offset points',
                         ha='left', va='center', fontsize=9, color='black',
                         bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.5))
 
 
-    # Plot Losing Dumbbells (Red lines, Red markers)
+    # Plot Losing Dumbbells (Dotted Red arrows, Red markers)
     for i in range(len(models)):
          # Only plot if losing data exists for this model
         if not np.isnan(loss_opening_confs[i]) and not np.isnan(loss_closing_confs[i]):
-            # Determine line color based on confidence change (within losing context)
-            if loss_closing_confs[i] > loss_opening_confs[i]:
-                line_color = 'tomato' # Indicate increase (lighter red)
-            elif loss_closing_confs[i] < loss_opening_confs[i]:
-                line_color = 'darkred' # Indicate decrease (darker red)
-            else:
-                line_color = 'lightgray' # Indicate no change
+            y_pos = y_positions[i] - offset # Position for Losing row
 
-            ax.hlines(y=y_positions[i] + offset, # Plot slightly above the tick
-                      xmin=min(loss_opening_confs[i], loss_closing_confs[i]),
-                      xmax=max(loss_opening_confs[i], loss_closing_confs[i]),
-                      color=line_color, lw=3, zorder=1, label='_nolegend_') # Draw lines behind points, no legend entry
+            # Draw the arrow line from opening to closing confidence
+            p = patches.FancyArrowPatch((loss_opening_confs[i], y_pos), # Start point
+                                        (loss_closing_confs[i], y_pos), # End point
+                                        arrowstyle=arrow_style,
+                                        mutation_scale=arrow_mutation_scale,
+                                        lw=arrow_lw,
+                                        color='darkred',
+                                        linestyle=':', # Dotted line for Losing
+                                        zorder=1) # Draw behind points
+            ax.add_patch(p)
 
             # Plot opening confidence point (Red Circle)
-            ax.scatter(loss_opening_confs[i], y_positions[i] + offset, color='red', s=150, marker='o', label='Avg Opening Confidence (Loss)', zorder=5) # Use ax.scatter
+            ax.scatter(loss_opening_confs[i], y_pos, color='red', s=150, marker='o', label='Avg Opening Confidence (Loss)', zorder=5)
 
-            # Plot closing confidence point (Red Triangle)
-            ax.scatter(loss_closing_confs[i], y_positions[i] + offset, color='orangered', s=150, marker='^', label='Avg Closing Confidence (Loss)', zorder=5) # Use a different marker, darker red
+            # Plot closing confidence point (Red Circle)
+            ax.scatter(loss_closing_confs[i], y_pos, color='orangered', s=150, marker='o', label='Avg Closing Confidence (Loss)', zorder=5) # Still use darker shade for Closing
 
             # Add value labels using ax.annotate
             text_offset_points = 10 # Horizontal offset
 
             # Label for Opening Confidence (to the left)
             ax.annotate(f'{loss_opening_confs[i]:.1f}%',
-                        xy=(loss_opening_confs[i], y_positions[i] + offset),
+                        xy=(loss_opening_confs[i], y_pos),
                         xytext=(-text_offset_points, 0), textcoords='offset points',
                         ha='right', va='center', fontsize=9, color='black',
                         bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.5))
 
             # Label for Closing Confidence (to the right)
             ax.annotate(f'{loss_closing_confs[i]:.1f}%',
-                        xy=(loss_closing_confs[i], y_positions[i] + offset),
+                        xy=(loss_closing_confs[i], y_pos),
                         xytext=(text_offset_points, 0), textcoords='offset points',
                         ha='left', va='center', fontsize=9, color='black',
                         bbox=dict(boxstyle='round,pad=0.2', fc='white', alpha=0.5))
 
 
     # Add a vertical line for the 50% baseline
-    ax.axvline(x=50, color='gray', linestyle='--', linewidth=1.5, label='Expected Win Rate (50%)', zorder=0) # Use ax.axvline
+    ax.axvline(x=50, color='gray', linestyle='--', linewidth=1.5, label='Expected Win Rate (50%)', zorder=0)
 
     # Set labels and title using axes methods
     ax.set_xlabel('Confidence (%)')
@@ -248,28 +255,43 @@ def generate_model_win_loss_confidence_dumbbell_plot(avg_model_confs: Dict[str, 
 
     # Improve legend appearance
     # Manually create legend entries to ensure order and avoid duplicates from the loop
-    legend_handles = [
-        plt.scatter([], [], color='green', s=150, marker='o'), # Placeholder for Win Opening
-        plt.scatter([], [], color='forestgreen', s=150, marker='^'), # Placeholder for Win Closing
-        plt.scatter([], [], color='red', s=150, marker='o'), # Placeholder for Loss Opening
-        plt.scatter([], [], color='orangered', s=150, marker='^'), # Placeholder for Loss Closing
-        plt.Line2D([0], [0], color='gray', linestyle='--', lw=1.5) # Placeholder for 50% line
+    legend_handles_revised = [
+         plt.scatter([], [], color='green', s=150, marker='o'), # Win Opening/Closing Placeholder (same shape)
+         plt.scatter([], [], color='red', s=150, marker='o'), # Loss Opening/Closing Placeholder (same shape)
+         plt.Line2D([0], [0], color='darkgreen', lw=arrow_lw, linestyle='-'), # Win Trend Line Example
+         plt.Line2D([0], [0], color='darkred', lw=arrow_lw, linestyle=':'), # Loss Trend Line Example (Dotted)
+         plt.Line2D([0], [0], color='gray', linestyle='--', lw=1.5) # 50% line Placeholder
     ]
-    legend_labels = [
-        'Avg Opening (Win)',
-        'Avg Closing (Win)',
-        'Avg Opening (Loss)',
-        'Avg Closing (Loss)',
+    legend_labels_revised = [
+        'Avg Confidence (Win)', # Label for the points when winning
+        'Avg Confidence (Loss)', # Label for the points when losing
+        'Confidence Trend (Win)', # Label for the arrow line when winning
+        'Confidence Trend (Loss)', # Label for the arrow line when losing
         'Expected Win Rate (50%)'
     ]
 
 
-    ax.legend(legend_handles, legend_labels, loc='upper left', frameon=True, edgecolor='black')
+    ax.legend(legend_handles_revised, legend_labels_revised, loc='upper left', frameon=True, edgecolor='black')
+
+    # Optional: Add text annotation to explain point color/shade mapping if needed
+    # For example: "Green points/lines represent average confidence in debates won, Red in debates lost."
+    # "Within Win/Loss: Opening = lighter shade circle, Closing = darker shade circle." # (This is not strictly true with current colors, maybe change marker colors?)
+
+    # Let's simplify colors slightly for clarity:
+    # Win: All points green, line darkgreen
+    # Loss: All points red, line darkred
+    # This matches the legend handles/labels better.
+    # UPDATE SCATTER CALLS:
+    # Win Opening: color='green', marker='o'
+    # Win Closing: color='green', marker='o' (or forestgreen if you want distinct shades per point)
+    # Loss Opening: color='red', marker='o'
+    # Loss Closing: color='red', marker='o' (or orangered if you want distinct shades per point)
+    # The code above already uses slightly different shades (green vs forestgreen, red vs orangered) which is good for seeing start/end points even with same shape. Let's keep that.
 
 
     fig.tight_layout() # Adjust layout
 
-    figure_path = FIGURE_DIR / "model_win_loss_confidence_dumbbell_plot_ggplot.pdf" # Save with a new name
+    figure_path = FIGURE_DIR / "model_win_loss_confidence_dumbbell_arrow_plot_ggplot.pdf" # Save with descriptive name
     plt.savefig(figure_path)
     logger.info(f"Saved figure to {figure_path}")
 
@@ -299,7 +321,7 @@ def main():
     logger.info(f"Average Model Confidences (Win/Loss): {avg_model_confs}")
 
     # --- Generate the Dumbbell Plot Figure ---
-    generate_model_win_loss_confidence_dumbbell_plot(avg_model_confs)
+    generate_model_win_loss_confidence_dumbbell_arrow_plot(avg_model_confs)
 
     logger.info("Figure generation complete.")
 
