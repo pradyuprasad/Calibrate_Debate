@@ -110,6 +110,9 @@ class MessageFormatter:
 
             task += f"Use the format <{self.bet_pattern_config.bet_amount_xml_tag}>NUMBER</{self.bet_pattern_config.bet_amount_xml_tag}> at the end of your speech.\n"
 
+        print(
+            f"The bet visibility is: {bet_visibility if debate.debate_type != DebateType.BASELINE else 'none - baseline debate'}"
+        )
         if next_round.speech_type == SpeechType.OPENING:
             return "This is the opening speech of the debate." + task
 
@@ -126,8 +129,7 @@ class MessageFormatter:
 
             # Add proposition speech and any associated bet
             if prop_speeches[speech_type] != -1:
-                prefix = "PROPOSITION" if debate.debate_type not in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR] else "YOUR PROPOSITION"
-                speech_text = f"{prefix} {speech_type.value.upper()}\n{prop_speeches[speech_type]}"
+                speech_text = f"PROPOSITION {speech_type.value.upper()}\n{prop_speeches[speech_type]}"
 
                 if debate.debator_bets and self._should_show_bet(
                     debate, Side.PROPOSITION, current_side
@@ -145,8 +147,7 @@ class MessageFormatter:
 
             # Add opposition speech and any associated bet
             if opp_speeches[speech_type] != -1:
-                prefix = "OPPOSITION" if debate.debate_type not in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR] else "YOUR OPPOSITION"
-                speech_text = f"{prefix} {speech_type.value.upper()}\n{opp_speeches[speech_type]}"
+                speech_text = f"OPPOSITION {speech_type.value.upper()}\n{opp_speeches[speech_type]}"
 
                 # Add bet information if applicable
                 if debate.debator_bets and self._should_show_bet(
@@ -167,4 +168,8 @@ class MessageFormatter:
         task += f"=== YOUR TASK ===\nYou are on the {next_round.side.value} side.\n"
         task += f"You must now give your {next_round.speech_type.value} speech.\n"
 
-        return history + task
+        bet_visibility = ""
+
+        # Add information about confidence bet requirements based on debate type
+
+        return history + task + bet_visibility
