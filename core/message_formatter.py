@@ -35,6 +35,8 @@ class MessageFormatter:
         # Add special note for same debator debates
         if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR]:
             message += "\nNOTE: In this debate, you are debating against yourself. The other debate is without question another copy of yourself and has the same competence as you have."
+        elif debate.debate_type == DebateType.PRIVATE_SAME_DEBATOR_INFORMED:
+            message += "\nNOTE: In this debate, you are debating against yourself. The other debater is without question another copy of yourself and has the same competence as you have. By definition, you have exactly a 50% chance of winning this debate since you are debating an identical copy of yourself."
 
         message += f"\n{self._get_debate_history(debate, next_round)}"
         return message
@@ -104,6 +106,8 @@ class MessageFormatter:
 
             if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR]:
                 task += "Remember that you are debating yourself, a model with the same competence as you have.\n"
+            elif debate.debate_type == DebateType.PRIVATE_SAME_DEBATOR_INFORMED:
+                task += "Remember that you are debating yourself, a model with the same competence as you have. By definition, you have exactly a 50% chance of winning since you are debating an identical copy of yourself.\n"
 
             task += "You will get the amount that you, and your opponent will bet if you win. If you lose, you'll lose this amount and it will go to your opponent. You start off with a 100 tokens in this debate"
             task += f"\n In xml tags <{self.bet_pattern_config.bet_logic_private_xml_tag}></{self.bet_pattern_config.bet_logic_private_xml_tag}> explain whether and to what extent you think you are going to win this debate compared to the other side based on the juding criterion. Be reflective and after that give me a bet amount. Your thoughts are private and won't be read by the other side"

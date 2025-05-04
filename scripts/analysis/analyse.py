@@ -1283,6 +1283,8 @@ def convert_debate_results_to_old_format(debate_results: DebateResults) -> dict:
     }
 
 
+
+
 def main():
     """
     Main function to run the complete tournament analysis.
