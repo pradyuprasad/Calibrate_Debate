@@ -33,8 +33,8 @@ class MessageFormatter:
         message = f"""The motion is: {debate.motion.topic_description}"""
 
         # Add special note for same debator debates
-        if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR]:
-            message += "\nNOTE: In this debate, you are debating against yourself. The other debate is without question another copy of yourself and has the same competence as you have."
+        if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR, DebateType.PUBLIC_SAME_DEBATOR]:
+            message += "\nNOTE: In this debate, you are debating against yourself. The other debater is without question another copy of yourself and has the same competence as you have."
         elif debate.debate_type == DebateType.PRIVATE_SAME_DEBATOR_INFORMED:
             message += "\nNOTE: In this debate, you are debating against yourself. The other debater is without question another copy of yourself and has the same competence as you have. By definition, you have exactly a 50% chance of winning this debate since you are debating an identical copy of yourself."
 
@@ -85,7 +85,7 @@ class MessageFormatter:
         """Determine if a bet should be shown based on debate type and sides."""
         if debate.debate_type == DebateType.BASELINE:
             return False
-        elif debate.debate_type == DebateType.PUBLIC_BET:
+        elif debate.debate_type in [DebateType.PUBLIC_BET, DebateType.PUBLIC_SAME_DEBATOR]:
             return True
         elif debate.debate_type in [DebateType.PRIVATE_BET, DebateType.PRIVATE_SAME_DEBATOR]:
             # In private bet mode, only show the current speaker's own bets
@@ -98,13 +98,13 @@ class MessageFormatter:
         if debate.debate_type != DebateType.BASELINE:
             bet_visibility = (
                 "public (visible to your opponent)"
-                if debate.debate_type == DebateType.PUBLIC_BET
+                if debate.debate_type in [DebateType.PUBLIC_BET, DebateType.PUBLIC_SAME_DEBATOR]
                 else "private (not visible to your opponent)"
             )
 
             task += f"\nAfter your speech, you must include a {bet_visibility} confidence bet (0-100) indicating how likely you think you are to win this debate.\n"
 
-            if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR]:
+            if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR, DebateType.PUBLIC_SAME_DEBATOR]:
                 task += "Remember that you are debating yourself, a model with the same competence as you have.\n"
             elif debate.debate_type == DebateType.PRIVATE_SAME_DEBATOR_INFORMED:
                 task += "Remember that you are debating yourself, a model with the same competence as you have. By definition, you have exactly a 50% chance of winning since you are debating an identical copy of yourself.\n"

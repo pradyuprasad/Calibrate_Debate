@@ -17,8 +17,7 @@ class DebateType(Enum):
     PRIVATE_BET = "private_bet"
     PUBLIC_BET = "public_bet"
     SAME_DEBATOR = "same_debator"  # New type for LLM vs itself debates
-    PRIVATE_SAME_DEBATOR = "private_same_debator"  # Combined type for private betting in self-debates
-    PRIVATE_SAME_DEBATOR_INFORMED = "private_same_debator_informed"  # Self-debate with explicit 50% win probability
+    PUBLIC_SAME_DEBATOR = "PUBLIC_SAME_DEBATOR"
 
 
 class Side(Enum):
