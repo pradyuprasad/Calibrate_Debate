@@ -2,7 +2,6 @@
 """
 Script to run a tournament where each model debates against itself with public betting.
 Each model will debate itself 3 times, cycling through available topics.
-Models are informed they are debating themselves.
 """
 
 import json
@@ -33,7 +32,7 @@ class PublicSelfTournamentRunner:
         self.logger = setup_logging(config)
 
         # Create output directory for public self debates
-        self.output_dir = Path("public_self_debates_informed")
+        self.output_dir = Path("public_self_debates")
         self.output_dir.mkdir(exist_ok=True, parents=True)
 
         # Load topics and models

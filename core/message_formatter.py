@@ -31,6 +31,8 @@ class MessageFormatter:
     def _get_user_message(self, debate: DebateTotal, next_round: Round) -> str:
         """Format the debate motion and history for the next round."""
         message = f"""The motion is: {debate.motion.topic_description}"""
+        print("getting user message")
+        print("debate.debate_type is", debate.debate_type)
 
         # Add special note for same debator debates
         if debate.debate_type in [DebateType.SAME_DEBATOR, DebateType.PRIVATE_SAME_DEBATOR, DebateType.PUBLIC_SAME_DEBATOR]:
@@ -38,6 +40,7 @@ class MessageFormatter:
         elif debate.debate_type == DebateType.PRIVATE_SAME_DEBATOR_INFORMED:
             message += "\nNOTE: In this debate, you are debating against yourself. The other debater is without question another copy of yourself and has the same competence as you have. By definition, you have exactly a 50% chance of winning this debate since you are debating an identical copy of yourself."
 
+        print("got user message partially")
         message += f"\n{self._get_debate_history(debate, next_round)}"
         return message
 
@@ -95,6 +98,7 @@ class MessageFormatter:
     def _get_debate_history(self, debate: DebateTotal, next_round: Round) -> str:
         """Format the relevant debate history for the next round."""
         task = ""
+        print("starting task")
         if debate.debate_type != DebateType.BASELINE:
             bet_visibility = (
                 "public (visible to your opponent)"

@@ -16,6 +16,7 @@ class DebateType(Enum):
     BASELINE = "baseline"
     PRIVATE_BET = "private_bet"
     PUBLIC_BET = "public_bet"
+    PRIVATE_SAME_DEBATOR = "private_same_debator"
     SAME_DEBATOR = "same_debator"  # New type for LLM vs itself debates
     PUBLIC_SAME_DEBATOR = "PUBLIC_SAME_DEBATOR"
 

@@ -213,7 +213,7 @@ class DebateService:
             self.logger.info(f"Successfully completed {round.speech_type} for {round.side}")
 
         except Exception as e:
-            # Track failed token usage if available
+            print(e)
             if isinstance(e, requests.exceptions.RequestException) and hasattr(
                 e, "response"
             ):
