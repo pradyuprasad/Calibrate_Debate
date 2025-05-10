@@ -8,6 +8,7 @@ dependencies = [
     "matplotlib>=3.10.1",
     "numpy>=2.2.3",
     "pandas>=2.2.3",
+    "pingouin>=0.5.5",
     "pydantic>=2.10.6",
     "pytest-cov>=6.0.0",
     "pytest-mock>=3.14.0",

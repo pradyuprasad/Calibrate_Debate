@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any, DefaultDict, Dict, List, Optional
 
 import numpy as np
+import pandas as pd
 import statsmodels.api as sm
 from scipy.stats import (chi2_contingency, fisher_exact, mannwhitneyu,
                          ttest_1samp, ttest_ind, ttest_rel, wilcoxon)
@@ -1282,6 +1283,136 @@ def convert_debate_results_to_old_format(debate_results: DebateResults) -> dict:
         "model_stats": model_stats
     }
 
+def analyze_confidence_escalation(data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Performs repeated measures ANOVA and post-hoc tests to analyze confidence escalation
+    across debate rounds (opening, rebuttal, closing).
+    """
+    logger = logging.getLogger("confidence_escalation_analysis")
+    logger.info("Starting confidence escalation analysis")
+
+    # Prepare data structures for analysis
+    all_models_data = []
+    losers_only_data = []
+    speech_types = ["opening", "rebuttal", "closing"]
+
+    # Process each debate
+    for debate in data["debates"]:
+        prop_model = debate.proposition_model
+        opp_model = debate.opposition_model
+        prop_won = debate.winner == "proposition"
+        opp_won = debate.winner == "opposition"
+
+        # Check if we have all speech bets for both sides
+        if all(speech in debate.prop_bets for speech in speech_types) and \
+           all(speech in debate.opp_bets for speech in speech_types):
+
+            # Process proposition data
+            all_models_data.append({
+                'model': prop_model,
+                'side': 'proposition',
+                'won': prop_won,
+                'opening': debate.prop_bets['opening'],
+                'rebuttal': debate.prop_bets['rebuttal'],
+                'closing': debate.prop_bets['closing']
+            })
+
+            if not prop_won:
+                losers_only_data.append({
+                    'model': prop_model,
+                    'side': 'proposition',
+                    'won': False,
+                    'opening': debate.prop_bets['opening'],
+                    'rebuttal': debate.prop_bets['rebuttal'],
+                    'closing': debate.prop_bets['closing']
+                })
+
+            # Process opposition data
+            all_models_data.append({
+                'model': opp_model,
+                'side': 'opposition',
+                'won': opp_won,
+                'opening': debate.opp_bets['opening'],
+                'rebuttal': debate.opp_bets['rebuttal'],
+                'closing': debate.opp_bets['closing']
+            })
+
+            if not opp_won:
+                losers_only_data.append({
+                    'model': opp_model,
+                    'side': 'opposition',
+                    'won': False,
+                    'opening': debate.opp_bets['opening'],
+                    'rebuttal': debate.opp_bets['rebuttal'],
+                    'closing': debate.opp_bets['closing']
+                })
+
+    # Convert to DataFrames
+    df_all = pd.DataFrame(all_models_data)
+    df_losers = pd.DataFrame(losers_only_data)
+
+    # Calculate descriptive statistics
+    descriptive_stats = {
+        "all_models": {
+            "opening_mean": df_all['opening'].mean(),
+            "opening_std": df_all['opening'].std(),
+            "rebuttal_mean": df_all['rebuttal'].mean(),
+            "rebuttal_std": df_all['rebuttal'].std(),
+            "closing_mean": df_all['closing'].mean(),
+            "closing_std": df_all['closing'].std(),
+            "total_increase": df_all['closing'].mean() - df_all['opening'].mean()
+        }
+    }
+
+    if len(df_losers) > 0:
+        descriptive_stats["losers_only"] = {
+            "opening_mean": df_losers['opening'].mean(),
+            "opening_std": df_losers['opening'].std(),
+            "rebuttal_mean": df_losers['rebuttal'].mean(),
+            "rebuttal_std": df_losers['rebuttal'].std(),
+            "closing_mean": df_losers['closing'].mean(),
+            "closing_std": df_losers['closing'].std(),
+            "total_increase": df_losers['closing'].mean() - df_losers['opening'].mean()
+        }
+
+    # Run paired t-tests between rounds
+    statistical_tests = {
+        "all_models": {},
+        "losers_only": {}
+    }
+
+    # For all models
+    for i, round1 in enumerate(speech_types[:-1]):
+        round2 = speech_types[i + 1]
+        t_stat, p_value = ttest_rel(df_all[round1], df_all[round2])
+        statistical_tests["all_models"][f"{round1}_to_{round2}"] = {
+            "t_statistic": t_stat,
+            "p_value": p_value,
+            "significant": p_value < 0.05,
+            "mean_difference": df_all[round2].mean() - df_all[round1].mean()
+        }
+
+    # For losers only
+    if len(df_losers) >= 5:
+        for i, round1 in enumerate(speech_types[:-1]):
+            round2 = speech_types[i + 1]
+            t_stat, p_value = ttest_rel(df_losers[round1], df_losers[round2])
+            statistical_tests["losers_only"][f"{round1}_to_{round2}"] = {
+                "t_statistic": t_stat,
+                "p_value": p_value,
+                "significant": p_value < 0.05,
+                "mean_difference": df_losers[round2].mean() - df_losers[round1].mean()
+            }
+
+    return {
+        "descriptive_stats": descriptive_stats,
+        "statistical_tests": statistical_tests,
+        "data_summary": {
+            "all_models_count": len(df_all),
+            "losers_count": len(df_losers)
+        }
+    }
+
 
 
 
@@ -1564,6 +1695,33 @@ def main():
             f"{metrics['overconfidence']:<+12.2f} {metrics['sample_size']:<8}")
 
     print("\n")
+
+
+    print("\n======== CONFIDENCE ESCALATION ANALYSIS ========")
+    escalation_results = analyze_confidence_escalation(data)
+
+    # Print descriptive statistics
+    desc_stats = escalation_results["descriptive_stats"]["all_models"]
+    print("\nAverage confidence by round:")
+    print(f"  Opening:  {desc_stats['opening_mean']:.2f}%")
+    print(f"  Rebuttal: {desc_stats['rebuttal_mean']:.2f}%")
+    print(f"  Closing:  {desc_stats['closing_mean']:.2f}%")
+    print(f"  Total increase: {desc_stats['total_increase']:.2f}%")
+
+    # Print statistical tests
+    print("\nStatistical tests:")
+    for test_name, result in escalation_results["statistical_tests"]["all_models"].items():
+        print(f"\n{test_name}:")
+        print(f"  Mean difference: {result['mean_difference']:.2f}%")
+        print(f"  t-statistic: {result['t_statistic']:.3f}")
+        print(f"  p-value: {result['p_value']:.4f}")
+        print(f"  {'Significant' if result['significant'] else 'Not significant'}")
+
+    if "losers_only" in escalation_results["descriptive_stats"]:
+        print("\nLosers only analysis:")
+        losers_stats = escalation_results["descriptive_stats"]["losers_only"]
+        print(f"  Opening: {losers_stats['opening_mean']:.2f}% → Closing: {losers_stats['closing_mean']:.2f}%")
+        print(f"  Total increase: {losers_stats['total_increase']:.2f}%")
 
 
 

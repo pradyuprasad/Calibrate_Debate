@@ -1,0 +1,758 @@
+{
+  "timestamp": "2025-05-11T01:11:07.548745",
+  "models": [
+    "openai/o3-mini",
+    "google/gemini-2.0-flash-001",
+    "anthropic/claude-3.7-sonnet",
+    "deepseek/deepseek-chat",
+    "qwen/qwq-32b:free",
+    "openai/gpt-4o-mini",
+    "google/gemma-3-27b-it",
+    "anthropic/claude-3.5-haiku",
+    "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "qwen/qwen-max"
+  ],
+  "debates_per_model": 3,
+  "results": {
+    "openai/o3-mini": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/openai_o3-mini_vs_self_20250509_213224.json",
+          "bet_history": {
+            "proposition": [
+              85,
+              90,
+              90
+            ],
+            "opposition": [
+              70,
+              70,
+              75
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/openai_o3-mini_vs_self_20250509_213432.json",
+          "bet_history": {
+            "proposition": [
+              65,
+              75,
+              80
+            ],
+            "opposition": [
+              70,
+              80,
+              85
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/openai_o3-mini_vs_self_20250509_213632.json",
+          "bet_history": {
+            "proposition": [
+              65,
+              70,
+              75
+            ],
+            "opposition": [
+              75,
+              80,
+              85
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        85,
+        90,
+        90,
+        65,
+        75,
+        80,
+        65,
+        70,
+        75
+      ],
+      "opp_bets": [
+        70,
+        70,
+        75,
+        70,
+        80,
+        85,
+        75,
+        80,
+        85
+      ]
+    },
+    "google/gemini-2.0-flash-001": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/google_gemini-2.0-flash-001_vs_self_20250509_213830.json",
+          "bet_history": {
+            "proposition": [
+              50,
+              65,
+              60
+            ],
+            "opposition": [
+              100,
+              100,
+              60
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/google_gemini-2.0-flash-001_vs_self_20250509_213939.json",
+          "bet_history": {
+            "proposition": [
+              15,
+              10,
+              25
+            ],
+            "opposition": [
+              60,
+              55,
+              58
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/google_gemini-2.0-flash-001_vs_self_20250509_214049.json",
+          "bet_history": {
+            "proposition": [
+              8,
+              7,
+              6
+            ],
+            "opposition": [
+              60,
+              54,
+              52
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        50,
+        65,
+        60,
+        15,
+        10,
+        25,
+        8,
+        7,
+        6
+      ],
+      "opp_bets": [
+        100,
+        100,
+        60,
+        60,
+        55,
+        58,
+        60,
+        54,
+        52
+      ]
+    },
+    "anthropic/claude-3.7-sonnet": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/anthropic_claude-3.7-sonnet_vs_self_20250509_214203.json",
+          "bet_history": {
+            "proposition": [
+              30,
+              65,
+              80
+            ],
+            "opposition": [
+              60,
+              70,
+              75
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/anthropic_claude-3.7-sonnet_vs_self_20250509_214609.json",
+          "bet_history": {
+            "proposition": [
+              60,
+              55,
+              65
+            ],
+            "opposition": [
+              55,
+              65,
+              70
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/anthropic_claude-3.7-sonnet_vs_self_20250509_214955.json",
+          "bet_history": {
+            "proposition": [
+              60,
+              65,
+              70
+            ],
+            "opposition": [
+              55,
+              60,
+              58
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        30,
+        65,
+        80,
+        60,
+        55,
+        65,
+        60,
+        65,
+        70
+      ],
+      "opp_bets": [
+        60,
+        70,
+        75,
+        55,
+        65,
+        70,
+        55,
+        60,
+        58
+      ]
+    },
+    "deepseek/deepseek-chat": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/deepseek_deepseek-chat_vs_self_20250509_215412.json",
+          "bet_history": {
+            "proposition": [
+              60,
+              65,
+              70
+            ],
+            "opposition": [
+              50,
+              55,
+              60
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/deepseek_deepseek-chat_vs_self_20250509_215727.json",
+          "bet_history": {
+            "proposition": [
+              60,
+              75,
+              80
+            ],
+            "opposition": [
+              50,
+              60,
+              55
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/deepseek_deepseek-chat_vs_self_20250509_220200.json",
+          "bet_history": {
+            "proposition": [
+              60,
+              55,
+              55
+            ],
+            "opposition": [
+              50,
+              50,
+              60
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        60,
+        65,
+        70,
+        60,
+        75,
+        80,
+        60,
+        55,
+        55
+      ],
+      "opp_bets": [
+        50,
+        55,
+        60,
+        50,
+        60,
+        55,
+        50,
+        50,
+        60
+      ]
+    },
+    "qwen/qwq-32b:free": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/qwen_qwq-32b:free_vs_self_20250509_221208.json",
+          "bet_history": {
+            "proposition": [
+              65,
+              70,
+              85
+            ],
+            "opposition": [
+              75,
+              85,
+              95
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/qwen_qwq-32b:free_vs_self_20250509_222115.json",
+          "bet_history": {
+            "proposition": [
+              80,
+              70,
+              80
+            ],
+            "opposition": [
+              70,
+              85,
+              95
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/qwen_qwq-32b:free_vs_self_20250510_094923.json",
+          "bet_history": {
+            "proposition": [
+              90,
+              85,
+              95
+            ],
+            "opposition": [
+              70,
+              80,
+              90
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        65,
+        70,
+        85,
+        80,
+        70,
+        80,
+        90,
+        85,
+        95
+      ],
+      "opp_bets": [
+        75,
+        85,
+        95,
+        70,
+        85,
+        95,
+        70,
+        80,
+        90
+      ]
+    },
+    "openai/gpt-4o-mini": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/openai_gpt-4o-mini_vs_self_20250510_095631.json",
+          "bet_history": {
+            "proposition": [
+              70,
+              75,
+              80
+            ],
+            "opposition": [
+              65,
+              70,
+              75
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/openai_gpt-4o-mini_vs_self_20250510_095826.json",
+          "bet_history": {
+            "proposition": [
+              70,
+              0,
+              75
+            ],
+            "opposition": [
+              70,
+              70,
+              80
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/openai_gpt-4o-mini_vs_self_20250510_224829.json",
+          "bet_history": {
+            "proposition": [
+              70,
+              80,
+              85
+            ],
+            "opposition": [
+              75,
+              70,
+              80
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        70,
+        75,
+        80,
+        70,
+        0,
+        75,
+        70,
+        80,
+        85
+      ],
+      "opp_bets": [
+        65,
+        70,
+        75,
+        70,
+        70,
+        80,
+        75,
+        70,
+        80
+      ]
+    },
+    "google/gemma-3-27b-it": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/google_gemma-3-27b-it_vs_self_20250510_225237.json",
+          "bet_history": {
+            "proposition": [
+              65,
+              70,
+              85
+            ],
+            "opposition": [
+              65,
+              75,
+              85
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/google_gemma-3-27b-it_vs_self_20250510_230023.json",
+          "bet_history": {
+            "proposition": [
+              70,
+              80,
+              85
+            ],
+            "opposition": [
+              60,
+              70,
+              80
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/google_gemma-3-27b-it_vs_self_20250510_230646.json",
+          "bet_history": {
+            "proposition": [
+              75,
+              80,
+              90
+            ],
+            "opposition": [
+              75,
+              85,
+              90
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        65,
+        70,
+        85,
+        70,
+        80,
+        85,
+        75,
+        80,
+        90
+      ],
+      "opp_bets": [
+        65,
+        75,
+        85,
+        60,
+        70,
+        80,
+        75,
+        85,
+        90
+      ]
+    },
+    "anthropic/claude-3.5-haiku": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/anthropic_claude-3.5-haiku_vs_self_20250510_231152.json",
+          "bet_history": {
+            "proposition": [
+              75,
+              80,
+              90
+            ],
+            "opposition": [
+              75,
+              65,
+              65
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/anthropic_claude-3.5-haiku_vs_self_20250510_231339.json",
+          "bet_history": {
+            "proposition": [
+              70,
+              85,
+              90
+            ],
+            "opposition": [
+              75,
+              85,
+              90
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/anthropic_claude-3.5-haiku_vs_self_20250510_231520.json",
+          "bet_history": {
+            "proposition": [
+              75,
+              80,
+              85
+            ],
+            "opposition": [
+              65,
+              75,
+              80
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        75,
+        80,
+        90,
+        70,
+        85,
+        90,
+        75,
+        80,
+        85
+      ],
+      "opp_bets": [
+        75,
+        65,
+        65,
+        75,
+        85,
+        90,
+        65,
+        75,
+        80
+      ]
+    },
+    "deepseek/deepseek-r1-distill-qwen-14b:free": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/deepseek_deepseek-r1-distill-qwen-14b:free_vs_self_20250510_231717.json",
+          "bet_history": {
+            "proposition": [
+              75,
+              85,
+              85
+            ],
+            "opposition": [
+              75,
+              60,
+              55
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/deepseek_deepseek-r1-distill-qwen-14b:free_vs_self_20250510_231926.json",
+          "bet_history": {
+            "proposition": [
+              60,
+              60,
+              70
+            ],
+            "opposition": [
+              60,
+              60,
+              90
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/deepseek_deepseek-r1-distill-qwen-14b:free_vs_self_20250511_004633.json",
+          "bet_history": {
+            "proposition": [
+              70,
+              60,
+              60
+            ],
+            "opposition": [
+              95,
+              90,
+              95
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        75,
+        85,
+        85,
+        60,
+        60,
+        70,
+        70,
+        60,
+        60
+      ],
+      "opp_bets": [
+        75,
+        60,
+        55,
+        60,
+        60,
+        90,
+        95,
+        90,
+        95
+      ]
+    },
+    "qwen/qwen-max": {
+      "debates": [
+        {
+          "topic": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+          "path": "private_self_debates/qwen_qwen-max_vs_self_20250511_005802.json",
+          "bet_history": {
+            "proposition": [
+              65,
+              75,
+              85
+            ],
+            "opposition": [
+              60,
+              80,
+              85
+            ]
+          }
+        },
+        {
+          "topic": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+          "path": "private_self_debates/qwen_qwen-max_vs_self_20250511_010228.json",
+          "bet_history": {
+            "proposition": [
+              60,
+              65,
+              70
+            ],
+            "opposition": [
+              55,
+              60,
+              65
+            ]
+          }
+        },
+        {
+          "topic": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+          "path": "private_self_debates/qwen_qwen-max_vs_self_20250511_010651.json",
+          "bet_history": {
+            "proposition": [
+              30,
+              60,
+              70
+            ],
+            "opposition": [
+              60,
+              75,
+              85
+            ]
+          }
+        }
+      ],
+      "prop_bets": [
+        65,
+        75,
+        85,
+        60,
+        65,
+        70,
+        30,
+        60,
+        70
+      ],
+      "opp_bets": [
+        60,
+        80,
+        85,
+        55,
+        60,
+        65,
+        60,
+        75,
+        85
+      ]
+    }
+  }
+}

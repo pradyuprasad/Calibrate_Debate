@@ -21,7 +21,7 @@ def setup_logging(config: Config):
     """Configure logging for the tournament."""
     logger = config.logger.get_logger()
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    log_file = f"private_self_tournament_{timestamp}.log"
+    log_file = f"private_self_tournament_informed_{timestamp}.log"
     config.logger.set_log_file(log_file)
     return logger
 
@@ -165,6 +165,7 @@ class PrivateSelfTournamentRunnerInformed:
 
 def main():
     """Run the private self-debate tournament."""
+    print("running private debate tournament")
     load_dotenv()
     config = Config()
 

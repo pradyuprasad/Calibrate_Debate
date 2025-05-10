@@ -19,6 +19,7 @@ class DebateType(Enum):
     PRIVATE_SAME_DEBATOR = "private_same_debator"
     SAME_DEBATOR = "same_debator"  # New type for LLM vs itself debates
     PUBLIC_SAME_DEBATOR = "PUBLIC_SAME_DEBATOR"
+    PRIVATE_SAME_DEBATOR_INFORMED = "private_same_debator_informed"
 
 
 class Side(Enum):
