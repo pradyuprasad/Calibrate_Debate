@@ -1,0 +1,1359 @@
+{
+  "google_gemma-3-27b-it_vs_google_gemini-2.0-flash-001_20250317_134606.json": {
+    "proposition_model": "google/gemma-3-27b-it",
+    "opposition_model": "google/gemini-2.0-flash-001",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 56,
+      "original_as_prop": 60,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 30,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 55,
+      "original_as_prop": 85,
+      "original_as_opp": 60
+    }
+  },
+  "qwen_qwen-max_vs_anthropic_claude-3.5-haiku_20250406_160347.json": {
+    "proposition_model": "qwen/qwen-max",
+    "opposition_model": "anthropic/claude-3.5-haiku",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 35,
+      "original_as_prop": 65,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 75,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 95,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 90
+    }
+  },
+  "qwen_qwq-32b:free_vs_anthropic_claude-3.7-sonnet_20250406_200717.json": {
+    "proposition_model": "qwen/qwq-32b:free",
+    "opposition_model": "anthropic/claude-3.7-sonnet",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 65,
+      "original_as_prop": 80,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 90,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 55,
+      "original_as_prop": 95,
+      "original_as_opp": 75
+    }
+  },
+  "qwen_qwen-max_vs_deepseek_deepseek-chat_20250406_163453.json": {
+    "proposition_model": "qwen/qwen-max",
+    "opposition_model": "deepseek/deepseek-chat",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 85,
+      "original_as_prop": 90,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 85,
+      "original_as_prop": 95,
+      "original_as_opp": 80
+    }
+  },
+  "qwen_qwq-32b:free_vs_anthropic_claude-3.5-haiku_20250406_161237.json": {
+    "proposition_model": "qwen/qwq-32b:free",
+    "opposition_model": "anthropic/claude-3.5-haiku",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 95,
+      "third_party_as_opp": 40,
+      "original_as_prop": 80,
+      "original_as_opp": 80
+    },
+    "rebuttal": {
+      "third_party_as_prop": 100,
+      "third_party_as_opp": 40,
+      "original_as_prop": 90,
+      "original_as_opp": 65
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 40,
+      "original_as_prop": 95,
+      "original_as_opp": 65
+    }
+  },
+  "google_gemini-2.0-flash-001_vs_openai_gpt-4o-mini_20250316_160017.json": {
+    "proposition_model": "google/gemini-2.0-flash-001",
+    "opposition_model": "openai/gpt-4o-mini",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 83,
+      "third_party_as_opp": 75,
+      "original_as_prop": 65,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 80,
+      "original_as_prop": 65,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 70,
+      "original_as_prop": 70,
+      "original_as_opp": 75
+    }
+  },
+  "qwen_qwen-max_vs_openai_o3-mini_20250316_163517.json": {
+    "proposition_model": "qwen/qwen-max",
+    "opposition_model": "openai/o3-mini",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 88,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 90,
+      "original_as_opp": 80
+    }
+  },
+  "google_gemma-3-27b-it_vs_deepseek_deepseek-chat_20250316_215619.json": {
+    "proposition_model": "google/gemma-3-27b-it",
+    "opposition_model": "deepseek/deepseek-chat",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 65,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 85,
+      "original_as_prop": 85,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 70,
+      "original_as_prop": 95,
+      "original_as_opp": 75
+    }
+  },
+  "deepseek_deepseek-chat_vs_google_gemini-2.0-flash-001_20250317_115648.json": {
+    "proposition_model": "deepseek/deepseek-chat",
+    "opposition_model": "google/gemini-2.0-flash-001",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 75,
+      "original_as_opp": 65
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 65,
+      "original_as_opp": 60
+    },
+    "closing": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 65,
+      "original_as_prop": 70,
+      "original_as_opp": 65
+    }
+  },
+  "anthropic_claude-3.5-haiku_vs_google_gemma-3-27b-it_20250317_131612.json": {
+    "proposition_model": "anthropic/claude-3.5-haiku",
+    "opposition_model": "google/gemma-3-27b-it",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 60
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 85,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    }
+  },
+  "google_gemma-3-27b-it_vs_qwen_qwen-max_20250316_162737.json": {
+    "proposition_model": "google/gemma-3-27b-it",
+    "opposition_model": "qwen/qwen-max",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 70,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 65,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 85,
+      "original_as_prop": 95,
+      "original_as_opp": 90
+    }
+  },
+  "google_gemma-3-27b-it_vs_google_gemini-2.0-flash-001_20250316_201000.json": {
+    "proposition_model": "google/gemma-3-27b-it",
+    "opposition_model": "google/gemini-2.0-flash-001",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 65,
+      "original_as_prop": 70,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 60,
+      "original_as_prop": 80,
+      "original_as_opp": 60
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 60,
+      "original_as_prop": 85,
+      "original_as_opp": 55
+    }
+  },
+  "deepseek_deepseek-r1-distill-qwen-14b:free_vs_openai_gpt-4o-mini_20250316_202526.json": {
+    "proposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "opposition_model": "openai/gpt-4o-mini",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 60,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 70,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    }
+  },
+  "qwen_qwq-32b:free_vs_deepseek_deepseek-r1-distill-qwen-14b:free_20250316_161630.json": {
+    "proposition_model": "qwen/qwq-32b:free",
+    "opposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 95,
+      "third_party_as_opp": null,
+      "original_as_prop": 85,
+      "original_as_opp": 90
+    },
+    "rebuttal": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 90,
+      "original_as_prop": 92,
+      "original_as_opp": 90
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 60,
+      "original_as_prop": 98,
+      "original_as_opp": 90
+    }
+  },
+  "openai_gpt-4o-mini_vs_deepseek_deepseek-chat_20250317_140743.json": {
+    "proposition_model": "openai/gpt-4o-mini",
+    "opposition_model": "deepseek/deepseek-chat",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 60
+    },
+    "rebuttal": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 75,
+      "original_as_prop": 70,
+      "original_as_opp": 60
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 85,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    }
+  },
+  "openai_o3-mini_vs_anthropic_claude-3.5-haiku_20250317_135350.json": {
+    "proposition_model": "openai/o3-mini",
+    "opposition_model": "anthropic/claude-3.5-haiku",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 65,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 65,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    }
+  },
+  "google_gemma-3-27b-it_vs_anthropic_claude-3.7-sonnet_20250317_144253.json": {
+    "proposition_model": "google/gemma-3-27b-it",
+    "opposition_model": "anthropic/claude-3.7-sonnet",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 70,
+      "original_as_prop": 70,
+      "original_as_opp": 60
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 65,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 70,
+      "original_as_prop": 80,
+      "original_as_opp": 80
+    }
+  },
+  "deepseek_deepseek-r1-distill-qwen-14b:free_vs_google_gemini-2.0-flash-001_20250317_150736.json": {
+    "proposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "opposition_model": "google/gemini-2.0-flash-001",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 78,
+      "original_as_prop": 70,
+      "original_as_opp": 45
+    },
+    "rebuttal": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 65,
+      "original_as_prop": 85,
+      "original_as_opp": 55
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 60,
+      "original_as_prop": 80,
+      "original_as_opp": 60
+    }
+  },
+  "google_gemini-2.0-flash-001_vs_deepseek_deepseek-chat_20250317_125545.json": {
+    "proposition_model": "google/gemini-2.0-flash-001",
+    "opposition_model": "deepseek/deepseek-chat",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 85,
+      "original_as_prop": 65,
+      "original_as_opp": 80
+    },
+    "rebuttal": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 75,
+      "original_as_prop": 70,
+      "original_as_opp": 90
+    },
+    "closing": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 70,
+      "original_as_prop": 55,
+      "original_as_opp": 90
+    }
+  },
+  "anthropic_claude-3.5-haiku_vs_deepseek_deepseek-r1-distill-qwen-14b:free_20250317_112840.json": {
+    "proposition_model": "anthropic/claude-3.5-haiku",
+    "opposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 60,
+      "third_party_as_opp": 60,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 55,
+      "original_as_prop": 85,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    }
+  },
+  "openai_o3-mini_vs_openai_gpt-4o-mini_20250407_061421.json": {
+    "proposition_model": "openai/o3-mini",
+    "opposition_model": "openai/gpt-4o-mini",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 90,
+      "original_as_opp": 80
+    }
+  },
+  "anthropic_claude-3.7-sonnet_vs_qwen_qwen-max_20250317_114245.json": {
+    "proposition_model": "anthropic/claude-3.7-sonnet",
+    "opposition_model": "qwen/qwen-max",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 30,
+      "original_as_prop": 70,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 65,
+      "original_as_prop": 80,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 90,
+      "original_as_opp": 90
+    }
+  },
+  "google_gemini-2.0-flash-001_vs_anthropic_claude-3.5-haiku_20250406_155619.json": {
+    "proposition_model": "google/gemini-2.0-flash-001",
+    "opposition_model": "anthropic/claude-3.5-haiku",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 60,
+      "third_party_as_opp": 45,
+      "original_as_prop": 70,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 75,
+      "original_as_prop": 45,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 60,
+      "third_party_as_opp": 75,
+      "original_as_prop": 55,
+      "original_as_opp": 85
+    }
+  },
+  "openai_gpt-4o-mini_vs_deepseek_deepseek-r1-distill-qwen-14b:free_20250317_123642.json": {
+    "proposition_model": "openai/gpt-4o-mini",
+    "opposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 40,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 30,
+      "original_as_prop": 80,
+      "original_as_opp": 60
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 50,
+      "original_as_prop": 85,
+      "original_as_opp": 60
+    }
+  },
+  "openai_o3-mini_vs_qwen_qwq-32b:free_20250316_214442.json": {
+    "proposition_model": "openai/o3-mini",
+    "opposition_model": "qwen/qwq-32b:free",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 85,
+      "original_as_prop": 80,
+      "original_as_opp": 80
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 90,
+      "original_as_prop": 85,
+      "original_as_opp": 90
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 85,
+      "original_as_prop": 90,
+      "original_as_opp": 95
+    }
+  },
+  "qwen_qwen-max_vs_deepseek_deepseek-r1-distill-qwen-14b:free_20250317_141644.json": {
+    "proposition_model": "qwen/qwen-max",
+    "opposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 80,
+      "original_as_prop": 80,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 40,
+      "original_as_prop": 95,
+      "original_as_opp": 90
+    }
+  },
+  "openai_o3-mini_vs_qwen_qwen-max_20250317_124723.json": {
+    "proposition_model": "openai/o3-mini",
+    "opposition_model": "qwen/qwen-max",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 95,
+      "third_party_as_opp": 60,
+      "original_as_prop": 80,
+      "original_as_opp": 85
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 85,
+      "original_as_prop": 85,
+      "original_as_opp": 90
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 85,
+      "original_as_prop": 87,
+      "original_as_opp": 95
+    }
+  },
+  "deepseek_deepseek-chat_vs_qwen_qwq-32b:free_20250406_221355.json": {
+    "proposition_model": "deepseek/deepseek-chat",
+    "opposition_model": "qwen/qwq-32b:free",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 80,
+      "original_as_prop": 70,
+      "original_as_opp": 80
+    },
+    "rebuttal": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": null,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 85,
+      "original_as_prop": 85,
+      "original_as_opp": 88
+    }
+  },
+  "qwen_qwq-32b:free_vs_deepseek_deepseek-chat_20250406_194730.json": {
+    "proposition_model": "qwen/qwq-32b:free",
+    "opposition_model": "deepseek/deepseek-chat",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 80,
+      "original_as_prop": 95,
+      "original_as_opp": 70
+    }
+  },
+  "openai_gpt-4o-mini_vs_anthropic_claude-3.5-haiku_20250406_162559.json": {
+    "proposition_model": "openai/gpt-4o-mini",
+    "opposition_model": "anthropic/claude-3.5-haiku",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 65
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 55
+    },
+    "closing": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 70,
+      "original_as_prop": 70,
+      "original_as_opp": 75
+    }
+  },
+  "qwen_qwq-32b:free_vs_qwen_qwen-max_20250316_222047.json": {
+    "proposition_model": "qwen/qwq-32b:free",
+    "opposition_model": "qwen/qwen-max",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 40,
+      "original_as_prop": 85,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": null,
+      "third_party_as_opp": 75,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 90,
+      "original_as_prop": 95,
+      "original_as_opp": 95
+    }
+  },
+  "deepseek_deepseek-chat_vs_qwen_qwen-max_20250317_132415.json": {
+    "proposition_model": "deepseek/deepseek-chat",
+    "opposition_model": "qwen/qwen-max",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 55,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 40,
+      "original_as_prop": 85,
+      "original_as_opp": 65
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 60
+    }
+  },
+  "anthropic_claude-3.7-sonnet_vs_google_gemma-3-27b-it_20250406_214354.json": {
+    "proposition_model": "anthropic/claude-3.7-sonnet",
+    "opposition_model": "google/gemma-3-27b-it",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": null,
+      "third_party_as_opp": 75,
+      "original_as_prop": 70,
+      "original_as_opp": 60
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 85,
+      "original_as_prop": 70,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 85,
+      "original_as_prop": 75,
+      "original_as_opp": 90
+    }
+  },
+  "anthropic_claude-3.5-haiku_vs_deepseek_deepseek-r1-distill-qwen-14b:free_20250316_165805.json": {
+    "proposition_model": "anthropic/claude-3.5-haiku",
+    "opposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 65,
+      "original_as_prop": 70,
+      "original_as_opp": 85
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": null,
+      "original_as_prop": 90,
+      "original_as_opp": 90
+    }
+  },
+  "anthropic_claude-3.7-sonnet_vs_qwen_qwq-32b:free_20250316_184942.json": {
+    "proposition_model": "anthropic/claude-3.7-sonnet",
+    "opposition_model": "qwen/qwq-32b:free",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 60,
+      "third_party_as_opp": 80,
+      "original_as_prop": 70,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": null,
+      "original_as_prop": 65,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 90,
+      "original_as_prop": 80,
+      "original_as_opp": 85
+    }
+  },
+  "google_gemma-3-27b-it_vs_qwen_qwq-32b:free_20250317_122813.json": {
+    "proposition_model": "google/gemma-3-27b-it",
+    "opposition_model": "qwen/qwq-32b:free",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 80,
+      "original_as_prop": 70,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 85,
+      "original_as_prop": 80,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 100,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    }
+  },
+  "google_gemini-2.0-flash-001_vs_openai_o3-mini_20250407_060117.json": {
+    "proposition_model": "google/gemini-2.0-flash-001",
+    "opposition_model": "openai/o3-mini",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 70,
+      "original_as_prop": 65,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 80,
+      "original_as_prop": 70,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 55,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 85
+    }
+  },
+  "deepseek_deepseek-chat_vs_anthropic_claude-3.5-haiku_20250317_145302.json": {
+    "proposition_model": "deepseek/deepseek-chat",
+    "opposition_model": "anthropic/claude-3.5-haiku",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 85,
+      "original_as_prop": 75,
+      "original_as_opp": 65
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    }
+  },
+  "anthropic_claude-3.5-haiku_vs_openai_gpt-4o-mini_20250316_200134.json": {
+    "proposition_model": "anthropic/claude-3.5-haiku",
+    "opposition_model": "openai/gpt-4o-mini",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 65,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 55,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 85
+    }
+  },
+  "openai_o3-mini_vs_google_gemini-2.0-flash-001_20250316_185543.json": {
+    "proposition_model": "openai/o3-mini",
+    "opposition_model": "google/gemini-2.0-flash-001",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 60,
+      "original_as_prop": 85,
+      "original_as_opp": 65
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 65,
+      "original_as_prop": 85,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 65,
+      "original_as_prop": 90,
+      "original_as_opp": 70
+    }
+  },
+  "anthropic_claude-3.7-sonnet_vs_openai_o3-mini_20250406_215428.json": {
+    "proposition_model": "anthropic/claude-3.7-sonnet",
+    "opposition_model": "openai/o3-mini",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 80,
+      "original_as_prop": 70,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 80,
+      "original_as_prop": 75,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 85,
+      "original_as_opp": 80
+    }
+  },
+  "deepseek_deepseek-r1-distill-qwen-14b:free_vs_deepseek_deepseek-chat_20250407_060621.json": {
+    "proposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "opposition_model": "deepseek/deepseek-chat",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 85,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    },
+    "rebuttal": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 85,
+      "original_as_prop": 70,
+      "original_as_opp": 90
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 85,
+      "original_as_prop": 90,
+      "original_as_opp": 95
+    }
+  },
+  "google_gemini-2.0-flash-001_vs_anthropic_claude-3.7-sonnet_20250406_161916.json": {
+    "proposition_model": "google/gemini-2.0-flash-001",
+    "opposition_model": "anthropic/claude-3.7-sonnet",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 40,
+      "third_party_as_opp": 80,
+      "original_as_prop": 70,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 75,
+      "original_as_prop": 68,
+      "original_as_opp": 85
+    }
+  },
+  "qwen_qwen-max_vs_anthropic_claude-3.7-sonnet_20250406_164518.json": {
+    "proposition_model": "qwen/qwen-max",
+    "opposition_model": "anthropic/claude-3.7-sonnet",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 85,
+      "original_as_prop": 75,
+      "original_as_opp": 65
+    },
+    "rebuttal": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 85,
+      "original_as_prop": 85,
+      "original_as_opp": 70
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 70,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    }
+  },
+  "deepseek_deepseek-chat_vs_google_gemma-3-27b-it_20250406_220242.json": {
+    "proposition_model": "deepseek/deepseek-chat",
+    "opposition_model": "google/gemma-3-27b-it",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 65
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 65,
+      "original_as_prop": 85,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 63,
+      "original_as_prop": 90,
+      "original_as_opp": 85
+    }
+  },
+  "anthropic_claude-3.5-haiku_vs_anthropic_claude-3.7-sonnet_20250317_121514.json": {
+    "proposition_model": "anthropic/claude-3.5-haiku",
+    "opposition_model": "anthropic/claude-3.7-sonnet",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 85,
+      "original_as_prop": 65,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 55,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 80,
+      "original_as_prop": 85,
+      "original_as_opp": 90
+    }
+  },
+  "anthropic_claude-3.7-sonnet_vs_qwen_qwen-max_20250316_213632.json": {
+    "proposition_model": "anthropic/claude-3.7-sonnet",
+    "opposition_model": "qwen/qwen-max",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 60,
+      "third_party_as_opp": 40,
+      "original_as_prop": 70,
+      "original_as_opp": 60
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 30,
+      "original_as_prop": 75,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 90
+    }
+  },
+  "deepseek_deepseek-r1-distill-qwen-14b:free_vs_qwen_qwq-32b:free_20250406_222510.json": {
+    "proposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "opposition_model": "qwen/qwq-32b:free",
+    "motion": "This House would require G20 nations to participate in a unified carbon trading market with cross-border credit trading and quarterly auctions, rather than allowing each nation to implement its own domestic carbon tax system",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 80,
+      "original_as_prop": 85,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 90,
+      "original_as_prop": 95,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 85,
+      "original_as_prop": 95,
+      "original_as_opp": 95
+    }
+  },
+  "openai_gpt-4o-mini_vs_google_gemma-3-27b-it_20250316_165152.json": {
+    "proposition_model": "openai/gpt-4o-mini",
+    "opposition_model": "google/gemma-3-27b-it",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 90,
+      "original_as_opp": 95
+    }
+  },
+  "qwen_qwen-max_vs_qwen_qwq-32b:free_20250317_143341.json": {
+    "proposition_model": "qwen/qwen-max",
+    "opposition_model": "qwen/qwq-32b:free",
+    "motion": "This House believes that governments should transition their primary role in space from direct operation to regulation and oversight of private sector space activities",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 80,
+      "original_as_prop": 60,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 90,
+      "original_as_prop": 75,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 85,
+      "original_as_prop": 90,
+      "original_as_opp": 90
+    }
+  },
+  "qwen_qwq-32b:free_vs_openai_gpt-4o-mini_20250317_120620.json": {
+    "proposition_model": "qwen/qwq-32b:free",
+    "opposition_model": "openai/gpt-4o-mini",
+    "motion": "This House believes that professors should actively engage in public advocacy on social and political issues within their field of expertise",
+    "opening": {
+      "third_party_as_prop": 95,
+      "third_party_as_opp": 70,
+      "original_as_prop": 80,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 70,
+      "original_as_prop": 95,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 95,
+      "third_party_as_opp": 80,
+      "original_as_prop": 98,
+      "original_as_opp": 85
+    }
+  },
+  "openai_gpt-4o-mini_vs_openai_o3-mini_20250317_150127.json": {
+    "proposition_model": "openai/gpt-4o-mini",
+    "opposition_model": "openai/o3-mini",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 70,
+      "original_as_prop": 70,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 80,
+      "original_as_opp": 80
+    }
+  },
+  "deepseek_deepseek-chat_vs_anthropic_claude-3.7-sonnet_20250316_160854.json": {
+    "proposition_model": "deepseek/deepseek-chat",
+    "opposition_model": "anthropic/claude-3.7-sonnet",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 60
+    },
+    "rebuttal": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 65,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 75,
+      "original_as_prop": 70,
+      "original_as_opp": 90
+    }
+  },
+  "deepseek_deepseek-r1-distill-qwen-14b:free_vs_openai_o3-mini_20250317_133623.json": {
+    "proposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "opposition_model": "openai/o3-mini",
+    "motion": "This House would require national television news broadcasters with over 5% annual viewership to provide equal prime-time coverage to parties polling above 10% and guaranteed response segments within 48 hours of criticism, rather than relying on media watchdog guidelines and voluntary fairness codes",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 80,
+      "original_as_prop": 85,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 75,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 90,
+      "third_party_as_opp": 80,
+      "original_as_prop": 85,
+      "original_as_opp": 80
+    }
+  },
+  "anthropic_claude-3.5-haiku_vs_openai_o3-mini_20250316_155334.json": {
+    "proposition_model": "anthropic/claude-3.5-haiku",
+    "opposition_model": "openai/o3-mini",
+    "motion": "This House would require US state governors to face recall elections through voter petitions (requiring 20% of registered voters within 90 days) rather than allowing removal during their term only through state legislative impeachment, with both mechanisms prohibited during the first and last 6 months of their term",
+    "opening": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 80,
+      "original_as_prop": 75,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 80,
+      "original_as_prop": 85,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 82
+    }
+  },
+  "deepseek_deepseek-r1-distill-qwen-14b:free_vs_google_gemma-3-27b-it_20250316_191538.json": {
+    "proposition_model": "deepseek/deepseek-r1-distill-qwen-14b:free",
+    "opposition_model": "google/gemma-3-27b-it",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 100,
+      "third_party_as_opp": 65,
+      "original_as_prop": 90,
+      "original_as_opp": 60
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 65,
+      "original_as_prop": 95,
+      "original_as_opp": 75
+    },
+    "closing": {
+      "third_party_as_prop": 65,
+      "third_party_as_opp": 65,
+      "original_as_prop": 95,
+      "original_as_opp": 95
+    }
+  },
+  "google_gemini-2.0-flash-001_vs_openai_gpt-4o-mini_20250317_130726.json": {
+    "proposition_model": "google/gemini-2.0-flash-001",
+    "opposition_model": "openai/gpt-4o-mini",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 30,
+      "third_party_as_opp": 70,
+      "original_as_prop": 55,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 80,
+      "original_as_prop": 65,
+      "original_as_opp": 80
+    },
+    "closing": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 80,
+      "original_as_prop": 75,
+      "original_as_opp": 85
+    }
+  },
+  "anthropic_claude-3.7-sonnet_vs_google_gemini-2.0-flash-001_20250316_164328.json": {
+    "proposition_model": "anthropic/claude-3.7-sonnet",
+    "opposition_model": "google/gemini-2.0-flash-001",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 60,
+      "third_party_as_opp": 45,
+      "original_as_prop": 65,
+      "original_as_opp": 70
+    },
+    "rebuttal": {
+      "third_party_as_prop": 70,
+      "third_party_as_opp": 45,
+      "original_as_prop": 70,
+      "original_as_opp": 65
+    },
+    "closing": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 45,
+      "original_as_prop": 80,
+      "original_as_opp": 60
+    }
+  },
+  "openai_o3-mini_vs_google_gemma-3-27b-it_20250317_111050.json": {
+    "proposition_model": "openai/o3-mini",
+    "opposition_model": "google/gemma-3-27b-it",
+    "motion": "This House would limit individual shareholding in social media platforms with over 100 million monthly active users to a maximum of 15% voting rights, requiring broader institutional and public ownership instead of allowing concentrated private control",
+    "opening": {
+      "third_party_as_prop": 75,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 75
+    },
+    "rebuttal": {
+      "third_party_as_prop": 85,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    },
+    "closing": {
+      "third_party_as_prop": 80,
+      "third_party_as_opp": 75,
+      "original_as_prop": 85,
+      "original_as_opp": 85
+    }
+  }
+}

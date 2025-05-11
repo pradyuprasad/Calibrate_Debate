@@ -1,9 +1,9 @@
-from dotenv import load_dotenv
 import os
 import json
 import re
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+from dotenv import load_dotenv
 
 from core.api_client import OpenRouterClient
 from core.models import DebateTotal, Side, SpeechType, APIResponse, DebatorBet
@@ -50,7 +50,7 @@ class DebateAnalyzer:
     def __init__(self, tournament_folder: str, api_key: str):
         self.tournament_folder = Path(tournament_folder)
         self.api_client = OpenRouterClient(api_key=api_key, logger=logger)
-        self.results = []  # List of debate entries
+        self.results = {}  # Dictionary with filename as key
 
     def get_all_debate_files(self) -> List[Path]:
         """Find all debate JSON files in the tournament folder"""
@@ -127,8 +127,7 @@ class DebateAnalyzer:
         prompt += debate_content
         prompt += "\n\n=== JUDGING CRITERIA ===\n"
         prompt += JUDGE_CRITERIA
-        prompt += f"\n\nYou are on the {as_side.value} side of this debate. Based on the debate so far, "
-        prompt += "how likely do you think you are to win this debate? Provide a bet from 0-100 indicating your confidence."
+        prompt += f"how likely do you think {as_side.value} side of this debate are to win this debate from a third party perspective? Provide a bet from 0-100 indicating your confidence. You will get the amount that you, and your opponent will bet if you win. If you lose, you'll lose this amount and it will go to your opponent. You can be a maximum of  100 tokens in this debate"
         prompt += "\n\nPlease structure your response as follows:"
         prompt += "\n1. First, provide your analysis of the debate so far and why you think you would or wouldn't win."
         prompt += "\n2. Then provide your bet in the format: <bet>NUMBER</bet>"
@@ -156,7 +155,7 @@ class DebateAnalyzer:
                 return bet
             else:
                 logger.warning(f"Could not extract bet from {model_name}'s response")
-                logger.info(f"Response content: {response.content[:500]}... (truncated)")
+                logger.info(f"Response content: {response.content}... (truncated)")
 
                 # Ask for manual input if extraction fails
                 while True:
@@ -178,12 +177,12 @@ class DebateAnalyzer:
         logger.info(f"Analyzing debate: {debate_file}")
         debate = DebateTotal.load_from_json(debate_file)
 
+        filename = str(debate_file.name)
         prop_model = debate.proposition_model
         opp_model = debate.opposition_model
 
         # Create a new debate entry
         debate_entry = {
-            "filename": str(debate_file.name),
             "proposition_model": prop_model,
             "opposition_model": opp_model,
             "motion": debate.motion.topic_description,
@@ -207,6 +206,9 @@ class DebateAnalyzer:
             }
         }
 
+        # Add to results dictionary using filename as key
+        self.results[filename] = debate_entry
+
         for stage, stage_name in [
             (SpeechType.OPENING, "opening"),
             (SpeechType.REBUTTAL, "rebuttal"),
@@ -225,27 +227,23 @@ class DebateAnalyzer:
             original_opp_bet = self.get_original_bet(debate, Side.OPPOSITION, stage)
 
             # Store original bets
-            debate_entry[stage_name]["original_as_prop"] = original_prop_bet
-            debate_entry[stage_name]["original_as_opp"] = original_opp_bet
+            self.results[filename][stage_name]["original_as_prop"] = original_prop_bet
+            self.results[filename][stage_name]["original_as_opp"] = original_opp_bet
 
             # Get proposition model's bet when it's in proposition role
             prop_content = self.extract_debate_until_stage(debate, stage, Side.PROPOSITION)
             prop_prompt = self.create_prompt(debate, prop_content, Side.PROPOSITION)
             prop_bet = self.get_model_prediction(prop_model, prop_prompt)
-            debate_entry[stage_name]["third_party_as_prop"] = prop_bet
+            self.results[filename][stage_name]["third_party_as_prop"] = prop_bet
 
             # Get opposition model's bet when it's in opposition role
             opp_content = self.extract_debate_until_stage(debate, stage, Side.OPPOSITION)
             opp_prompt = self.create_prompt(debate, opp_content, Side.OPPOSITION)
             opp_bet = self.get_model_prediction(opp_model, opp_prompt)
-            debate_entry[stage_name]["third_party_as_opp"] = opp_bet
+            self.results[filename][stage_name]["third_party_as_opp"] = opp_bet
 
             # Save results after each stage
             self.save_results()
-            print("saved result")
-
-        # Add the completed debate entry to results
-        self.results.append(debate_entry)
 
     def analyze_all_debates(self):
         """Analyze all debate files in the tournament folder"""
@@ -269,8 +267,10 @@ def main():
     if not api_key:
         api_key = input("Enter your OpenRouter API key: ")
 
+
+
     # Get tournament folder
-    tournament_folder = input("Enter path to private_bet_tournament folder: ")
+    tournament_folder = Path("private_bet_tournament")
 
     analyzer = DebateAnalyzer(tournament_folder, api_key)
     analyzer.analyze_all_debates()

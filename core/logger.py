@@ -10,7 +10,7 @@ class LoggerFactory:
     _initialized = False
 
     @classmethod
-    def get_logger(cls, name: str = "logger", level: Optional[int] = None, write_to_file: bool = True) -> logging.Logger:
+    def get_logger(cls, name: str = "logger", level: Optional[int] = None, write_to_file: bool = True, log_file:str = "tournament.log") -> logging.Logger:
         """
         Get or create a logger with the given name.
 
@@ -56,7 +56,7 @@ class LoggerFactory:
 
             # Add file handler if requested
             if write_to_file:
-                file_handler = logging.FileHandler(cls._log_file)
+                file_handler = logging.FileHandler(log_file)
                 file_handler.setFormatter(formatter)
                 logger.addHandler(file_handler)
 
